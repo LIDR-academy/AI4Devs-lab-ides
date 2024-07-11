@@ -27,3 +27,5 @@ yarn-error.log*
 
 # .env
 
+**/backend/uploads/*
+**/backend/prisma/migrations/*

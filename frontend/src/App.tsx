@@ -1,25 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import "./App.css";
+import AddCandidateForm from "./domain/candidate/AddCandidateForm/AddCandidateForm";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <div className="App">
+        <header className="navbar">
+          <div>LTI</div>
+          <nav>
+            <Link to="/">Inicio</Link>
+            <Link to="/add-candidate">Añadir Candidato</Link>
+          </nav>
+        </header>
+        <div className="App-header">
+          <Routes>
+            <Route path="/add-candidate" element={<AddCandidateForm />} />
+          </Routes>
+        </div>
+      </div>
+    </BrowserRouter>
   );
 }
 

@@ -93,3 +93,6 @@ Para detener el contenedor Docker, ejecuta el siguiente comando:
 ```
 docker-compose down
 ```
+
+Migraciones en Backend: 
+`npx prisma migrate dev`
