@@ -1,26 +1,55 @@
-import { Request, Response, NextFunction } from 'express';
 import express from 'express';
-import { PrismaClient } from '@prisma/client';
-import dotenv from 'dotenv';
+import cors from 'cors';
+import swaggerUi from 'swagger-ui-express';
+import swaggerJsdoc from 'swagger-jsdoc';
+import candidateRoutes from './routes/candidateRoutes';
+import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 
-dotenv.config();
-const prisma = new PrismaClient();
+const app = express();
+const PORT = process.env.PORT || 3010;
 
-export const app = express();
-export default prisma;
+// Swagger configuration
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'API de Gestión de Candidatos',
+      version: '1.0.0',
+      description: 'API para gestionar candidatos y sus documentos',
+    },
+    servers: [
+      {
+        url: `http://localhost:${PORT}/api`,
+      },
+    ],
+  },
+  apis: ['./src/routes/*.ts'],
+};
 
-const port = 3010;
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
 
+// Middlewares
+app.use(cors());
+app.use(express.json());
+
+// Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+// Ruta raíz que redirige a la documentación
 app.get('/', (req, res) => {
-  res.send('Hola LTI!');
+  res.redirect('/api-docs');
 });
 
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
-  res.type('text/plain'); 
-  res.status(500).send('Something broke!');
-});
+// Routes
+app.use('/api/candidates', candidateRoutes);
 
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+// Error handling
+app.use(notFoundHandler);
+app.use(errorHandler);
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+  console.log(`Swagger documentation available at http://localhost:${PORT}/api-docs`);
 });
+export default app;
+
