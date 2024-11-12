@@ -18,3 +18,39 @@ model User {
   email String  @unique
   name  String?
 }
+
+model Candidate {
+  id                String   @id @default(cuid())
+  nombre            String
+  apellido          String
+  email             String   @unique
+  telefono          String?
+  direccion         String?
+  educacion         Education[]
+  experiencia       Experience[]
+  cvUrl             String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Education {
+  id            String    @id @default(cuid())
+  institution   String
+  degree        String
+  fieldOfStudy  String
+  startDate     DateTime
+  endDate       DateTime?
+  candidate     Candidate @relation(fields: [candidateId], references: [id])
+  candidateId   String
+}
+
+model Experience {
+  id            String    @id @default(cuid())
+  company       String
+  position      String
+  startDate     DateTime
+  endDate       DateTime?
+  description   String
+  candidate     Candidate @relation(fields: [candidateId], references: [id])
+  candidateId   String
+}
