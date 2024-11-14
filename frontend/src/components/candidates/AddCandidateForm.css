@@ -1,0 +1,79 @@
+.add-candidate-form {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.form-section {
+  margin-bottom: 24px;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.form-group input.error {
+  border-color: #ff4444;
+}
+
+.error-message {
+  color: #ff4444;
+  font-size: 0.875rem;
+  margin-top: 4px;
+}
+
+button[type="submit"] {
+  background-color: #007bff;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button[type="submit"]:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.form-group input[type="file"] {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.form-group span {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.error {
+  border-color: red;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.8em;
+  margin-top: 4px;
+  display: block;
+} 

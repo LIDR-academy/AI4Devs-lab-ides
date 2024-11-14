@@ -1,0 +1,7 @@
+# Backend
+PORT=3010
+DATABASE_URL=postgresql://usuario:contraseña@localhost:5432/nombre_db
+JWT_SECRET=tu_secreto_jwt
+
+# Frontend
+REACT_APP_API_URL=http://localhost:3010/api
