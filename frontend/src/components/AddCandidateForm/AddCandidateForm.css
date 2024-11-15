@@ -1,0 +1,100 @@
+@import '../../styles/variables.css';
+
+form {
+  display: flex;
+  flex-direction: column;
+  background: var(--glassBackground);
+  padding: 20px;
+  border-radius: var(--borderRadius);
+  box-shadow: var(--boxShadow);
+  border: 1px solid var(--glassBorder);
+  backdrop-filter: blur(10px);
+  width: 400px;
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+div {
+  margin-bottom: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--textColor);
+  text-align: left;
+  width: 90%;
+}
+
+input {
+  width: 90%;
+  padding: 10px;
+  border: 1px solid var(--secondaryColor);
+  border-radius: var(--borderRadius);
+  background: var(--backgroundColor);
+  color: var(--textColor);
+  box-shadow: inset 4px 4px 6px rgba(0, 0, 0, 0.4), inset -4px -4px 6px rgba(255, 255, 255, 0.1);
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--primaryColor);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--backgroundColor) inset !important;
+  -webkit-text-fill-color: var(--textColor) !important;
+}
+
+button {
+  padding: 10px;
+  background-color: var(--primaryColor);
+  color: var(--textColor);
+  border: none;
+  border-radius: var(--borderRadius);
+  cursor: pointer;
+  box-shadow: var(--boxShadow);
+  margin-top: 20px;
+}
+
+button:hover {
+  background-color: var(--gamboge);
+  color: var(--secondaryColor);
+}
+
+.error {
+  color: var(--errorColor);
+  font-size: 0.875em;
+  position: relative;
+  width: 90%;
+  text-align: left;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.status-message {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: var(--borderRadius);
+  text-align: center;
+  width: 90%;
+}
+
+.status-message.success {
+  background-color: rgba(75, 181, 67, 0.2);
+  border: 1px solid #4bb543;
+  color: #4bb543;
+}
+
+.status-message.error {
+  background-color: rgba(255, 0, 0, 0.2);
+  border: 1px solid #ff0000;
+  color: #ff0000;
+}
