@@ -36,3 +36,41 @@
     transform: rotate(360deg);
   }
 }
+
+/* Position the 'Add Candidate' button in the top-right corner */
+.add-candidate-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+/* Style the table */
+table {
+  width: 90%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ffffff;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #282c34;
+  color: white;
+}
+
+/* Style the delete button */
+.delete-button {
+  background-color: transparent;
+  border: none;
+  color: #ff4d4d;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.delete-button:hover {
+  color: #ff1a1a;
+}
