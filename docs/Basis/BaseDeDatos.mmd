@@ -1,0 +1,49 @@
+erDiagram
+    Candidatos ||--o{ ExperienciasLaborales : tiene
+    Candidatos ||--o{ Educacion : tiene
+    Candidatos ||--o{ Skills : tiene
+    Candidatos ||--|| Usuarios : es
+
+    Candidatos {
+        int id PK
+        string nombre
+        string apellido
+        string email
+        string telefono
+        date fechaNacimiento
+        text cv "CV en formato base64"
+    }
+
+    Usuarios {
+        int id PK
+        string username
+        string password
+        string rol
+    }
+
+    ExperienciasLaborales {
+        int id PK
+        int candidato_id FK
+        string empresa
+        string puesto
+        date fechaInicio
+        date fechaFin
+        string descripcion
+    }
+
+    Educacion {
+        int id PK
+        int candidato_id FK
+        string institucion
+        string titulo
+        date fechaInicio
+        date fechaFin
+    }
+
+    Skills {
+        int id PK
+        int candidato_id FK
+        string nombre
+        int nivel
+    }
+
