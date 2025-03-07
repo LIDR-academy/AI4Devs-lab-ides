@@ -18,3 +18,17 @@ model User {
   email String  @unique
   name  String?
 }
+
+model Candidate {
+  id               Int       @id @default(autoincrement())
+  firstName        String
+  lastName         String
+  email            String    @unique
+  phone            String?
+  address          String?
+  education        String?   // Could be improved with a relation to an Education model
+  workExperience   String?   // Could be improved with a relation to a WorkExperience model
+  cvFilePath       String?   // Path to the uploaded CV file
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
