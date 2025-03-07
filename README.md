@@ -52,7 +52,7 @@ npm run build
 4. Inicia el servidor backend:
 ```
 cd backend
-npm run dev 
+npm run dev
 ```
 
 5. En una nueva ventana de terminal, construye el servidor frontend:
@@ -82,7 +82,7 @@ Esto iniciará una base de datos PostgreSQL en un contenedor Docker. La bandera 
 
 Para acceder a la base de datos PostgreSQL, puedes usar cualquier cliente PostgreSQL con los siguientes detalles de conexión:
  - Host: localhost
- - Port: 5432
+ - Port: 6432
  - User: postgres
  - Password: password
  - Database: mydatabase
@@ -93,3 +93,7 @@ Para detener el contenedor Docker, ejecuta el siguiente comando:
 ```
 docker-compose down
 ```
+
+## Añadir Candidato
+
+Para añadir un candidato, navega al dashboard del reclutador y utiliza el formulario de añadir candidato. Asegúrate de completar todos los campos obligatorios y cargar el CV en formato PDF o DOCX. Una vez enviado el formulario, recibirás una confirmación si el candidato ha sido añadido exitosamente.
