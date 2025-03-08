@@ -7,11 +7,19 @@ Este proyecto es una aplicación full-stack con un frontend en React y un backen
 - `backend/`: Contiene el código del lado del servidor escrito en Node.js.
   - `src/`: Contiene el código fuente para el backend.
     - `index.ts`: El punto de entrada para el servidor backend.
+    - `controllers/`: Contiene los controladores para manejar la lógica de las rutas.
+    - `routes/`: Contiene las definiciones de las rutas del servidor.
+    - `middlewares/`: Contiene middlewares personalizados para el servidor.
   - `prisma/`: Contiene el archivo de esquema de Prisma para ORM.
   - `tsconfig.json`: Archivo de configuración de TypeScript.
   - `.env`: Contiene las variables de entorno.
 - `frontend/`: Contiene el código del lado del cliente escrito en React.
   - `src/`: Contiene el código fuente para el frontend.
+    - `components/`: Contiene los componentes React utilizados en la aplicación.
+    - `pages/`: Contiene las páginas principales de la aplicación.
+    - `App.tsx`: El componente principal de la aplicación.
+    - `index.tsx`: El punto de entrada para el frontend.
+    - `index.css`: Archivo de estilos globales.
   - `public/`: Contiene archivos estáticos como el archivo HTML e imágenes.
   - `build/`: Contiene la construcción lista para producción del frontend.
 - `docker-compose.yml`: Contiene la configuración de Docker Compose para gestionar los servicios de tu aplicación.
@@ -28,7 +36,10 @@ El frontend es una aplicación React y sus archivos principales están ubicados 
 ### Backend
 
 El backend es una aplicación Express escrita en TypeScript.
-- El directorio `src` contiene el código fuente
+- El directorio `src` contiene el código fuente.
+  - `controllers/`: Contiene los controladores para manejar la lógica de las rutas.
+  - `routes/`: Contiene las definiciones de las rutas del servidor.
+  - `middlewares/`: Contiene middlewares personalizados para el servidor.
 - El directorio `prisma` contiene el esquema de Prisma.
 
 ## Primeros Pasos
@@ -93,3 +104,28 @@ Para detener el contenedor Docker, ejecuta el siguiente comando:
 ```
 docker-compose down
 ```
+
+## Nuevas Funcionalidades Añadidas
+
+### Integración de TailwindCSS
+
+Hemos integrado TailwindCSS en el proyecto para facilitar el diseño y la estilización de los componentes de React.
+
+### Rutas en el Frontend
+
+Hemos configurado las rutas utilizando **react-router-dom** para gestionar diferentes vistas en la aplicación:
+
+- Una ruta para ver la lista de candidatos.
+- Una ruta para añadir un nuevo candidato.
+
+### Configuración del Backend
+
+Hemos configurado el backend utilizando Express y Prisma:
+
+- **Configuración de CORS:** Configuramos CORS para permitir la comunicación entre el frontend y el backend.
+- **Endpoints:**- Añadimos endpoints para obtener la lista de candidatos y para añadir un nuevo candidato.
+- **Controladores:** Implementamos controladores para manejar la lógica de añadir y obtener candidatos.
+
+###Integración de Prisma
+
+Estamos utilizando Prisma como ORM para interactuar con la base de datos, facilitando las operaciones CRUD sobre los candidatos.
