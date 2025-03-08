@@ -1,4 +1,4 @@
-#PROMPTS INICIALES LPS
+#PROMPTS INICIALES LPS 
 
 <!-- CREDENCIALES USER ADMIN -->
 <!-- USER: admin@example.com -->
