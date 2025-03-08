@@ -277,3 +277,22 @@ Los Mensajes tipo toaster se muestran correctamente.
 # Prompt 7
 Añadimos ahora un nuevo criterio de aceptación:
 Accesibilidad y compatibilidad: La funcionalidad debe ser accesible y compatible con diferentes dispositivos y navegadores web.
+
+# Verificación:
+No todos las resoluciones estan implementadas correctamente.
+
+# Prompt 8
+El botón View Profile no hace nada quítalo. 
+
+# Prompt 9
+Añadimos ahora un nuevo criterio de aceptación:
+Crea una bateria de Test con @Playwright que cubra los casos de uso que hemos implementado. 
+1- Crear editar y eliminar Candidatos.
+2- Crear editar y eliminar Procesos.
+3- Cargar y descargar PDF y Dcoumentos Word.
+
+# Verificación:
+Añade a .gitignore los resultados de los tests
+
+# Prompt 10
+Crea un nuevo README_ICC.md con las instrucciones para ejecutar la aplicación, la bateria de pruebas asi como dónde ver los resultados de éstas y la descripción del proyecto y sus funcionalidades.

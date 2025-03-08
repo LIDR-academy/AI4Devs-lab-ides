@@ -1,0 +1,207 @@
+# LTI Talent Tracking System
+
+## Descripción del Proyecto
+El LTI Talent Tracking System es una aplicación web diseñada para ayudar a los reclutadores a gestionar candidatos y procesos de selección de manera eficiente. La aplicación está construida con tecnologías modernas y sigue las mejores prácticas de desarrollo y accesibilidad.
+
+### Características Principales
+- **Gestión de Candidatos**
+  - Crear, editar y eliminar perfiles de candidatos
+  - Gestionar CV en formatos PDF y DOCX
+  - Seguimiento de información profesional y académica
+  - Sistema de notificaciones para acciones importantes
+
+- **Gestión de Procesos de Selección**
+  - Crear y gestionar procesos de selección
+  - Seguimiento de etapas del proceso
+  - Asignación de candidatos a procesos
+  - Actualización de estados y seguimiento
+
+- **Sistema de Usuarios**
+  - Roles diferenciados (Admin, Recruiter)
+  - Gestión de permisos basada en roles
+  - Interfaz personalizada según el rol
+
+### Tecnologías Utilizadas
+- Frontend:
+  - React con TypeScript
+  - TailwindCSS para estilos
+  - React Router para navegación
+  - Contextos para gestión de estado
+
+- Testing:
+  - Playwright para pruebas E2E
+  - Pruebas de componentes
+  - Pruebas de integración
+
+## Instalación y Configuración
+
+### Requisitos Previos
+- Node.js 18 o superior
+- npm o yarn
+- Git
+
+### Pasos de Instalación
+
+1. Clonar el repositorio:
+```bash
+git clone <repository-url>
+cd AI4Devs-lab-ides
+```
+
+2. Instalar dependencias:
+```bash
+# Instalar dependencias del proyecto
+npm install
+
+# Instalar Playwright y sus dependencias
+npm install --save-dev @playwright/test @types/node
+npx playwright install --with-deps
+```
+
+3. Configurar variables de entorno:
+```bash
+cp .env.example .env
+# Editar .env con tus configuraciones
+```
+
+4. Iniciar la aplicación en modo desarrollo:
+```bash
+npm run dev
+```
+
+La aplicación estará disponible en `http://localhost:3000`
+
+## Ejecución de Pruebas
+
+### Preparación del Entorno de Pruebas
+
+1. Crear estructura de carpetas para pruebas:
+```bash
+mkdir -p tests/test-files tests/downloads
+```
+
+2. Crear archivos de prueba:
+```bash
+cd tests/test-files
+
+# Crear PDF de prueba
+echo "Test CV" > test-cv.pdf
+
+# Crear DOCX de prueba
+echo "Test CV" > test-cv.docx
+
+# Crear archivo de texto para pruebas de validación
+echo "Invalid file" > invalid.txt
+
+# Crear archivo grande para pruebas (6MB)
+fsutil file createnew large-file.pdf 6291456
+```
+
+### Ejecutar Pruebas
+
+1. Ejecutar todas las pruebas:
+```bash
+npx playwright test
+```
+
+2. Ejecutar pruebas específicas:
+```bash
+# Pruebas de candidatos
+npx playwright test tests/candidates.spec.ts
+
+# Pruebas de procesos
+npx playwright test tests/processes.spec.ts
+
+# Pruebas de documentos
+npx playwright test tests/documents.spec.ts
+```
+
+3. Ejecutar pruebas con interfaz visual:
+```bash
+npx playwright test --ui
+```
+
+### Visualización de Resultados
+
+1. Reporte HTML:
+- Después de ejecutar las pruebas, se genera automáticamente un reporte HTML
+- Abrir `playwright-report/index.html` en el navegador
+- El reporte incluye:
+  - Resumen de pruebas ejecutadas
+  - Detalles de pruebas fallidas
+  - Capturas de pantalla y trazas
+  - Tiempos de ejecución
+
+2. Resultados en consola:
+- Muestra resumen en tiempo real
+- Indica pruebas pasadas/fallidas
+- Muestra errores y stacktraces
+
+3. Modo UI:
+- Interfaz visual para depuración
+- Reproducción paso a paso
+- Inspección de elementos
+- Edición y re-ejecución de pruebas
+
+## Casos de Prueba Implementados
+
+### Gestión de Candidatos
+- Creación de nuevo candidato
+- Edición de candidato existente
+- Eliminación de candidato
+- Validación de campos obligatorios
+- Manejo de errores de validación
+
+### Gestión de Procesos
+- Creación de proceso de selección
+- Edición de proceso existente
+- Eliminación de proceso
+- Actualización de estado del proceso
+- Gestión de etapas del proceso
+- Validaciones de formulario
+
+### Gestión de Documentos
+- Carga de CV en PDF
+- Carga de CV en DOCX
+- Validación de tipos de archivo
+- Validación de tamaño máximo
+- Descarga de CV
+- Reemplazo de CV existente
+
+## Mejores Prácticas Implementadas
+
+### Accesibilidad
+- Atributos ARIA
+- Navegación por teclado
+- Mensajes descriptivos
+- Contraste de colores
+- Textos alternativos
+
+### Responsive Design
+- Diseño adaptativo
+- Breakpoints para diferentes dispositivos
+- Optimización móvil
+- Pruebas en múltiples resoluciones
+
+### Seguridad
+- Validación de entrada
+- Manejo seguro de archivos
+- Protección de rutas
+- Gestión de sesiones
+
+## Soporte y Contribución
+
+### Reportar Problemas
+- Usar el sistema de issues
+- Incluir pasos para reproducir
+- Adjuntar capturas de pantalla
+- Especificar entorno
+
+### Contribuir
+- Fork del repositorio
+- Crear branch descriptiva
+- Seguir guía de estilo
+- Crear Pull Request
+
+## Licencia
+[Especificar licencia] 
