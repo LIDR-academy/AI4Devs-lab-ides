@@ -14,7 +14,156 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  role      Role     @default(RECRUITER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  RECRUITER
+  HIRING_MANAGER
+  INTERVIEWER
+  READONLY
+}
+
+model Candidate {
+  id                Int              @id @default(autoincrement())
+  firstName         String
+  lastName          String
+  email             String           @unique
+  phone             String
+  address           String?
+  city              String?
+  state             String?
+  postalCode        String?
+  country           String?
+  currentPosition   String?
+  currentCompany    String?
+  yearsOfExperience Int?
+  notes             String?
+  
+  skills            CandidateSkill[]
+  educations        Education[]
+  experiences       WorkExperience[]
+  documents         Document[]
+  candidateTags     CandidateTag[]
+  
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+}
+
+enum SkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+model Skill {
+  id               Int              @id @default(autoincrement())
+  name             String           @unique
+  category         String?
+  candidateSkills  CandidateSkill[]
+  
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+}
+
+model CandidateSkill {
+  id             Int        @id @default(autoincrement())
+  candidate      Candidate  @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateId    Int
+  skill          Skill      @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  skillId        Int
+  level          SkillLevel @default(INTERMEDIATE)
+  
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  
+  @@unique([candidateId, skillId])
+}
+
+model Education {
+  id           Int       @id @default(autoincrement())
+  candidate    Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateId  Int
+  
+  institution  String
+  degree       String
+  startDate    DateTime
+  endDate      DateTime?
+  current      Boolean   @default(false)
+  description  String?
+  
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model WorkExperience {
+  id           Int       @id @default(autoincrement())
+  candidate    Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateId  Int
+  
+  company      String
+  position     String
+  startDate    DateTime
+  endDate      DateTime?
+  current      Boolean   @default(false)
+  description  String?
+  
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+enum DocumentType {
+  RESUME
+  COVER_LETTER
+  PORTFOLIO
+  CERTIFICATION
+  REFERENCE
+  OTHER
+}
+
+model Document {
+  id           Int          @id @default(autoincrement())
+  candidate    Candidate    @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateId  Int
+  
+  type         DocumentType
+  name         String
+  filename     String
+  url          String
+  fileSize     Int?
+  contentType  String?
+  isActive     Boolean      @default(true)
+  
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model Tag {
+  id            Int           @id @default(autoincrement())
+  name          String        @unique
+  color         String?
+  candidateTags CandidateTag[]
+  
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model CandidateTag {
+  id          Int       @id @default(autoincrement())
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateId Int
+  tag         Tag       @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tagId       Int
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@unique([candidateId, tagId])
 }
