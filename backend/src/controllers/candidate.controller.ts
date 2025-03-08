@@ -316,9 +316,18 @@ export const downloadCV = async (
 
     // Enviar el archivo
     const filePath = candidate.cvFileUrl;
-    const fileName = candidate.cvFilename;
-
-    res.download(filePath, fileName);
+    const fileName = candidate.cvFilename || 'cv.pdf';
+    
+    // Establecer el Content-Disposition header para indicar el nombre del archivo
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+    
+    // Establecer el Content-Type basado en el tipo de archivo
+    if (candidate.cvFileType) {
+      res.setHeader('Content-Type', candidate.cvFileType);
+    }
+    
+    // Enviar el archivo como respuesta
+    res.sendFile(path.resolve(filePath));
   } catch (error) {
     next(error);
   }

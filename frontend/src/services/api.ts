@@ -44,8 +44,45 @@ export const candidateApi = {
     };
     return axios.patch(`${API_URL}/candidates/${id}`, formData, config);
   },
-  downloadCV: (id: string) => {
-    window.open(`${API_URL}/candidates/${id}/cv`, '_blank');
+  downloadCV: async (id: string) => {
+    try {
+      // Usar axios con responseType blob para descargar el archivo
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API_URL}/candidates/${id}/cv`, {
+        responseType: 'blob',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      // Crear un objeto URL para el blob
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      
+      // Obtener el nombre del archivo del header Content-Disposition si está disponible
+      const contentDisposition = response.headers['content-disposition'];
+      let filename = 'cv.pdf'; // Nombre por defecto
+      
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+        if (filenameMatch && filenameMatch.length > 1) {
+          filename = filenameMatch[1];
+        }
+      }
+      
+      // Crear un elemento <a> temporal para descargar el archivo
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      
+      // Limpiar
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading CV:', error);
+      throw error;
+    }
   }
 };
 

@@ -90,9 +90,14 @@ const CandidateDetail: React.FC = () => {
     }
   };
 
-  const handleDownloadCV = () => {
+  const handleDownloadCV = async () => {
     if (id && candidate?.cvFilename) {
-      candidateApi.downloadCV(id);
+      try {
+        await candidateApi.downloadCV(id);
+      } catch (err) {
+        console.error('Error downloading CV:', err);
+        setError('Failed to download CV. Please try again.');
+      }
     }
   };
 

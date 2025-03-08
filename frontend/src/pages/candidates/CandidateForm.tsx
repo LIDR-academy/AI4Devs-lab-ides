@@ -189,9 +189,10 @@ const CandidateForm: React.FC = () => {
   const handleDownloadCV = async () => {
     if (isEditMode && id && currentCvFilename) {
       try {
-        window.open(`http://localhost:3010/api/candidates/${id}/cv`, '_blank');
+        await candidateApi.downloadCV(id);
       } catch (err) {
         console.error('Error downloading CV:', err);
+        setApiError('Failed to download CV. Please try again.');
       }
     }
   };
