@@ -1,26 +1,64 @@
-import { Request, Response, NextFunction } from 'express';
-import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
+import express from 'express';
+import fs from 'fs';
+import path from 'path';
 
+// Import application components
+import { CandidateService } from './application/candidate';
+import { CandidateRepository } from './infrastructure/candidate';
+import { FileService } from './infrastructure/file.service';
+import {
+  CandidateController,
+  configureCandidateRoutes,
+} from './presentation/candidate';
+import { configureMiddleware } from './presentation/middleware';
+
+// Load environment variables
 dotenv.config();
-const prisma = new PrismaClient();
 
+// Initialize Express app
 export const app = express();
-export default prisma;
+const port = process.env.PORT || 3010;
 
-const port = 3010;
+// Initialize Prisma client
+export const prisma = new PrismaClient();
 
+// Ensure upload directories exist
+const uploadDir = path.join(__dirname, '../uploads');
+const tempDir = path.join(__dirname, '../temp');
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+if (!fs.existsSync(tempDir)) {
+  fs.mkdirSync(tempDir, { recursive: true });
+}
+
+// Configure middleware
+configureMiddleware(app);
+
+// Initialize services and controllers
+const fileService = new FileService();
+const candidateRepository = new CandidateRepository(prisma);
+const candidateService = new CandidateService(candidateRepository, fileService);
+const candidateController = new CandidateController(candidateService);
+
+// Configure routes
+configureCandidateRoutes(app, candidateController);
+
+// Root route
 app.get('/', (req, res) => {
-  res.send('Hola LTI!');
+  res.send('LTI Candidate Management System API');
 });
 
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
-  res.type('text/plain'); 
-  res.status(500).send('Something broke!');
-});
+// Start the server
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => {
+    console.log(`Server is running at http://localhost:${port}`);
+  });
+}
 
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
-});
+// Export for testing
+export default app;

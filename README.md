@@ -28,6 +28,7 @@ El frontend es una aplicación React y sus archivos principales están ubicados 
 ### Backend
 
 El backend es una aplicación Express escrita en TypeScript.
+
 - El directorio `src` contiene el código fuente
 - El directorio `prisma` contiene el esquema de Prisma.
 
@@ -37,6 +38,7 @@ Para comenzar con este proyecto, sigue estos pasos:
 
 1. Clona el repositorio.
 2. Instala las dependencias para el frontend y el backend:
+
 ```sh
 cd frontend
 npm install
@@ -44,23 +46,30 @@ npm install
 cd ../backend
 npm install
 ```
+
 3. Construye el servidor backend:
+
 ```
 cd backend
 npm run build
-````
+```
+
 4. Inicia el servidor backend:
+
 ```
 cd backend
-npm run dev 
+npm run dev
 ```
 
 5. En una nueva ventana de terminal, construye el servidor frontend:
+
 ```
 cd frontend
 npm run build
 ```
+
 6. Inicia el servidor frontend:
+
 ```
 cd frontend
 npm start
@@ -75,21 +84,25 @@ Este proyecto usa Docker para ejecutar una base de datos PostgreSQL. Así es có
 Instala Docker en tu máquina si aún no lo has hecho. Puedes descargarlo desde aquí.
 Navega al directorio raíz del proyecto en tu terminal.
 Ejecuta el siguiente comando para iniciar el contenedor Docker:
+
 ```
 docker-compose up -d
 ```
+
 Esto iniciará una base de datos PostgreSQL en un contenedor Docker. La bandera -d corre el contenedor en modo separado, lo que significa que se ejecuta en segundo plano.
 
 Para acceder a la base de datos PostgreSQL, puedes usar cualquier cliente PostgreSQL con los siguientes detalles de conexión:
- - Host: localhost
- - Port: 5432
- - User: postgres
- - Password: password
- - Database: mydatabase
+
+- Host: localhost
+- Port: 5432
+- User: postgres
+- Password: password
+- Database: mydatabase
 
 Por favor, reemplaza User, Password y Database con el usuario, la contraseña y el nombre de la base de datos reales especificados en tu archivo .env.
 
 Para detener el contenedor Docker, ejecuta el siguiente comando:
+
 ```
 docker-compose down
 ```

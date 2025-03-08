@@ -1,0 +1,42 @@
+{
+  "name": "candidate-management-system",
+  "version": "1.0.0",
+  "description": "LTI - Recruiting Talent Tracking System",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "start": "cd frontend && npm start",
+    "start:backend": "cd backend && npm run start",
+    "start:frontend": "cd frontend && npm run start",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run start",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "build": "npm run build:backend && npm run build:frontend",
+    "test:backend": "cd backend && npm run test",
+    "test:frontend": "cd frontend && npm run test",
+    "test": "npm run test:backend && npm run test:frontend",
+    "prisma:generate": "cd backend && npm run prisma:generate",
+    "prisma:seed": "cd backend && npm run prisma:seed"
+  },
+  "keywords": [
+    "recruitment",
+    "candidates",
+    "nodejs",
+    "react",
+    "typescript"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-router-dom": "^7.3.0"
+  }
+}
