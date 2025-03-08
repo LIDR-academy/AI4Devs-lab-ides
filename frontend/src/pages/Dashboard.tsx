@@ -95,14 +95,6 @@ const Dashboard: React.FC = () => {
                     </Link>
                   </>
                 )}
-                <button
-                  type="button"
-                  className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-full justify-center"
-                  aria-label="View Profile"
-                  tabIndex={0}
-                >
-                  View Profile
-                </button>
               </dd>
             </dl>
           </div>
