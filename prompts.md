@@ -190,3 +190,90 @@ Contraseña: 12345aA!
 El reclutador puede crear y editar candidatos.
 El formulario tiene los campos que se han pedido.
 Las validaciones funcionan.
+
+
+# Prompt 5
+Añadimos ahora un nuevo criterio de aceptación:
+Carga de documentos: El reclutador debe tener la opción de cargar el CV del candidato en formato PDF o DOCX.
+
+# Respuesta 5
+
+¡Perfecto! He implementado la funcionalidad para cargar el CV del candidato en formato PDF o DOCX. Aquí está un resumen de los cambios realizados:
+Backend
+Actualización del modelo de datos en Prisma:
+Añadí campos para almacenar información del CV: cvFilename, cvFileUrl, cvFileType y cvUploadedAt
+Middleware para la carga de archivos:
+Implementé un middleware usando Multer para gestionar la carga de archivos
+Configuré filtros para permitir solo archivos PDF y DOCX
+Establecí un límite de tamaño de 5MB para los archivos
+Controlador de candidatos actualizado:
+Añadí soporte para la carga de CV al crear o actualizar un candidato
+Implementé una ruta para descargar el CV de un candidato
+Añadí lógica para eliminar el archivo del CV cuando se actualiza o elimina un candidato
+Rutas actualizadas:
+Configuré las rutas para usar el middleware de carga de archivos
+Añadí una nueva ruta para descargar el CV
+Frontend
+Formulario de candidatos actualizado:
+Añadí un campo para cargar el CV
+Implementé validación para asegurar que solo se acepten archivos PDF o DOCX con un tamaño máximo de 5MB
+Añadí opciones para ver, descargar o eliminar el CV
+Servicio de API actualizado:
+Añadí métodos para manejar la carga de archivos con FormData
+Implementé un método para descargar el CV
+Componente de detalle de candidato actualizado:
+Mostré información sobre el CV cargado
+Añadí un botón para descargar el CV
+
+# Instrucciones
+BE:
+npx prisma migrate dev --name add_cv_fields
+npm install multer uuid
+
+FE: Nada
+
+## Verificación:
+Tengo un error al descargar el pdf. 
+{"status":"fail","message":"You are not logged in. Please log in to get access."}
+
+# Prompt 6
+Añadimos ahora un nuevo criterio de aceptación:
+Confirmación de añadido: Una vez completado el formulario y enviada la información, debe aparecer un mensaje de confirmación indicando que el candidato ha sido añadido exitosamente al sistema.
+Errores y manejo de excepciones: En caso de error (por ejemplo, fallo en la conexión con el servidor), el sistema debe mostrar un mensaje adecuado al usuario para informarle del problema.
+
+# Respuesta 6
+¡Perfecto! He implementado los nuevos criterios de aceptación para mejorar la experiencia del usuario con mensajes de confirmación y manejo de errores. Aquí está un resumen de los cambios realizados:
+1. Sistema de Notificaciones
+He creado un sistema completo de notificaciones que incluye:
+Componente de Notificación: Un componente reutilizable que muestra mensajes de diferentes tipos (éxito, error, información, advertencia) con estilos visuales distintos.
+Contexto de Notificaciones: Un contexto de React que gestiona el estado de las notificaciones en toda la aplicación, permitiendo mostrar y ocultar notificaciones desde cualquier componente.
+Animaciones: Añadí una animación de fade-in para que las notificaciones aparezcan suavemente, mejorando la experiencia del usuario.
+2. Mensajes de Confirmación
+He implementado mensajes de confirmación en los siguientes casos:
+Añadir Candidato: Cuando se añade un candidato exitosamente, se muestra un mensaje de confirmación antes de redirigir al usuario a la lista de candidatos.
+Actualizar Candidato: Cuando se actualiza un candidato, se muestra un mensaje de confirmación.
+Eliminar Candidato: Cuando se elimina un candidato, se muestra un mensaje de confirmación.
+Descargar CV: Cuando se descarga el CV de un candidato, se muestra un mensaje de confirmación.
+3. Manejo de Errores
+He mejorado el manejo de errores en toda la aplicación:
+Errores de Validación: Se muestran mensajes de error específicos para cada campo del formulario cuando no se cumplen los requisitos.
+Errores de API: Cuando ocurre un error al comunicarse con el servidor, se muestra un mensaje de error descriptivo.
+Errores de Carga de Archivos: Se muestran mensajes de error específicos para problemas con la carga de archivos (tipo de archivo no válido, tamaño excesivo, etc.).
+4. Integración en los Componentes Principales
+He integrado el sistema de notificaciones en:
+CandidateForm: Para mostrar mensajes de éxito y error al crear o actualizar candidatos.
+CandidateDetail: Para mostrar mensajes de éxito y error al eliminar candidatos o descargar CVs.
+Beneficios para el Usuario
+Estos cambios mejoran significativamente la experiencia del usuario:
+Retroalimentación Inmediata: El usuario recibe confirmación inmediata de que sus acciones han sido exitosas.
+Claridad en Errores: Cuando algo sale mal, el usuario recibe información clara sobre el problema.
+Consistencia Visual: Los mensajes tienen un estilo consistente en toda la aplicación.
+Experiencia No Intrusiva: Las notificaciones aparecen suavemente y desaparecen automáticamente después de un tiempo.
+Con estos cambios, hemos cumplido completamente los nuevos criterios de aceptación, mejorando la usabilidad y la experiencia del usuario en la aplicación.
+
+# Verificación:
+Los Mensajes tipo toaster se muestran correctamente.
+
+# Prompt 7
+Añadimos ahora un nuevo criterio de aceptación:
+Accesibilidad y compatibilidad: La funcionalidad debe ser accesible y compatible con diferentes dispositivos y navegadores web.

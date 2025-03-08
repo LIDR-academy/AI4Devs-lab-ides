@@ -20,6 +20,7 @@ const CandidateForm: React.FC = () => {
   const navigate = useNavigate();
   const isEditMode = !!id;
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const firstInputRef = useRef<HTMLInputElement>(null);
   const { showNotification } = useNotification();
 
   const [formData, setFormData] = useState<CandidateFormData>({
@@ -41,6 +42,13 @@ const CandidateForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(isEditMode);
   const [apiError, setApiError] = useState<string | null>(null);
+
+  // Focus on first input when form loads
+  useEffect(() => {
+    if (!isLoading && firstInputRef.current) {
+      firstInputRef.current.focus();
+    }
+  }, [isLoading]);
 
   useEffect(() => {
     if (isEditMode) {
@@ -78,6 +86,8 @@ const CandidateForm: React.FC = () => {
       };
 
       fetchCandidate();
+    } else {
+      setIsLoading(false);
     }
   }, [id, isEditMode, showNotification]);
 
@@ -144,6 +154,16 @@ const CandidateForm: React.FC = () => {
     
     if (!validateForm() || !validateFile(cvFile)) {
       showNotification('error', 'Please correct the errors in the form before submitting.');
+      
+      // Find the first error and focus on it
+      const errorFields = Object.keys(errors) as Array<keyof CandidateFormData>;
+      if (errorFields.length > 0) {
+        const firstErrorField = document.getElementById(errorFields[0]);
+        if (firstErrorField) {
+          firstErrorField.focus();
+        }
+      }
+      
       return;
     }
     
@@ -206,10 +226,19 @@ const CandidateForm: React.FC = () => {
     }
   };
 
+  // Handle keyboard navigation for the file upload button
+  const handleFileKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      fileInputRef.current?.click();
+    }
+  };
+
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-64">
+      <div className="flex justify-center items-center h-64" role="status" aria-live="polite">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <span className="sr-only">Loading...</span>
       </div>
     );
   }
@@ -231,34 +260,38 @@ const CandidateForm: React.FC = () => {
       </div>
 
       {apiError && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4" role="alert">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4" role="alert" aria-live="assertive">
           <p>{apiError}</p>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
+      <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data" noValidate>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* First Name */}
           <div>
             <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
-              First Name <span className="text-red-500">*</span>
+              First Name <span className="text-red-500" aria-hidden="true">*</span>
+              <span className="sr-only">(required)</span>
             </label>
             <input
               type="text"
               id="firstName"
               name="firstName"
+              ref={firstInputRef}
               value={formData.firstName}
               onChange={handleChange}
               className={`mt-1 block w-full border ${
                 errors.firstName ? 'border-red-500' : 'border-gray-300'
               } rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
               aria-label="First Name"
-              tabIndex={0}
+              aria-required="true"
               aria-invalid={!!errors.firstName}
               aria-describedby={errors.firstName ? 'firstName-error' : undefined}
+              autoComplete="given-name"
+              tabIndex={0}
             />
             {errors.firstName && (
-              <p className="mt-2 text-sm text-red-600" id="firstName-error">
+              <p className="mt-2 text-sm text-red-600" id="firstName-error" role="alert">
                 {errors.firstName}
               </p>
             )}
@@ -267,7 +300,8 @@ const CandidateForm: React.FC = () => {
           {/* Last Name */}
           <div>
             <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
-              Last Name <span className="text-red-500">*</span>
+              Last Name <span className="text-red-500" aria-hidden="true">*</span>
+              <span className="sr-only">(required)</span>
             </label>
             <input
               type="text"
@@ -279,12 +313,14 @@ const CandidateForm: React.FC = () => {
                 errors.lastName ? 'border-red-500' : 'border-gray-300'
               } rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
               aria-label="Last Name"
-              tabIndex={0}
+              aria-required="true"
               aria-invalid={!!errors.lastName}
               aria-describedby={errors.lastName ? 'lastName-error' : undefined}
+              autoComplete="family-name"
+              tabIndex={0}
             />
             {errors.lastName && (
-              <p className="mt-2 text-sm text-red-600" id="lastName-error">
+              <p className="mt-2 text-sm text-red-600" id="lastName-error" role="alert">
                 {errors.lastName}
               </p>
             )}
@@ -293,7 +329,8 @@ const CandidateForm: React.FC = () => {
           {/* Email */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email <span className="text-red-500">*</span>
+              Email <span className="text-red-500" aria-hidden="true">*</span>
+              <span className="sr-only">(required)</span>
             </label>
             <input
               type="email"
@@ -305,12 +342,14 @@ const CandidateForm: React.FC = () => {
                 errors.email ? 'border-red-500' : 'border-gray-300'
               } rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
               aria-label="Email"
-              tabIndex={0}
+              aria-required="true"
               aria-invalid={!!errors.email}
               aria-describedby={errors.email ? 'email-error' : undefined}
+              autoComplete="email"
+              tabIndex={0}
             />
             {errors.email && (
-              <p className="mt-2 text-sm text-red-600" id="email-error">
+              <p className="mt-2 text-sm text-red-600" id="email-error" role="alert">
                 {errors.email}
               </p>
             )}
@@ -329,6 +368,7 @@ const CandidateForm: React.FC = () => {
               onChange={handleChange}
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               aria-label="Phone"
+              autoComplete="tel"
               tabIndex={0}
             />
           </div>
@@ -346,6 +386,7 @@ const CandidateForm: React.FC = () => {
               onChange={handleChange}
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               aria-label="Address"
+              autoComplete="street-address"
               tabIndex={0}
             />
           </div>
@@ -365,14 +406,18 @@ const CandidateForm: React.FC = () => {
                 accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                 className="sr-only"
                 aria-label="Upload CV"
-                tabIndex={0}
+                tabIndex={-1} // Hidden from tab order since we're using a custom button
               />
-              <label
-                htmlFor="cv"
-                className="relative cursor-pointer bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
+              <div
+                role="button"
+                tabIndex={0}
+                onKeyDown={handleFileKeyDown}
+                onClick={() => fileInputRef.current?.click()}
+                className="relative cursor-pointer bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                aria-controls="cv"
               >
                 <span>{cvFile ? 'Change file' : 'Upload file'}</span>
-              </label>
+              </div>
               
               {(cvFile || currentCvFilename) && (
                 <div className="ml-3 flex items-center">
@@ -382,7 +427,7 @@ const CandidateForm: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleRemoveFile}
-                    className="ml-2 text-sm text-red-600 hover:text-red-800"
+                    className="ml-2 text-sm text-red-600 hover:text-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                     aria-label="Remove file"
                     tabIndex={0}
                   >
@@ -392,7 +437,7 @@ const CandidateForm: React.FC = () => {
                     <button
                       type="button"
                       onClick={handleDownloadCV}
-                      className="ml-2 text-sm text-blue-600 hover:text-blue-800"
+                      className="ml-2 text-sm text-blue-600 hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                       aria-label="Download CV"
                       tabIndex={0}
                     >
@@ -403,7 +448,7 @@ const CandidateForm: React.FC = () => {
               )}
             </div>
             {fileError && (
-              <p className="mt-2 text-sm text-red-600">
+              <p className="mt-2 text-sm text-red-600" role="alert">
                 {fileError}
               </p>
             )}
@@ -492,11 +537,12 @@ const CandidateForm: React.FC = () => {
             className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             disabled={isSubmitting}
             aria-label={isEditMode ? 'Update Candidate' : 'Add Candidate'}
+            aria-busy={isSubmitting}
             tabIndex={0}
           >
             {isSubmitting ? (
               <div className="flex items-center">
-                <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></div>
+                <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2" aria-hidden="true"></div>
                 <span>{isEditMode ? 'Updating...' : 'Adding...'}</span>
               </div>
             ) : (
