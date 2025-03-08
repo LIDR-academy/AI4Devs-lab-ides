@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { candidateApi, selectionProcessApi } from '../../services/api';
+import { useNotification } from '../../contexts/NotificationContext';
 
 interface Candidate {
   id: string;
@@ -46,6 +47,7 @@ interface ProcessStage {
 const CandidateDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { showNotification } = useNotification();
   const [candidate, setCandidate] = useState<Candidate | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -60,7 +62,9 @@ const CandidateDetail: React.FC = () => {
         setCandidate(response.data.data.candidate);
         setError(null);
       } catch (err) {
-        setError('Failed to fetch candidate details. Please try again later.');
+        const errorMessage = 'Failed to fetch candidate details. Please try again later.';
+        setError(errorMessage);
+        showNotification('error', errorMessage);
         console.error('Error fetching candidate:', err);
       } finally {
         setIsLoading(false);
@@ -70,7 +74,7 @@ const CandidateDetail: React.FC = () => {
     if (id) {
       fetchCandidate();
     }
-  }, [id]);
+  }, [id, showNotification]);
 
   const handleDelete = async () => {
     if (!id) return;
@@ -78,12 +82,14 @@ const CandidateDetail: React.FC = () => {
     try {
       setIsDeleting(true);
       await candidateApi.delete(id);
+      showNotification('success', 'Candidate has been deleted successfully.');
       navigate('/candidates');
     } catch (err: any) {
-      setError(
-        err.response?.data?.message || 
-        'Failed to delete candidate. They may have active selection processes.'
-      );
+      const errorMessage = err.response?.data?.message || 
+        'Failed to delete candidate. They may have active selection processes.';
+      
+      setError(errorMessage);
+      showNotification('error', errorMessage);
       setDeleteModalOpen(false);
     } finally {
       setIsDeleting(false);
@@ -94,9 +100,12 @@ const CandidateDetail: React.FC = () => {
     if (id && candidate?.cvFilename) {
       try {
         await candidateApi.downloadCV(id);
+        showNotification('success', 'CV downloaded successfully.');
       } catch (err) {
+        const errorMessage = 'Failed to download CV. Please try again.';
         console.error('Error downloading CV:', err);
-        setError('Failed to download CV. Please try again.');
+        setError(errorMessage);
+        showNotification('error', errorMessage);
       }
     }
   };

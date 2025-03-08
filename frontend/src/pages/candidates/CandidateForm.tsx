@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { candidateApi } from '../../services/api';
+import { useNotification } from '../../contexts/NotificationContext';
 
 interface CandidateFormData {
   firstName: string;
@@ -19,6 +20,7 @@ const CandidateForm: React.FC = () => {
   const navigate = useNavigate();
   const isEditMode = !!id;
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { showNotification } = useNotification();
 
   const [formData, setFormData] = useState<CandidateFormData>({
     firstName: '',
@@ -66,7 +68,9 @@ const CandidateForm: React.FC = () => {
           
           setApiError(null);
         } catch (err) {
-          setApiError('Failed to fetch candidate data. Please try again.');
+          const errorMessage = 'Failed to fetch candidate data. Please try again.';
+          setApiError(errorMessage);
+          showNotification('error', errorMessage);
           console.error('Error fetching candidate:', err);
         } finally {
           setIsLoading(false);
@@ -75,7 +79,7 @@ const CandidateForm: React.FC = () => {
 
       fetchCandidate();
     }
-  }, [id, isEditMode]);
+  }, [id, isEditMode, showNotification]);
 
   const validateForm = () => {
     const newErrors: Partial<CandidateFormData> = {};
@@ -139,6 +143,7 @@ const CandidateForm: React.FC = () => {
     e.preventDefault();
     
     if (!validateForm() || !validateFile(cvFile)) {
+      showNotification('error', 'Please correct the errors in the form before submitting.');
       return;
     }
     
@@ -161,16 +166,19 @@ const CandidateForm: React.FC = () => {
       
       if (isEditMode) {
         await candidateApi.updateWithFile(id, formDataToSend);
+        showNotification('success', `Candidate ${formData.firstName} ${formData.lastName} has been updated successfully.`);
       } else {
         await candidateApi.createWithFile(formDataToSend);
+        showNotification('success', `Candidate ${formData.firstName} ${formData.lastName} has been added successfully.`);
       }
       
       navigate('/candidates');
     } catch (err: any) {
-      setApiError(
-        err.response?.data?.message || 
-        `Failed to ${isEditMode ? 'update' : 'create'} candidate. Please try again.`
-      );
+      const errorMessage = err.response?.data?.message || 
+        `Failed to ${isEditMode ? 'update' : 'create'} candidate. Please try again.`;
+      
+      setApiError(errorMessage);
+      showNotification('error', errorMessage);
       console.error(`Error ${isEditMode ? 'updating' : 'creating'} candidate:`, err);
     } finally {
       setIsSubmitting(false);
@@ -193,6 +201,7 @@ const CandidateForm: React.FC = () => {
       } catch (err) {
         console.error('Error downloading CV:', err);
         setApiError('Failed to download CV. Please try again.');
+        showNotification('error', 'Failed to download CV. Please try again.');
       }
     }
   };
