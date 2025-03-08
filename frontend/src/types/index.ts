@@ -18,6 +18,8 @@ export interface Candidate {
   cv?: File | null;
   notes?: string;
   tags: Tag[];
+  createdAt?: string;
+  status?: string;
 }
 
 export enum SkillLevel {

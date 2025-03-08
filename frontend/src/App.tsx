@@ -4,9 +4,15 @@ import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+// Componentes de autenticación
+import ProtectedRoute from './components/auth/ProtectedRoute';
+
 // Páginas
 import Dashboard from './pages/Dashboard';
 import AddCandidate from './pages/AddCandidate';
+import CandidateListPage from './pages/CandidateListPage';
+import Login from './pages/Login';
+import { isAuthenticated } from './services/authService';
 
 // Tema de la aplicación
 const theme = createTheme({
@@ -30,9 +36,7 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: 8,
           textTransform: 'none',
-          fontWeight: 600,
         },
       },
     },
@@ -43,14 +47,48 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <ToastContainer position="top-right" autoClose={5000} />
       <Router>
         <Routes>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/candidates/add" element={<AddCandidate />} />
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          {/* Rutas públicas */}
+          <Route 
+            path="/login" 
+            element={isAuthenticated() ? <Navigate to="/dashboard" /> : <Login />} 
+          />
+          
+          {/* Rutas protegidas */}
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/candidates/add" 
+            element={
+              <ProtectedRoute>
+                <AddCandidate />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/candidates" 
+            element={
+              <ProtectedRoute>
+                <CandidateListPage />
+              </ProtectedRoute>
+            } 
+          />
+          
+          {/* Redirección por defecto */}
+          <Route 
+            path="*" 
+            element={isAuthenticated() ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} 
+          />
         </Routes>
       </Router>
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} closeOnClick pauseOnHover />
     </ThemeProvider>
   );
 }

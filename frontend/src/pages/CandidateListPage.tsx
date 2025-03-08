@@ -1,17 +1,17 @@
 import React from 'react';
 import { Container } from '@mui/material';
-import CandidateForm from '../components/recruiter/CandidateForm';
+import CandidateList from '../components/recruiter/CandidateList';
 import Navbar from '../components/common/Navbar';
 
-const AddCandidate: React.FC = () => {
+const CandidateListPage: React.FC = () => {
   return (
     <>
       <Navbar />
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <CandidateForm />
+        <CandidateList />
       </Container>
     </>
   );
 };
 
-export default AddCandidate; 
+export default CandidateListPage; 

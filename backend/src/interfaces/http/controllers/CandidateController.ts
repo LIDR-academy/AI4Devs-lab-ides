@@ -1,9 +1,18 @@
 import { Request, Response } from 'express';
 import { CreateCandidateUseCase } from '../../../application/use-cases/candidate/CreateCandidateUseCase';
 import { AppError } from '../middleware/errorHandlerMiddleware';
+import { PrismaCandidateRepository } from '../../../infrastructure/persistence/PrismaCandidateRepository';
+import { PrismaClient } from '@prisma/client';
 
 export class CandidateController {
-  constructor(private createCandidateUseCase: CreateCandidateUseCase) {}
+  private candidateRepository: PrismaCandidateRepository;
+
+  constructor(
+    private createCandidateUseCase: CreateCandidateUseCase
+  ) {
+    // Inicializar el repositorio para poder usarlo en los métodos de listar
+    this.candidateRepository = new PrismaCandidateRepository(new PrismaClient());
+  }
 
   // Método para crear un candidato
   create = async (req: Request, res: Response): Promise<void> => {
@@ -152,8 +161,99 @@ export class CandidateController {
 
   // Método para listar todos los candidatos
   listAll = async (req: Request, res: Response): Promise<void> => {
-    // Simplificado para la prueba
-    res.status(200).json({ success: true, message: 'Función no implementada' });
+    try {
+      // Usar prisma directamente para obtener todos los candidatos con sus relaciones
+      const prisma = new PrismaClient();
+      
+      // @ts-ignore: Ignorar errores de tipo de Prisma temporalmente
+      const candidates = await prisma.candidate.findMany({
+        include: {
+          skills: {
+            include: {
+              skill: true
+            }
+          },
+          educations: true,
+          experiences: true,
+          candidateTags: {
+            include: {
+              tag: true
+            }
+          },
+          documents: true
+        }
+      });
+      
+      // Transformar los datos para la respuesta
+      // @ts-ignore: Ignorar errores de tipo temporalmente
+      const formattedCandidates = candidates.map(candidate => {
+        return {
+          id: candidate.id,
+          firstName: candidate.firstName,
+          lastName: candidate.lastName,
+          email: candidate.email,
+          phone: candidate.phone,
+          address: candidate.address,
+          city: candidate.city,
+          state: candidate.state,
+          postalCode: candidate.postalCode,
+          country: candidate.country,
+          currentPosition: candidate.currentPosition,
+          currentCompany: candidate.currentCompany,
+          yearsOfExperience: candidate.yearsOfExperience,
+          notes: candidate.notes,
+          createdAt: candidate.createdAt,
+          status: "Activo", // Campo estático por simplicidad
+          // @ts-ignore: Ignorar errores de tipo temporalmente
+          skills: candidate.skills.map(cs => ({
+            id: cs.skillId,
+            name: cs.skill.name,
+            category: cs.skill.category,
+            level: cs.level
+          })),
+          // @ts-ignore: Ignorar errores de tipo temporalmente
+          tags: candidate.candidateTags.map(ct => ({
+            id: ct.tagId,
+            name: ct.tag.name
+          })),
+          // @ts-ignore: Ignorar errores de tipo temporalmente
+          educations: candidate.educations.map(edu => ({
+            id: edu.id,
+            institution: edu.institution,
+            degree: edu.degree,
+            startDate: edu.startDate,
+            endDate: edu.endDate,
+            current: edu.current,
+            description: edu.description
+          })),
+          // @ts-ignore: Ignorar errores de tipo temporalmente
+          experiences: candidate.experiences.map(exp => ({
+            id: exp.id,
+            company: exp.company,
+            position: exp.position,
+            startDate: exp.startDate,
+            endDate: exp.endDate,
+            current: exp.current,
+            description: exp.description
+          }))
+        };
+      });
+      
+      // Devolver la respuesta exitosa con los candidatos
+      res.status(200).json({
+        success: true,
+        data: formattedCandidates,
+        message: 'Candidatos obtenidos con éxito'
+      });
+    } catch (error) {
+      console.error('Error al obtener candidatos:', error);
+      
+      // Manejo de errores
+      res.status(500).json({
+        success: false,
+        message: 'Error al obtener los candidatos'
+      });
+    }
   };
 
   // Método para actualizar un candidato

@@ -2,9 +2,12 @@ import { Router } from 'express';
 import { CandidateController } from '../controllers/CandidateController';
 import { CreateCandidateUseCase } from '../../../application/use-cases/candidate/CreateCandidateUseCase';
 import { PrismaCandidateRepository } from '../../../infrastructure/persistence/PrismaCandidateRepository';
+import { PrismaUserRepository } from '../../../infrastructure/persistence/PrismaUserRepository';
 import { PrismaClient } from '@prisma/client';
 import { validateCreateCandidate } from '../middleware/validationMiddleware';
 import { sanitizeInputs } from '../middleware/sanitizationMiddleware';
+import { authenticate, authorize } from '../middleware/authMiddleware';
+import { Role } from '../../../domain/models/User';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
@@ -53,6 +56,7 @@ export const candidateRouter = (prismaClient: PrismaClient): Router => {
 
   // Repositorios
   const candidateRepository = new PrismaCandidateRepository(prismaClient);
+  const userRepository = new PrismaUserRepository(prismaClient);
 
   // Casos de uso
   const createCandidateUseCase = new CreateCandidateUseCase(candidateRepository);
@@ -60,6 +64,13 @@ export const candidateRouter = (prismaClient: PrismaClient): Router => {
   // Controlador
   const candidateController = new CandidateController(createCandidateUseCase);
 
+  // Configuración de JWT
+  const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+
+  // Middleware de autenticación para todas las rutas
+  router.use(authenticate(userRepository, JWT_SECRET));
+
+  // Rutas protegidas por roles
   /**
    * @swagger
    * /api/candidates:
@@ -131,23 +142,14 @@ export const candidateRouter = (prismaClient: PrismaClient): Router => {
    *       500:
    *         description: Error del servidor
    */
-  router.post('/', upload.single('cv'), sanitizeInputs, validateCreateCandidate, candidateController.create);
-
-  /**
-   * @swagger
-   * /api/candidates:
-   *   get:
-   *     summary: Obtener todos los candidatos
-   *     tags: [Candidates]
-   *     security:
-   *       - bearerAuth: []
-   *     responses:
-   *       200:
-   *         description: Lista de candidatos
-   *       500:
-   *         description: Error del servidor
-   */
-  router.get('/', candidateController.listAll);
+  router.post(
+    '/', 
+    authorize([Role.ADMIN, Role.RECRUITER, Role.HIRING_MANAGER]), 
+    upload.single('cv'), 
+    sanitizeInputs, 
+    validateCreateCandidate, 
+    candidateController.create
+  );
 
   /**
    * @swagger
@@ -160,19 +162,38 @@ export const candidateRouter = (prismaClient: PrismaClient): Router => {
    *     parameters:
    *       - in: path
    *         name: id
+   *         required: true
    *         schema:
    *           type: integer
-   *         required: true
-   *         description: ID del candidato
    *     responses:
    *       200:
-   *         description: Datos del candidato
+   *         description: Candidato encontrado
    *       404:
    *         description: Candidato no encontrado
-   *       500:
-   *         description: Error del servidor
    */
-  router.get('/:id', candidateController.getById);
+  router.get(
+    '/:id', 
+    authorize([Role.ADMIN, Role.RECRUITER, Role.HIRING_MANAGER, Role.INTERVIEWER, Role.READONLY]), 
+    candidateController.getById
+  );
+
+  /**
+   * @swagger
+   * /api/candidates:
+   *   get:
+   *     summary: Obtener todos los candidatos
+   *     tags: [Candidates]
+   *     security:
+   *       - bearerAuth: []
+   *     responses:
+   *       200:
+   *         description: Lista de candidatos
+   */
+  router.get(
+    '/', 
+    authorize([Role.ADMIN, Role.RECRUITER, Role.HIRING_MANAGER, Role.INTERVIEWER, Role.READONLY]), 
+    candidateController.listAll
+  );
 
   /**
    * @swagger
@@ -185,38 +206,27 @@ export const candidateRouter = (prismaClient: PrismaClient): Router => {
    *     parameters:
    *       - in: path
    *         name: id
+   *         required: true
    *         schema:
    *           type: integer
-   *         required: true
-   *         description: ID del candidato
    *     requestBody:
    *       required: true
    *       content:
-   *         multipart/form-data:
+   *         application/json:
    *           schema:
    *             type: object
-   *             properties:
-   *               firstName:
-   *                 type: string
-   *               lastName:
-   *                 type: string
-   *               email:
-   *                 type: string
-   *                 format: email
-   *               phone:
-   *                 type: string
-   *               # ... (resto de los campos)
    *     responses:
    *       200:
-   *         description: Candidato actualizado con éxito
+   *         description: Candidato actualizado
    *       404:
    *         description: Candidato no encontrado
-   *       400:
-   *         description: Datos de entrada inválidos
-   *       500:
-   *         description: Error del servidor
    */
-  router.put('/:id', candidateController.update);
+  router.put(
+    '/:id', 
+    authorize([Role.ADMIN, Role.RECRUITER, Role.HIRING_MANAGER]), 
+    sanitizeInputs, 
+    candidateController.update
+  );
 
   /**
    * @swagger
@@ -229,19 +239,20 @@ export const candidateRouter = (prismaClient: PrismaClient): Router => {
    *     parameters:
    *       - in: path
    *         name: id
+   *         required: true
    *         schema:
    *           type: integer
-   *         required: true
-   *         description: ID del candidato
    *     responses:
    *       200:
-   *         description: Candidato eliminado con éxito
+   *         description: Candidato eliminado
    *       404:
    *         description: Candidato no encontrado
-   *       500:
-   *         description: Error del servidor
    */
-  router.delete('/:id', candidateController.delete);
+  router.delete(
+    '/:id', 
+    authorize([Role.ADMIN, Role.RECRUITER]), 
+    candidateController.delete
+  );
 
   return router;
 }; 

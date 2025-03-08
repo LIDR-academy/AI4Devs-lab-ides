@@ -7,7 +7,23 @@ export class PrismaCandidateRepository implements ICandidateRepository {
   constructor(private prisma: PrismaClient) {}
 
   async findAll(): Promise<Candidate[]> {
-    const prismaCandidates = await this.prisma.candidate.findMany();
+    const prismaCandidates = await this.prisma.candidate.findMany({
+      include: {
+        skills: {
+          include: {
+            skill: true
+          }
+        },
+        educations: true,
+        experiences: true,
+        candidateTags: {
+          include: {
+            tag: true
+          }
+        },
+        documents: true
+      }
+    });
     return prismaCandidates.map(prismaCandidate => 
       CandidateMapper.toDomain(prismaCandidate));
   }

@@ -207,4 +207,56 @@ export const handleValidationErrors = (req: Request, res: Response, next: NextFu
     });
   }
   next();
-}; 
+};
+
+// Validación para registro de usuarios
+export const validateRegister = [
+  body('email')
+    .trim()
+    .notEmpty().withMessage('El email es obligatorio')
+    .isEmail().withMessage('El formato de email no es válido')
+    .normalizeEmail(),
+  
+  body('password')
+    .notEmpty().withMessage('La contraseña es obligatoria')
+    .isLength({ min: 8 }).withMessage('La contraseña debe tener al menos 8 caracteres')
+    .matches(/[A-Z]/).withMessage('La contraseña debe contener al menos una letra mayúscula')
+    .matches(/[0-9]/).withMessage('La contraseña debe contener al menos un número')
+    .matches(/[^A-Za-z0-9]/).withMessage('La contraseña debe contener al menos un carácter especial'),
+  
+  body('name')
+    .optional({ checkFalsy: true })
+    .trim()
+    .isLength({ max: 100 }).withMessage('El nombre no puede exceder los 100 caracteres'),
+  
+  body('firstName')
+    .optional({ checkFalsy: true })
+    .trim()
+    .isLength({ max: 50 }).withMessage('El nombre no puede exceder los 50 caracteres'),
+  
+  body('lastName')
+    .optional({ checkFalsy: true })
+    .trim()
+    .isLength({ max: 50 }).withMessage('El apellido no puede exceder los 50 caracteres'),
+  
+  body('role')
+    .optional({ checkFalsy: true })
+    .isIn(['ADMIN', 'RECRUITER', 'HIRING_MANAGER', 'INTERVIEWER', 'READONLY'])
+    .withMessage('El rol debe ser uno de los siguientes: ADMIN, RECRUITER, HIRING_MANAGER, INTERVIEWER, READONLY'),
+  
+  handleValidationErrors
+];
+
+// Validación para login de usuarios
+export const validateLogin = [
+  body('email')
+    .trim()
+    .notEmpty().withMessage('El email es obligatorio')
+    .isEmail().withMessage('El formato de email no es válido')
+    .normalizeEmail(),
+  
+  body('password')
+    .notEmpty().withMessage('La contraseña es obligatoria'),
+  
+  handleValidationErrors
+]; 

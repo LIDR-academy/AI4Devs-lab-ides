@@ -8,6 +8,7 @@ import { RateLimiterMemory } from 'rate-limiter-flexible';
 
 // Importar rutas
 import { candidateRouter } from './interfaces/http/routes/candidateRoutes';
+import { authRouter } from './interfaces/http/routes/authRoutes';
 
 // Importar middlewares
 import { handleOperationalErrors, handleProgrammerErrors, AppError } from './interfaces/http/middleware/errorHandlerMiddleware';
@@ -54,9 +55,11 @@ app.use(rateLimiterMiddleware); // Limitar número de solicitudes
 // Middleware
 // Permitir CORS para desarrollo
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+  // Permitir solicitudes desde el frontend
+  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Credentials', 'true');
   
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -77,6 +80,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Rutas
 app.use('/api/candidates', candidateRouter(prisma));
+app.use('/api/auth', authRouter(prisma));
 
 // Ruta de bienvenida
 app.get('/', (req, res) => {

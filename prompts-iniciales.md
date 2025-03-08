@@ -1,5 +1,9 @@
 #PROMPTS INICIALES LPS
 
+<!-- CREDENCIALES USER ADMIN -->
+<!-- USER: admin@example.com -->
+<!-- PWD: Admin@123456 -->
+
 <!-- Hay muchos prompts. Pongo los más relevantes del princpio, que son para entender el proyecto y para preparar lo necesario para que funcione -->
 
 -Indexa el proyecto y estudia su estructura
@@ -86,3 +90,19 @@ Ahora vamos a desarrollar el ** backend necesario para la información ingresada
     - Lanzar la migración en PostgreSQL
     - Implementar endpoints API en el backend
     - Y dime qué otras tareas ves necesarias para 
+
+
+- Dime de que forma se puede asegurar la seguridad y privacidad de los datos del candidato
+
+- Vamos a empezar por implementar Seguridad en el Backend
+Validación rigurosa de inputs: Implementa validaciones tanto en el cliente como en el servidor para prevenir inyecciones SQL y ataques XSS.
+Sanitización de datos: Limpia todos los datos de entrada antes de procesarlos o almacenarlos.
+Manejo de errores seguro: Evita revelar información sensible en mensajes de error (como estás haciendo con el mensaje genérico de "Ya existe un candidato con el email").
+
+-vamos a seguir por añadir lo siguiente: 
+ Autenticación y Autorización
+* Sistema robusto de autenticación: Implementa JWT o OAuth 2.0 para gestionar sesiones.
+* Control de acceso basado en roles (RBAC): Define roles como "reclutador", "administrador", etc., con permisos específicos.
+* Políticas de contraseñas seguras: Requiere contraseñas complejas
+
+<!-- Iba a añadir más funcionalidades como la gestión de usuarios para que realmente nos aseguremos que el usuario que entra es RECLUTADOR, y para distinuir los que ve el admin y lo que ve un reclutador, pero tengo abandonada a mi familia, así que lo dejo aquñi porque he hechado muchas horas. Es increible todo lo que se puede hacer -->
