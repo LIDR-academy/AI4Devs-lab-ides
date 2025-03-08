@@ -135,6 +135,14 @@ The frontend follows the component design principles and React best practices ou
 - Content organization with cards
 - Skeleton loading states for async operations
 - Page templates for dashboard, lists, forms, and details
+- add Candidate has to open a popup that contains the form for insert the candicate
+- search has to be on the header on the right side
+- header e footer with the same color #ccc
+- Dashboard has to have
+  - Candidates received today
+  - Total Candidates
+  - Total Candidates
+  - Valuated Candidates
 
 ### Dashboard View
 
@@ -390,11 +398,6 @@ Please refer to the following documentation for detailed development standards:
    - Implement frontend optimizations
    - Verify scalability under load
 
+Ecco ti do un PROMPT controlla quello che abbiamo gia' e procedi a far funzionare tutta l'applicazione attualmente abbiamo
 
-
-
-
-- Candidati ricevuti oggi (inglese e deve essere la prima card)
-- metti tooltips sui bottoni di edit delete download CSV
-- rollover al mouse over e' terribile trova una soluzione piu' bella
-- la scrollbar continua a ed essere presnete quella principale la voglio solo per il body dentro.
+BACKJEND e LAYOUT FRONTEND ma potrebbero esserci delle parti mancanti

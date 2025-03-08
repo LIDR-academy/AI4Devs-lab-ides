@@ -2,23 +2,58 @@ import React, { useState } from "react"
 import "./App.css"
 import Layout from "./components/layout/Layout"
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "./components/ui/table"
+import { DataTable } from "./components/ui/data-table"
+
+// Aggiungiamo uno stile globale per rimuovere qualsiasi effetto di rollover
+const globalStyle = document.createElement("style")
+globalStyle.innerHTML = `
+  button.action-button:hover {
+    background-color: transparent !important;
+    opacity: 1 !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+`
+document.head.appendChild(globalStyle)
 
 function App() {
-  // Dati di esempio per i candidati
+  // Dati di esempio per i candidati con data di creazione
   const candidates = [
-    { id: 1, name: "John Smith", email: "js@mail.com", status: "PENDING" },
-    { id: 2, name: "Maria García", email: "mg@mail.com", status: "VALUATED" },
-    { id: 3, name: "Alex Johnson", email: "aj@mail.com", status: "PENDING" },
-    { id: 4, name: "Sarah Williams", email: "sw@mail.com", status: "VALUATED" },
-    { id: 5, name: "David Brown", email: "db@mail.com", status: "PENDING" },
+    {
+      id: 1,
+      name: "John Smith",
+      email: "js@mail.com",
+      status: "PENDING",
+      createdAt: "2023-03-05T10:30:00",
+    },
+    {
+      id: 2,
+      name: "Maria García",
+      email: "mg@mail.com",
+      status: "VALUATED",
+      createdAt: "2023-03-07T14:20:00",
+    },
+    {
+      id: 3,
+      name: "Alex Johnson",
+      email: "aj@mail.com",
+      status: "PENDING",
+      createdAt: "2023-03-06T09:15:00",
+    },
+    {
+      id: 4,
+      name: "Sarah Williams",
+      email: "sw@mail.com",
+      status: "VALUATED",
+      createdAt: "2023-03-08T11:45:00",
+    },
+    {
+      id: 5,
+      name: "David Brown",
+      email: "db@mail.com",
+      status: "PENDING",
+      createdAt: "2023-03-08T08:30:00",
+    },
   ]
 
   // Calcolo delle statistiche
@@ -42,6 +77,7 @@ function App() {
     border: "none",
     cursor: "pointer",
     position: "relative",
+    outline: "none",
   }
 
   // Stile per il bottone Add Candidate
@@ -75,6 +111,147 @@ function App() {
     zIndex: 10,
     marginBottom: "5px",
   }
+
+  // Funzione per formattare la data
+  const formatDate = (dateString) => {
+    const options = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }
+    return new Date(dateString).toLocaleDateString(undefined, options)
+  }
+
+  // Definizione delle colonne per la DataTable
+  const columns = [
+    {
+      accessorKey: "createdAt",
+      header: "Created At",
+      cell: ({ row }) => formatDate(row.createdAt),
+      defaultSort: "desc", // Indica che questa colonna è ordinata per default in modo discendente
+    },
+    {
+      accessorKey: "name",
+      header: "Name",
+    },
+    {
+      accessorKey: "email",
+      header: "Email",
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const status = row.status
+        return (
+          <span
+            style={{
+              padding: "4px 8px",
+              borderRadius: "4px",
+              fontSize: "12px",
+              fontWeight: "500",
+              backgroundColor: status === "PENDING" ? "#fef3c7" : "#d1fae5",
+              color: status === "PENDING" ? "#92400e" : "#065f46",
+            }}
+          >
+            {status}
+          </span>
+        )
+      },
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => {
+        const candidate = row
+        return (
+          <div style={{ display: "flex" }}>
+            {/* Edit button */}
+            <button
+              className="action-button"
+              style={actionButtonStyle}
+              onMouseEnter={() => setActiveTooltip(`edit-${candidate.id}`)}
+              onMouseLeave={() => setActiveTooltip(null)}
+            >
+              {activeTooltip === `edit-${candidate.id}` && (
+                <div style={tooltipStyle}>Edit</div>
+              )}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#3b82f6"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+            </button>
+
+            {/* Delete button */}
+            <button
+              className="action-button"
+              style={actionButtonStyle}
+              onMouseEnter={() => setActiveTooltip(`delete-${candidate.id}`)}
+              onMouseLeave={() => setActiveTooltip(null)}
+            >
+              {activeTooltip === `delete-${candidate.id}` && (
+                <div style={tooltipStyle}>Delete</div>
+              )}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#ef4444"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M3 6h18"></path>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
+
+            {/* Download CSV button */}
+            <button
+              className="action-button"
+              style={actionButtonStyle}
+              onMouseEnter={() => setActiveTooltip(`download-${candidate.id}`)}
+              onMouseLeave={() => setActiveTooltip(null)}
+            >
+              {activeTooltip === `download-${candidate.id}` && (
+                <div style={tooltipStyle}>Download CSV</div>
+              )}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#10b981"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+            </button>
+          </div>
+        )
+      },
+    },
+  ]
 
   return (
     <Layout>
@@ -188,133 +365,10 @@ function App() {
           </button>
         </div>
 
-        {/* Tabella dei candidati */}
+        {/* Tabella dei candidati con DataTable */}
         <Card>
-          <CardContent style={{ padding: "0" }}>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead style={{ width: "120px" }}></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {candidates.map((candidate) => (
-                  <TableRow key={candidate.id}>
-                    <TableCell>{candidate.name}</TableCell>
-                    <TableCell>{candidate.email}</TableCell>
-                    <TableCell>
-                      <span
-                        style={{
-                          padding: "4px 8px",
-                          borderRadius: "4px",
-                          fontSize: "12px",
-                          fontWeight: "500",
-                          backgroundColor:
-                            candidate.status === "PENDING"
-                              ? "#fef3c7"
-                              : "#d1fae5",
-                          color:
-                            candidate.status === "PENDING"
-                              ? "#92400e"
-                              : "#065f46",
-                        }}
-                      >
-                        {candidate.status}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <div style={{ display: "flex" }}>
-                        {/* Edit button */}
-                        <button
-                          style={actionButtonStyle}
-                          onMouseEnter={() =>
-                            setActiveTooltip(`edit-${candidate.id}`)
-                          }
-                          onMouseLeave={() => setActiveTooltip(null)}
-                        >
-                          {activeTooltip === `edit-${candidate.id}` && (
-                            <div style={tooltipStyle}>Edit</div>
-                          )}
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#3b82f6"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                          </svg>
-                        </button>
-
-                        {/* Delete button */}
-                        <button
-                          style={actionButtonStyle}
-                          onMouseEnter={() =>
-                            setActiveTooltip(`delete-${candidate.id}`)
-                          }
-                          onMouseLeave={() => setActiveTooltip(null)}
-                        >
-                          {activeTooltip === `delete-${candidate.id}` && (
-                            <div style={tooltipStyle}>Delete</div>
-                          )}
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#ef4444"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="M3 6h18"></path>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
-                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                          </svg>
-                        </button>
-
-                        {/* Download CSV button */}
-                        <button
-                          style={actionButtonStyle}
-                          onMouseEnter={() =>
-                            setActiveTooltip(`download-${candidate.id}`)
-                          }
-                          onMouseLeave={() => setActiveTooltip(null)}
-                        >
-                          {activeTooltip === `download-${candidate.id}` && (
-                            <div style={tooltipStyle}>Download CSV</div>
-                          )}
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#10b981"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                          </svg>
-                        </button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+          <CardContent>
+            <DataTable columns={columns} data={candidates} />
           </CardContent>
         </Card>
       </div>
