@@ -75,8 +75,39 @@
   }
 }
 
-body {
+/* Rimuove tutte le scrollbar dal documento principale */
+html,
+body,
+#root {
+  height: 100%;
   margin: 0;
+  padding: 0;
+  overflow: hidden !important;
+}
+
+/* Stili per il layout principale */
+.app-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden !important;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden !important;
+}
+
+/* Permette la scrollbar solo nel contenuto principale */
+.scrollable-content {
+  flex: 1;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;

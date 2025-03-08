@@ -1,47 +1,119 @@
-import { cva } from "class-variance-authority"
 import * as React from "react"
-import { cn } from "../../lib/utils"
-
-const buttonVariants = cva(
-  "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background",
-  {
-    variants: {
-      variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
-        destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline:
-          "border border-input hover:bg-accent hover:text-accent-foreground",
-        secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "underline-offset-4 hover:underline text-primary",
-      },
-      size: {
-        default: "h-10 py-2 px-4",
-        sm: "h-9 px-3 rounded-md",
-        lg: "h-11 px-8 rounded-md",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
-  }
-)
 
 const Button = React.forwardRef(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? React.Fragment : "button"
+  ({ variant = "default", size = "default", children, ...props }, ref) => {
+    // Base styles
+    const baseStyle = {
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: "6px",
+      fontSize: "14px",
+      fontWeight: "500",
+      transition: "all 0.2s",
+      cursor: "pointer",
+      outline: "none",
+      border: "none",
+    }
+
+    // Size variants
+    const sizeStyles = {
+      default: {
+        height: "40px",
+        padding: "0 16px",
+      },
+      sm: {
+        height: "36px",
+        padding: "0 12px",
+        fontSize: "13px",
+      },
+      lg: {
+        height: "44px",
+        padding: "0 32px",
+        fontSize: "15px",
+      },
+    }
+
+    // Variant styles
+    const variantStyles = {
+      default: {
+        backgroundColor: "#2563eb",
+        color: "white",
+        "&:hover": {
+          backgroundColor: "#1d4ed8",
+        },
+      },
+      destructive: {
+        backgroundColor: "#ef4444",
+        color: "white",
+        "&:hover": {
+          backgroundColor: "#dc2626",
+        },
+      },
+      outline: {
+        backgroundColor: "transparent",
+        border: "1px solid #e5e7eb",
+        color: "#374151",
+        "&:hover": {
+          backgroundColor: "#f3f4f6",
+          color: "#111827",
+        },
+      },
+      secondary: {
+        backgroundColor: "#f3f4f6",
+        color: "#374151",
+        "&:hover": {
+          backgroundColor: "#e5e7eb",
+          color: "#111827",
+        },
+      },
+      ghost: {
+        backgroundColor: "transparent",
+        color: "#374151",
+        "&:hover": {
+          backgroundColor: "#f3f4f6",
+          color: "#111827",
+        },
+      },
+      link: {
+        backgroundColor: "transparent",
+        color: "#2563eb",
+        padding: "0",
+        height: "auto",
+        textDecoration: "underline",
+        textUnderlineOffset: "4px",
+      },
+    }
+
+    // Combine styles based on props
+    const combinedStyle = {
+      ...baseStyle,
+      ...sizeStyles[size],
+      ...variantStyles[variant],
+      ...props.style,
+    }
+
+    // Handle hover state
+    const [isHovered, setIsHovered] = React.useState(false)
+    const hoverStyle =
+      isHovered && variantStyles[variant]["&:hover"]
+        ? variantStyles[variant]["&:hover"]
+        : {}
+
     return (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+      <button
         ref={ref}
+        style={{ ...combinedStyle, ...hoverStyle }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         {...props}
-      />
+      >
+        {children}
+      </button>
     )
   }
 )
+
 Button.displayName = "Button"
 
-export { Button, buttonVariants }
+export { Button }

@@ -69,6 +69,7 @@ The backend follows Domain-Driven Design (DDD) and Hexagonal Architecture princi
    - `GET /api/candidates`
    - Optional filtering parameters
    - Support for sorting and pagination
+   - sord by id DESC
 
 3. **Get Candidate**
 
@@ -150,7 +151,7 @@ The frontend follows the component design principles and React best practices ou
 
 ```
 +---------------------------------------------------+
-| [Logo]   Dashboard   Candidates   Settings        |
+| Dashboard   Candidates   Settings    [Search...]  |
 +---------------------------------------------------+
 |                                                   |
 |  +-------------+  +-------------+  +-------------+|
@@ -160,7 +161,7 @@ The frontend follows the component design principles and React best practices ou
 |  |    125      |  |     42      |  |     83      ||
 |  +-------------+  +-------------+  +-------------+|
 |                                                   |
-|  [Add Candidate] [Filter] [Search................]|
+|  [Add Candidate] [Filter]                         |
 |                                                   |
 |  +-------------------------------------------+    |
 |  | Name          | Email       | Status  | Actions|
@@ -171,6 +172,9 @@ The frontend follows the component design principles and React best practices ou
 |  +-------------------------------------------+    |
 |                                                   |
 +---------------------------------------------------+
+|                [Footer Information]               |
++---------------------------------------------------+
+
 ```
 
 ### Candidate Form
@@ -385,3 +389,12 @@ Please refer to the following documentation for detailed development standards:
    - Profile and optimize backend
    - Implement frontend optimizations
    - Verify scalability under load
+
+
+
+
+
+- Candidati ricevuti oggi (inglese e deve essere la prima card)
+- metti tooltips sui bottoni di edit delete download CSV
+- rollover al mouse over e' terribile trova una soluzione piu' bella
+- la scrollbar continua a ed essere presnete quella principale la voglio solo per il body dentro.

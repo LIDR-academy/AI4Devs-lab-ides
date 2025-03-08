@@ -1,15 +1,22 @@
 import React from "react"
-import Footer from "./Footer"
 import Header from "./Header"
 
 const Layout = ({ children }) => {
+  const containerStyle = {
+    maxWidth: "1200px",
+    width: "100%",
+    margin: "0 auto",
+    padding: "24px 16px",
+  }
+
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="app-container">
       <Header />
-      <main className="flex-grow bg-gray-100 p-4">
-        <div className="container mx-auto">{children}</div>
+      <main className="main-content">
+        <div className="scrollable-content">
+          <div style={containerStyle}>{children}</div>
+        </div>
       </main>
-      <Footer />
     </div>
   )
 }
