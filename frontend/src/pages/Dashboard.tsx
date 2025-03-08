@@ -1,8 +1,9 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const Dashboard: React.FC = () => {
-  const { user } = useAuth();
+  const { user, isRecruiter, isAdmin } = useAuth();
 
   return (
     <div className="bg-white shadow rounded-lg p-6">
@@ -65,10 +66,38 @@ const Dashboard: React.FC = () => {
               <dt className="text-sm font-medium text-gray-500 truncate">
                 Quick Actions
               </dt>
-              <dd className="mt-3">
+              <dd className="mt-3 space-y-2">
+                {(isRecruiter || isAdmin) && (
+                  <>
+                    <Link
+                      to="/candidates"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-full justify-center"
+                      aria-label="Manage Candidates"
+                      tabIndex={0}
+                    >
+                      Manage Candidates
+                    </Link>
+                    <Link
+                      to="/candidates/new"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 w-full justify-center"
+                      aria-label="Add New Candidate"
+                      tabIndex={0}
+                    >
+                      Add New Candidate
+                    </Link>
+                    <Link
+                      to="/processes"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 w-full justify-center"
+                      aria-label="Manage Selection Processes"
+                      tabIndex={0}
+                    >
+                      Manage Processes
+                    </Link>
+                  </>
+                )}
                 <button
                   type="button"
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-full justify-center"
                   aria-label="View Profile"
                   tabIndex={0}
                 >
@@ -80,10 +109,62 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
       
+      {(isRecruiter || isAdmin) && (
+        <div className="mt-8">
+          <h2 className="text-lg font-medium text-gray-900 mb-4">Recruiter Tools</h2>
+          <div className="bg-white shadow overflow-hidden sm:rounded-md">
+            <ul className="divide-y divide-gray-200">
+              <li>
+                <Link to="/candidates" className="block hover:bg-gray-50">
+                  <div className="px-4 py-4 sm:px-6">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium text-blue-600 truncate">Candidate Management</p>
+                      <div className="ml-2 flex-shrink-0 flex">
+                        <p className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                          Available
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mt-2 sm:flex sm:justify-between">
+                      <div className="sm:flex">
+                        <p className="flex items-center text-sm text-gray-500">
+                          View, add, edit, and manage candidates
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </li>
+              <li>
+                <Link to="/processes" className="block hover:bg-gray-50">
+                  <div className="px-4 py-4 sm:px-6">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium text-blue-600 truncate">Selection Process Management</p>
+                      <div className="ml-2 flex-shrink-0 flex">
+                        <p className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                          Available
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mt-2 sm:flex sm:justify-between">
+                      <div className="sm:flex">
+                        <p className="flex items-center text-sm text-gray-500">
+                          Track and manage selection processes for candidates
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+      )}
+      
       <div className="mt-8">
-        <h2 className="text-lg font-medium text-gray-900 mb-4">Coming Soon</h2>
+        <h2 className="text-lg font-medium text-gray-900 mb-4">System Information</h2>
         <p className="text-gray-600">
-          Additional features for the Talent Tracking System will be implemented soon. Stay tuned for updates!
+          This is the LTI Talent Tracking System, designed to help recruiters manage candidates and selection processes efficiently.
         </p>
       </div>
     </div>

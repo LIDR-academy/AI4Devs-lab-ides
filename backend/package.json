@@ -13,7 +13,8 @@
         "prisma:migrate": "prisma migrate dev",
         "prisma:studio": "prisma studio",
         "start:prod": "npm run build && npm start",
-        "create:admin": "ts-node src/scripts/createAdmin.ts"
+        "create:admin": "ts-node src/scripts/createAdmin.ts",
+        "create:recruiter": "ts-node src/scripts/createRecruiter.ts"
     },
     "keywords": [],
     "author": "",

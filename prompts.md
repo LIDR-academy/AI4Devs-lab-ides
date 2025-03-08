@@ -111,3 +111,82 @@ Ejecuta el script para crear el usuario administrador:
    cd backend
    npm run create:admin
 Deberías ver un mensaje confirmando que el usuario administrador se ha creado correctamente.
+
+# Prompt 4
+Vamos a implementar la primera historia de usuario:
+El objetivo es añadir un candidato al sistema, guardándolo en la base de datos. El Candidatio lo tiene que añadir un usuario con el Rol de Reclutador.
+El Reclutador tiene que poder gestionar los datos del Candidato y también gestionar de manera eficiente los procesos de selección que tenga el Candidato.
+
+Empezaremos por 3 criterios de aceptación y luego implementaremos otros adicionales:
+
+1- Accesibilidad de la función: Debe haber un botón o enlace claramente visible para añadir un nuevo candidato desde la página principal del dashboard del reclutador.
+2- Formulario de ingreso de datos: Al seleccionar la opción de añadir candidato, se debe presentar un formulario que incluya los campos necesarios para capturar la información del candidato como nombre, apellido, correo electrónico, teléfono, dirección, educación y experiencia laboral.
+3- Validación de datos: El formulario debe validar los datos ingresados para asegurar que son completos y correctos. Por ejemplo, el correo electrónico debe tener un formato válido y los campos obligatorios no deben estar vacíos.
+
+# Respuest 4
+¡Excelente! He implementado la primera historia de usuario para añadir candidatos al sistema. Vamos a resumir lo que he creado:
+Backend
+Modelos de datos en Prisma:
+Modelo Candidate para almacenar información de candidatos
+Modelo SelectionProcess para gestionar procesos de selección
+Modelo ProcessStage para las etapas de cada proceso
+Actualización del modelo User para incluir el rol de RECRUITER
+Controladores y rutas:
+Controlador para gestionar candidatos (crear, listar, actualizar, eliminar)
+Controlador para gestionar procesos de selección
+Rutas protegidas que solo pueden ser accedidas por usuarios con rol de reclutador o administrador
+Script para crear usuario reclutador:
+Creación de un script para añadir un usuario con rol de reclutador para pruebas
+Frontend
+Componentes de autenticación:
+Actualización del contexto de autenticación para incluir roles
+Componente RecruiterRoute para proteger rutas que requieren rol de reclutador
+Componentes de gestión de candidatos:
+CandidateList: Lista de candidatos con búsqueda y filtrado
+CandidateForm: Formulario para añadir/editar candidatos con validación
+CandidateDetail: Vista detallada de un candidato con sus procesos de selección
+Dashboard actualizado:
+Enlaces a la gestión de candidatos para reclutadores
+Acceso rápido a las funcionalidades principales
+Criterios de aceptación cumplidos
+Accesibilidad de la función:
+Botón claramente visible en el dashboard para añadir candidatos
+Enlace en la lista de candidatos para añadir nuevos candidatos
+Formulario de ingreso de datos:
+Formulario completo con todos los campos requeridos (nombre, apellido, correo, teléfono, dirección, educación, experiencia laboral)
+Interfaz intuitiva y organizada
+Validación de datos:
+Validación de campos obligatorios
+Validación de formato de correo electrónico
+Mensajes de error claros para el usuario
+
+# Instrucciones
+Docker up
+   docker-compose up -d
+backend
+   cd backend
+   npm install
+   npx prisma migrate dev --name init
+   npm run create:admin    # Crear usuario administrador
+   npm run create:recruiter  # Crear usuario reclutador
+   npm run dev
+   
+frontend
+   cd frontend
+   npm install
+   npm start
+
+Email: recruiter@lti-talent.com
+Contraseña: 12345aA!
+
+### Compiled with errors (front-end)
+1- Primera iteración:
+- Modules not found.
+2- Segunda iteración:
+- Types not assignables.
+
+
+## Verificación:
+El reclutador puede crear y editar candidatos.
+El formulario tiene los campos que se han pedido.
+Las validaciones funcionan.

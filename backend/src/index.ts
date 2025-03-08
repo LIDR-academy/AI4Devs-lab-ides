@@ -3,6 +3,8 @@ import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.routes';
+import candidateRoutes from './routes/candidate.routes';
+import selectionProcessRoutes from './routes/selectionProcess.routes';
 import { errorHandler } from './middlewares/error.middleware';
 
 // Load environment variables
@@ -19,6 +21,8 @@ app.use(morgan('dev'));
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/candidates', candidateRoutes);
+app.use('/api/selection-processes', selectionProcessRoutes);
 
 // Health check route
 app.get('/health', (req, res) => {
