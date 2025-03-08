@@ -1,5 +1,5 @@
-import React from "react"
-import { useSearch } from "../../lib/context/SearchContext"
+import { useSearch } from "../../contexts/SearchContext"
+import { StatusIconSelect } from "../shared/StatusIcon"
 
 const Header = ({ onAddCandidate }) => {
   // Usar el contexto de búsqueda
@@ -153,8 +153,9 @@ const Header = ({ onAddCandidate }) => {
               strokeLinejoin="round"
             />
           </svg>
-          <span className="hide-on-mobile">LOGO ATS</span>
+          <span className="hide-on-mobile">ATS Dashboard</span>
         </div>
+
         <div
           className="header-controls"
           style={{
@@ -204,21 +205,13 @@ const Header = ({ onAddCandidate }) => {
             </div>
 
             {/* Filtro de estado */}
-            <div style={{ width: "150px" }}>
-              <select
+            <div style={{ width: "200px" }}>
+              <StatusIconSelect
                 value={statusFilter}
-                onChange={handleStatusChange}
-                style={statusFilterStyle}
-                className="responsive-width"
-              >
-                <option value="ALL">All Statuses</option>
-                <option value="PENDING">🟡 PENDING</option>
-                <option value="EVALUATED">🟢 EVALUATED</option>
-                <option value="REJECTED">🔴 REJECTED</option>
-                <option value="INTERVIEW">🟠 INTERVIEW</option>
-                <option value="OFFERED">🔵 OFFERED</option>
-                <option value="HIRED">🟣 HIRED</option>
-              </select>
+                onChange={setStatusFilter}
+                showLabel={true}
+                includeAllOption={true}
+              />
             </div>
           </div>
         </div>

@@ -50,7 +50,7 @@ describe('CandidateService', () => {
           address: '123 Main St',
           education: "Bachelor's Degree",
           experience: '5 years',
-          status: Status.PENDING,
+          status: Status.EVALUATED,
         }),
         new Candidate({
           id: 2,
@@ -60,7 +60,7 @@ describe('CandidateService', () => {
           address: '456 Oak Ave',
           education: "Master's Degree",
           experience: '3 years',
-          status: Status.VALUATED,
+          status: Status.EVALUATED,
         }),
       ];
 
@@ -86,7 +86,7 @@ describe('CandidateService', () => {
         address: '123 Main St',
         education: "Bachelor's Degree",
         experience: '5 years',
-        status: Status.PENDING,
+        status: Status.EVALUATED,
       });
 
       mockCandidateRepository.findById.mockResolvedValue(mockCandidate);
@@ -122,7 +122,7 @@ describe('CandidateService', () => {
         address: '789 Pine St',
         education: 'PhD',
         experience: '10 years',
-        status: Status.PENDING,
+        status: Status.EVALUATED,
       };
 
       const createdCandidate = new Candidate({
@@ -153,7 +153,7 @@ describe('CandidateService', () => {
         address: '789 Pine St',
         education: 'PhD',
         experience: '10 years',
-        status: Status.PENDING,
+        status: Status.EVALUATED,
       };
 
       const mockFile = {
@@ -210,7 +210,7 @@ describe('CandidateService', () => {
       const updateData = {
         firstName: 'Updated',
         lastName: 'Name',
-        status: Status.VALUATED,
+        status: Status.EVALUATED,
       };
 
       const existingCandidate = new Candidate({
@@ -221,7 +221,7 @@ describe('CandidateService', () => {
         address: '123 Main St',
         education: "Bachelor's Degree",
         experience: '5 years',
-        status: Status.PENDING,
+        status: Status.EVALUATED,
         cvFilePath: '/uploads/existing-cv.pdf',
       });
 
@@ -229,7 +229,7 @@ describe('CandidateService', () => {
         ...existingCandidate,
         firstName: 'Updated',
         lastName: 'Name',
-        status: Status.VALUATED,
+        status: Status.EVALUATED,
       });
 
       mockCandidateRepository.findById.mockResolvedValue(existingCandidate);
@@ -262,7 +262,7 @@ describe('CandidateService', () => {
         address: '123 Main St',
         education: "Bachelor's Degree",
         experience: '5 years',
-        status: Status.PENDING,
+        status: Status.EVALUATED,
         cvFilePath: '/uploads/old-cv.pdf',
       });
 
@@ -326,7 +326,7 @@ describe('CandidateService', () => {
         address: '123 Main St',
         education: "Bachelor's Degree",
         experience: '5 years',
-        status: Status.PENDING,
+        status: Status.EVALUATED,
         cvFilePath: null,
       });
 
@@ -351,7 +351,7 @@ describe('CandidateService', () => {
         address: '123 Main St',
         education: "Bachelor's Degree",
         experience: '5 years',
-        status: Status.PENDING,
+        status: Status.EVALUATED,
         cvFilePath: '/uploads/cv.pdf',
       });
 

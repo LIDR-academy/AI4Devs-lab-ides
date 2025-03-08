@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react"
-import { downloadCV } from "../../lib/api"
-import { useSearch } from "../../lib/context/SearchContext"
-import useCandidates from "../../lib/hooks/useCandidates"
+import { useEffect, useState } from "react"
+import { useSearch } from "../../contexts/SearchContext"
+import useCandidates from "../../hooks/useCandidates"
+import { downloadCV } from "../../services/api"
 import ConfirmationDialog from "../ui/confirmation-dialog"
 import { DataTable } from "../ui/data-table"
 
@@ -11,6 +11,13 @@ import { DataTable } from "../ui/data-table"
 const CandidateList = ({ onEdit, onAddNew, onCandidateChange }) => {
   const { candidates, loading, error, deleteCandidate, refreshCandidates } =
     useCandidates()
+
+  // Debug: log candidates data
+  useEffect(() => {
+    console.log("CandidateList - candidates:", candidates)
+    console.log("CandidateList - loading:", loading)
+    console.log("CandidateList - error:", error)
+  }, [candidates, loading, error])
 
   // Usar el contexto de búsqueda global
   const { searchTerm, statusFilter } = useSearch()
@@ -33,7 +40,7 @@ const CandidateList = ({ onEdit, onAddNew, onCandidateChange }) => {
   useEffect(() => {
     // Este efecto solo simula más datos para probar la paginación
     // En una aplicación real, esto vendría de la API
-    if (candidates.length > 0 && candidates.length < 50) {
+    if (candidates && candidates.length > 0 && candidates.length < 50) {
       const additionalCandidates = []
       // Generar al menos 30 candidatos adicionales
       for (let i = 0; i < 30; i++) {
@@ -87,21 +94,23 @@ const CandidateList = ({ onEdit, onAddNew, onCandidateChange }) => {
   }, [candidates])
 
   // Filtrar candidatos basados en término de búsqueda y estado
-  const filteredCandidates = candidates.filter((candidate) => {
-    // Para búsqueda, buscar en nombre y email
-    const matchesSearch =
-      searchTerm === "" ||
-      (candidate.firstName + " " + candidate.lastName)
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      candidate.email.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredCandidates = candidates
+    ? candidates.filter((candidate) => {
+        // Para búsqueda, buscar en nombre y email
+        const matchesSearch =
+          searchTerm === "" ||
+          (candidate.firstName + " " + candidate.lastName)
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          candidate.email.toLowerCase().includes(searchTerm.toLowerCase())
 
-    // Para estado, filtrar por el estado seleccionado
-    const matchesStatus =
-      statusFilter === "ALL" || candidate.status === statusFilter
+        // Para estado, filtrar por el estado seleccionado
+        const matchesStatus =
+          statusFilter === "ALL" || candidate.status === statusFilter
 
-    return matchesSearch && matchesStatus
-  })
+        return matchesSearch && matchesStatus
+      })
+    : []
 
   // Abrir el panel de detalles
   const handleViewClick = (candidate) => {
@@ -491,7 +500,7 @@ const CandidateList = ({ onEdit, onAddNew, onCandidateChange }) => {
   }
 
   return (
-    <div style={{ padding: "24px 0" }}>
+    <div style={{ padding: "4px 0" }}>
       {loading ? (
         <div
           style={{
@@ -529,13 +538,13 @@ const CandidateList = ({ onEdit, onAddNew, onCandidateChange }) => {
           <div className="responsive-table">
             <DataTable
               columns={columns}
-              data={filteredCandidates}
+              data={filteredCandidates || []}
               style={tableStyle}
               defaultSort={{
                 id: "createdAt",
                 desc: true,
               }}
-              totalItems={filteredCandidates.length}
+              totalItems={filteredCandidates?.length || 0}
             />
           </div>
         </>
@@ -594,14 +603,51 @@ const CandidateList = ({ onEdit, onAddNew, onCandidateChange }) => {
               </button>
             </div>
             <div>
-              <h3 style={{ fontSize: "22px", marginBottom: "16px" }}>
-                {selectedCandidate.firstName} {selectedCandidate.lastName}
+              <h3
+                style={{
+                  fontSize: "22px",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                {(() => {
+                  const status = selectedCandidate.status
+                  let icon
+                  switch (status) {
+                    case "PENDING":
+                      icon = "🟡"
+                      break
+                    case "EVALUATED":
+                      icon = "🟢"
+                      break
+                    case "REJECTED":
+                      icon = "🔴"
+                      break
+                    case "INTERVIEW":
+                      icon = "🟠"
+                      break
+                    case "OFFERED":
+                      icon = "🔵"
+                      break
+                    case "HIRED":
+                      icon = "🟣"
+                      break
+                    default:
+                      icon = "⚪"
+                  }
+                  return <span>{icon}</span>
+                })()}
+                <span>
+                  {selectedCandidate.firstName} {selectedCandidate.lastName}
+                </span>
               </h3>
 
               <div style={{ marginBottom: "12px" }}>
                 <label
                   style={{
-                    fontWeight: "500",
+                    fontWeight: "700",
                     display: "block",
                     marginBottom: "4px",
                   }}
@@ -614,7 +660,7 @@ const CandidateList = ({ onEdit, onAddNew, onCandidateChange }) => {
               <div style={{ marginBottom: "12px" }}>
                 <label
                   style={{
-                    fontWeight: "500",
+                    fontWeight: "700",
                     display: "block",
                     marginBottom: "4px",
                   }}
@@ -627,7 +673,7 @@ const CandidateList = ({ onEdit, onAddNew, onCandidateChange }) => {
               <div style={{ marginBottom: "12px" }}>
                 <label
                   style={{
-                    fontWeight: "500",
+                    fontWeight: "700",
                     display: "block",
                     marginBottom: "4px",
                   }}
@@ -640,20 +686,7 @@ const CandidateList = ({ onEdit, onAddNew, onCandidateChange }) => {
               <div style={{ marginBottom: "12px" }}>
                 <label
                   style={{
-                    fontWeight: "500",
-                    display: "block",
-                    marginBottom: "4px",
-                  }}
-                >
-                  Status:
-                </label>
-                <div>{selectedCandidate.status}</div>
-              </div>
-
-              <div style={{ marginBottom: "12px" }}>
-                <label
-                  style={{
-                    fontWeight: "500",
+                    fontWeight: "700",
                     display: "block",
                     marginBottom: "4px",
                   }}
@@ -668,7 +701,7 @@ const CandidateList = ({ onEdit, onAddNew, onCandidateChange }) => {
               <div style={{ marginBottom: "12px" }}>
                 <label
                   style={{
-                    fontWeight: "500",
+                    fontWeight: "700",
                     display: "block",
                     marginBottom: "4px",
                   }}
@@ -683,7 +716,7 @@ const CandidateList = ({ onEdit, onAddNew, onCandidateChange }) => {
               <div style={{ marginBottom: "12px" }}>
                 <label
                   style={{
-                    fontWeight: "500",
+                    fontWeight: "700",
                     display: "block",
                     marginBottom: "4px",
                   }}

@@ -1,5 +1,6 @@
-import React from "react"
-import { cn } from "../../lib/utils"
+import React from "react";
+import * as React from "react"
+import { cn } from "../../utils"
 
 const Separator = React.forwardRef(
   ({ className, orientation = "horizontal", ...props }, ref) => {

@@ -8,11 +8,14 @@ const CandidateModal = ({ isOpen, onClose, candidate, onSuccess }) => {
     onClose()
   }
 
+  // Crear el título del modal
+  const modalTitle = candidate
+    ? `Edit Candidate: ${candidate.firstName} ${candidate.lastName}`
+    : "Add New Candidate"
+
   return (
     <Dialog isOpen={isOpen} onClose={onClose}>
-      <DialogHeader>
-        {candidate ? "Edit Candidate" : "Add New Candidate"}
-      </DialogHeader>
+      <DialogHeader>{modalTitle}</DialogHeader>
       <DialogClose onClick={onClose} />
       <DialogContent>
         <CandidateForm

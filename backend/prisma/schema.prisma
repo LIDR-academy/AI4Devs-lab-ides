@@ -15,8 +15,11 @@ datasource db {
 
 enum Status {
   PENDING
-  VALUATED
-  DISCARDED
+  EVALUATED
+  REJECTED
+  INTERVIEW
+  OFFERED
+  HIRED
 }
 
 model User {

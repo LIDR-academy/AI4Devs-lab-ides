@@ -60,7 +60,7 @@ describe('CandidateRepository', () => {
           education: "Master's Degree",
           experience: '3 years',
           cvFilePath: '/uploads/cv-2.pdf',
-          status: 'VALUATED',
+          status: 'EVALUATED',
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -83,7 +83,7 @@ describe('CandidateRepository', () => {
       expect(result[1]).toBeInstanceOf(Candidate);
       expect(result[1].id).toBe(2);
       expect(result[1].firstName).toBe('Jane');
-      expect(result[1].status).toBe(Status.VALUATED);
+      expect(result[1].status).toBe(Status.EVALUATED);
     });
   });
 
@@ -185,7 +185,7 @@ describe('CandidateRepository', () => {
       const updateData = {
         firstName: 'Updated',
         lastName: 'Name',
-        status: Status.VALUATED,
+        status: Status.EVALUATED,
       };
 
       const mockUpdatedCandidate = {
@@ -198,7 +198,7 @@ describe('CandidateRepository', () => {
         education: "Bachelor's Degree",
         experience: '5 years',
         cvFilePath: '/uploads/cv-1.pdf',
-        status: 'VALUATED',
+        status: 'EVALUATED',
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -216,14 +216,14 @@ describe('CandidateRepository', () => {
         data: expect.objectContaining({
           firstName: 'Updated',
           lastName: 'Name',
-          status: 'VALUATED',
+          status: 'EVALUATED',
         }),
       });
       expect(result).toBeInstanceOf(Candidate);
       expect(result.id).toBe(1);
       expect(result.firstName).toBe('Updated');
       expect(result.lastName).toBe('Name');
-      expect(result.status).toBe(Status.VALUATED);
+      expect(result.status).toBe(Status.EVALUATED);
     });
   });
 
@@ -248,7 +248,7 @@ describe('CandidateRepository', () => {
       (prisma.candidate.count as jest.Mock).mockImplementation((params) => {
         if (!params) return 10; // total
         if (params.where.status === 'PENDING') return 5; // pending
-        if (params.where.status === 'VALUATED') return 3; // valuated
+        if (params.where.status === 'EVALUATED') return 3; // valuated
         if (params.where.status === 'DISCARDED') return 2; // discarded
         return 0;
       });

@@ -87,11 +87,11 @@ export class CandidateRepository implements ICandidateRepository {
     });
 
     const valuated = await this.prisma.candidate.count({
-      where: { status: mapDomainStatusToPrisma(Status.VALUATED) },
+      where: { status: mapDomainStatusToPrisma(Status.EVALUATED) },
     });
 
     const discarded = await this.prisma.candidate.count({
-      where: { status: mapDomainStatusToPrisma(Status.DISCARDED) },
+      where: { status: mapDomainStatusToPrisma(Status.REJECTED) },
     });
 
     return { total, pending, valuated, discarded };

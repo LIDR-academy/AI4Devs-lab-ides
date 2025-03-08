@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import { useEffect } from "react"
 
 const Dialog = ({ isOpen, onClose, children }) => {
   // Close on escape key
@@ -97,7 +97,7 @@ const DialogContent = ({ children }) => {
   return (
     <div
       style={{
-        padding: "16px 40px",
+        padding: "0 40px 16px 40px",
         maxHeight: "calc(85vh - 110px)",
         overflow: "auto",
       }}
@@ -129,13 +129,11 @@ const DialogFooter = ({ children }) => {
 
 const DialogClose = ({ onClick }) => {
   return (
-    <button
+    <div
       style={{
         position: "absolute",
         top: "12px",
         right: "12px",
-        background: "transparent",
-        border: "none",
         cursor: "pointer",
         color: "#6b7280",
         zIndex: 2,
@@ -156,7 +154,7 @@ const DialogClose = ({ onClick }) => {
         <line x1="18" y1="6" x2="6" y2="18"></line>
         <line x1="6" y1="6" x2="18" y2="18"></line>
       </svg>
-    </button>
+    </div>
   )
 }
 

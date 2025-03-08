@@ -145,12 +145,15 @@ export function DataTable({ columns, data, style, defaultSort, totalItems }) {
     height: "100vh", // Ensure the table card stretches to the bottom of the page
     display: "flex",
     flexDirection: "column",
+    borderRadius: "0", // Eliminar borde redondeado
+    overflow: "hidden",
   }
 
   // Combinar estilos personalizados con los predeterminados
   const tableContainerStyle = {
     ...defaultTableStyles,
     ...(style || {}),
+    flex: "1 1 auto", // Esto permite que el contenedor crezca y se encoja
   }
 
   // Estilo para las celdas de la tabla
@@ -194,7 +197,9 @@ export function DataTable({ columns, data, style, defaultSort, totalItems }) {
       style={{
         display: "flex",
         flexDirection: "column",
-        height: "360px",
+        height: "100%", // Cambiar a 100% para ocupar todo el contenedor
+        borderRadius: "0",
+        minHeight: "360px", // Altura mínima
       }}
     >
       <div style={tableContainerStyle}>
@@ -252,15 +257,19 @@ export function DataTable({ columns, data, style, defaultSort, totalItems }) {
           </TableBody>
         </Table>
       </div>
-      {/* Paginación siempre visible */}
+      {/* Paginación siempre fija en la parte inferior */}
       <div
         style={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "center", // Centrado
-          padding: "16px 0", // Ajustar el padding para que la paginación esté al fondo
+          justifyContent: "center",
+          padding: "16px 0",
           gap: "8px",
-          flexShrink: 0,
+          borderTop: "1px solid #e5e7eb",
+          marginTop: "auto", // Esto fuerza a que esté en la parte inferior
+          position: "sticky", // Hace que el elemento sea "sticky"
+          bottom: 0, // Lo fija al fondo
+          backgroundColor: "white", // Asegura que tenga un fondo
         }}
       >
         <button

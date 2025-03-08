@@ -1,5 +1,10 @@
-import React from "react"
-import { Dialog, DialogContent, DialogFooter, DialogHeader } from "./dialog"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+} from "./dialog"
 
 /**
  * Componente de diálogo de confirmación genérico
@@ -59,6 +64,7 @@ const ConfirmationDialog = ({
   return (
     <Dialog isOpen={isOpen} onClose={onClose}>
       <DialogHeader>{title}</DialogHeader>
+      <DialogClose onClick={onClose} />
       <DialogContent>
         <p style={{ marginTop: 0, marginBottom: "24px" }}>{message}</p>
       </DialogContent>

@@ -1,16 +1,32 @@
-import React, { useEffect, useState } from "react"
-import { useSearch } from "../../lib/context/SearchContext"
-import useStatistics from "../../lib/hooks/useStatistics"
+import { useEffect, useState } from "react"
+import { useSearch } from "../../contexts/SearchContext"
+import useStatistics from "../../hooks/useStatistics"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 
 /**
  * Componente Dashboard que muestra las cards con estadísticas
  */
 const Dashboard = () => {
-  const { statistics, loading, error } = useStatistics()
+  const { stats, loading, error } = useStatistics()
   const { searchTerm, setSearchTerm, statusFilter, setStatusFilter } =
     useSearch()
   const [hoveredCard, setHoveredCard] = useState(null)
+
+  // Debug: log the received stats
+  useEffect(() => {
+    console.log("Stats received from hook:", stats)
+  }, [stats])
+
+  // Ensure statistics is defined
+  const statistics = stats || {
+    total: 0,
+    pending: 0,
+    evaluated: 0,
+    rejected: 0,
+    interview: 0,
+    offered: 0,
+    hired: 0,
+  }
 
   // Inicializamos activeFilter como 'pending' para que coincida con el estado por defecto
   const [activeFilter, setActiveFilter] = useState("pending")
@@ -153,11 +169,11 @@ const Dashboard = () => {
       cursor: "pointer",
       backgroundColor: "#f3f4f6", // Fondo gris para todas las cards
       border: "1px solid #e5e7eb",
-      borderLeft: `5px solid ${baseColor}`,
       boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
       transition: "all 0.3s ease",
       transform: isActive ? "translateY(-2px)" : "none",
       padding: "8px",
+      position: "relative", // Añadir position relative para el pseudo-elemento
       ...(hoveredCard === cardType &&
         !isActive && {
           transform: "translateY(-1px)",
@@ -166,6 +182,16 @@ const Dashboard = () => {
       ...(isActive && {
         backgroundColor: `${baseColor}15`,
         boxShadow: "0 6px 12px rgba(0, 0, 0, 0.15)",
+        "&::after": {
+          // Estilo para el pseudo-elemento
+          content: "''",
+          position: "absolute",
+          top: 0,
+          right: 0,
+          bottom: 0,
+          width: "5px",
+          backgroundColor: baseColor,
+        },
       }),
     }
   }
@@ -173,13 +199,32 @@ const Dashboard = () => {
   // Estilos para los títulos en mayúscula
   const titleStyle = {
     textTransform: "uppercase",
-    fontWeight: 600,
+    fontWeight: 700,
     fontSize: "0.8rem",
     letterSpacing: "0.05em",
   }
 
   // Obtener color para un tipo de card
-  const getColor = (cardType) => {}
+  const getColor = (cardType) => {
+    switch (cardType) {
+      case "pending":
+        return "#f59e0b" // Amber
+      case "evaluated":
+        return "#10b981" // Green
+      case "rejected":
+        return "#ef4444" // Red
+      case "interview":
+        return "#fb923c" // Orange
+      case "offered":
+        return "#3b82f6" // Light Blue
+      case "hired":
+        return "#9333ea" // Purple
+      case "total":
+        return "#6366f1" // Purple/Indigo
+      default:
+        return "#6b7280"
+    }
+  }
 
   // Skeleton loader para las cards durante la carga
   const renderSkeleton = () => (
@@ -204,6 +249,41 @@ const Dashboard = () => {
     </div>
   )
 
+  // Renombrar la función para reflejar su nuevo propósito
+  const renderCardWithBorder = (cardType, children) => {
+    const isActive = activeFilter === cardType
+    const cardStyle = getCardStyle(cardType)
+    const color = getColor(cardType)
+
+    return (
+      <div style={{ position: "relative" }}>
+        <Card
+          key={cardType}
+          style={cardStyle}
+          onClick={() => handleCardClick(cardType)}
+          onMouseEnter={() => setHoveredCard(cardType)}
+          onMouseLeave={() => setHoveredCard(null)}
+        >
+          {children}
+        </Card>
+        {isActive && (
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0, // Cambiado de 'right' a 'left'
+              bottom: 0,
+              width: "5px",
+              backgroundColor: color,
+              borderTopLeftRadius: "8px", // Cambiado a bordes izquierdos
+              borderBottomLeftRadius: "8px",
+            }}
+          />
+        )}
+      </div>
+    )
+  }
+
   // Mensaje de error si falla la carga
   if (error) {
     return (
@@ -224,300 +304,281 @@ const Dashboard = () => {
 
   return (
     <div style={{ padding: "4px 0 24px 0" }}>
-      {loading ? (
-        renderSkeleton()
-      ) : (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(7, 1fr)",
-            gap: "16px",
-            marginBottom: "32px",
-            maxWidth: "100%",
-            overflowX: "auto",
-          }}
-        >
-          {/* Total Candidates Card */}
-          <Card
-            style={{
-              ...getCardStyle("total"),
-              minWidth: "140px",
-              minHeight: "90px",
-            }}
-            onClick={() => handleCardClick("total")}
-            onMouseEnter={() => setHoveredCard("total")}
-            onMouseLeave={() => setHoveredCard(null)}
-          >
-            <CardHeader>
-              <CardTitle
-                style={{
-                  ...titleStyle,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  width: "100%",
-                }}
-              >
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
-                >
-                  <span>{getIcon("total")}</span>
-                  <span>ALL</span>
-                </div>
-                <span
-                  style={{
-                    fontSize: "22px",
-                    fontWeight: "bold",
-                    color: getColor("total"),
-                  }}
-                >
-                  {statistics.total || 0}
-                </span>
-              </CardTitle>
-            </CardHeader>
-          </Card>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+          gap: "16px",
+          marginBottom: "32px",
+          maxWidth: "100%",
+          overflowX: "auto",
+        }}
+      >
+        {loading ? (
+          renderSkeleton()
+        ) : (
+          <>
+            {/* Total Candidates Card */}
+            {renderCardWithBorder(
+              "total",
+              <>
+                <CardHeader>
+                  <CardTitle
+                    style={{
+                      ...titleStyle,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      <span>{getIcon("total")}</span>
+                      <span>ALL</span>
+                    </div>
+                    <span
+                      style={{
+                        fontSize: "22px",
+                        fontWeight: "bold",
+                        color: getColor("total"),
+                      }}
+                    >
+                      {statistics.total || 0}
+                    </span>
+                  </CardTitle>
+                </CardHeader>
+              </>
+            )}
 
-          {/* Pending Card */}
-          <Card
-            style={{
-              ...getCardStyle("pending"),
-              minWidth: "140px",
-              minHeight: "90px",
-            }}
-            onClick={() => handleCardClick("pending")}
-            onMouseEnter={() => setHoveredCard("pending")}
-            onMouseLeave={() => setHoveredCard(null)}
-          >
-            <CardHeader>
-              <CardTitle
-                style={{
-                  ...titleStyle,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  width: "100%",
-                }}
-              >
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
-                >
-                  <span>{getIcon("pending")}</span>
-                  <span>PENDING</span>
-                </div>
-                <span
-                  style={{
-                    fontSize: "22px",
-                    fontWeight: "bold",
-                    color: getColor("pending"),
-                  }}
-                >
-                  {statistics.pending || 0}
-                </span>
-              </CardTitle>
-            </CardHeader>
-          </Card>
+            {/* Pending Card */}
+            {renderCardWithBorder(
+              "pending",
+              <>
+                <CardHeader>
+                  <CardTitle
+                    style={{
+                      ...titleStyle,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      <span>{getIcon("pending")}</span>
+                      <span>PENDING</span>
+                    </div>
+                    <span
+                      style={{
+                        fontSize: "22px",
+                        fontWeight: "bold",
+                        color: getColor("pending"),
+                      }}
+                    >
+                      {statistics.pending || 0}
+                    </span>
+                  </CardTitle>
+                </CardHeader>
+              </>
+            )}
 
-          {/* Evaluated Card */}
-          <Card
-            style={{
-              ...getCardStyle("evaluated"),
-              minWidth: "140px",
-              minHeight: "90px",
-            }}
-            onClick={() => handleCardClick("evaluated")}
-            onMouseEnter={() => setHoveredCard("evaluated")}
-            onMouseLeave={() => setHoveredCard(null)}
-          >
-            <CardHeader>
-              <CardTitle
-                style={{
-                  ...titleStyle,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  width: "100%",
-                }}
-              >
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
-                >
-                  <span>{getIcon("evaluated")}</span>
-                  <span>EVALUATED</span>
-                </div>
-                <span
-                  style={{
-                    fontSize: "22px",
-                    fontWeight: "bold",
-                    color: getColor("evaluated"),
-                  }}
-                >
-                  {statistics.evaluated || 0}
-                </span>
-              </CardTitle>
-            </CardHeader>
-          </Card>
+            {/* Evaluated Card */}
+            {renderCardWithBorder(
+              "evaluated",
+              <>
+                <CardHeader>
+                  <CardTitle
+                    style={{
+                      ...titleStyle,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      <span>{getIcon("evaluated")}</span>
+                      <span>EVALUATED</span>
+                    </div>
+                    <span
+                      style={{
+                        fontSize: "22px",
+                        fontWeight: "bold",
+                        color: getColor("evaluated"),
+                      }}
+                    >
+                      {statistics.evaluated || 0}
+                    </span>
+                  </CardTitle>
+                </CardHeader>
+              </>
+            )}
 
-          {/* Rejected Card */}
-          <Card
-            style={{
-              ...getCardStyle("rejected"),
-              minWidth: "140px",
-              minHeight: "90px",
-            }}
-            onClick={() => handleCardClick("rejected")}
-            onMouseEnter={() => setHoveredCard("rejected")}
-            onMouseLeave={() => setHoveredCard(null)}
-          >
-            <CardHeader>
-              <CardTitle
-                style={{
-                  ...titleStyle,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  width: "100%",
-                }}
-              >
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
-                >
-                  <span>{getIcon("rejected")}</span>
-                  <span>REJECTED</span>
-                </div>
-                <span
-                  style={{
-                    fontSize: "22px",
-                    fontWeight: "bold",
-                    color: getColor("rejected"),
-                  }}
-                >
-                  {statistics.rejected || 0}
-                </span>
-              </CardTitle>
-            </CardHeader>
-          </Card>
+            {/* Rejected Card */}
+            {renderCardWithBorder(
+              "rejected",
+              <>
+                <CardHeader>
+                  <CardTitle
+                    style={{
+                      ...titleStyle,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      <span>{getIcon("rejected")}</span>
+                      <span>REJECTED</span>
+                    </div>
+                    <span
+                      style={{
+                        fontSize: "22px",
+                        fontWeight: "bold",
+                        color: getColor("rejected"),
+                      }}
+                    >
+                      {statistics.rejected || 0}
+                    </span>
+                  </CardTitle>
+                </CardHeader>
+              </>
+            )}
 
-          {/* Interview Card */}
-          <Card
-            style={{
-              ...getCardStyle("interview"),
-              minWidth: "140px",
-              minHeight: "90px",
-            }}
-            onClick={() => handleCardClick("interview")}
-            onMouseEnter={() => setHoveredCard("interview")}
-            onMouseLeave={() => setHoveredCard(null)}
-          >
-            <CardHeader>
-              <CardTitle
-                style={{
-                  ...titleStyle,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  width: "100%",
-                }}
-              >
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
-                >
-                  <span>{getIcon("interview")}</span>
-                  <span>INTERVIEW</span>
-                </div>
-                <span
-                  style={{
-                    fontSize: "22px",
-                    fontWeight: "bold",
-                    color: getColor("interview"),
-                  }}
-                >
-                  {statistics.interview || 0}
-                </span>
-              </CardTitle>
-            </CardHeader>
-          </Card>
+            {/* Interview Card */}
+            {renderCardWithBorder(
+              "interview",
+              <>
+                <CardHeader>
+                  <CardTitle
+                    style={{
+                      ...titleStyle,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      <span>{getIcon("interview")}</span>
+                      <span>INTERVIEW</span>
+                    </div>
+                    <span
+                      style={{
+                        fontSize: "22px",
+                        fontWeight: "bold",
+                        color: getColor("interview"),
+                      }}
+                    >
+                      {statistics.interview || 0}
+                    </span>
+                  </CardTitle>
+                </CardHeader>
+              </>
+            )}
 
-          {/* Offered Card */}
-          <Card
-            style={{
-              ...getCardStyle("offered"),
-              minWidth: "140px",
-              minHeight: "90px",
-            }}
-            onClick={() => handleCardClick("offered")}
-            onMouseEnter={() => setHoveredCard("offered")}
-            onMouseLeave={() => setHoveredCard(null)}
-          >
-            <CardHeader>
-              <CardTitle
-                style={{
-                  ...titleStyle,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  width: "100%",
-                }}
-              >
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
-                >
-                  <span>{getIcon("offered")}</span>
-                  <span>OFFERED</span>
-                </div>
-                <span
-                  style={{
-                    fontSize: "22px",
-                    fontWeight: "bold",
-                    color: getColor("offered"),
-                  }}
-                >
-                  {statistics.offered || 0}
-                </span>
-              </CardTitle>
-            </CardHeader>
-          </Card>
+            {/* Offered Card */}
+            {renderCardWithBorder(
+              "offered",
+              <>
+                <CardHeader>
+                  <CardTitle
+                    style={{
+                      ...titleStyle,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      <span>{getIcon("offered")}</span>
+                      <span>OFFERED</span>
+                    </div>
+                    <span
+                      style={{
+                        fontSize: "22px",
+                        fontWeight: "bold",
+                        color: getColor("offered"),
+                      }}
+                    >
+                      {statistics.offered || 0}
+                    </span>
+                  </CardTitle>
+                </CardHeader>
+              </>
+            )}
 
-          {/* Hired Card */}
-          <Card
-            style={{
-              ...getCardStyle("hired"),
-              minWidth: "140px",
-              minHeight: "90px",
-            }}
-            onClick={() => handleCardClick("hired")}
-            onMouseEnter={() => setHoveredCard("hired")}
-            onMouseLeave={() => setHoveredCard(null)}
-          >
-            <CardHeader>
-              <CardTitle
-                style={{
-                  ...titleStyle,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  width: "100%",
-                }}
-              >
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
-                >
-                  <span>{getIcon("hired")}</span>
-                  <span>HIRED</span>
-                </div>
-                <span
-                  style={{
-                    fontSize: "22px",
-                    fontWeight: "bold",
-                    color: getColor("hired"),
-                  }}
-                >
-                  {statistics.hired || 0}
-                </span>
-              </CardTitle>
-            </CardHeader>
-          </Card>
-        </div>
-      )}
+            {/* Hired Card */}
+            {renderCardWithBorder(
+              "hired",
+              <>
+                <CardHeader>
+                  <CardTitle
+                    style={{
+                      ...titleStyle,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      <span>{getIcon("hired")}</span>
+                      <span>HIRED</span>
+                    </div>
+                    <span
+                      style={{
+                        fontSize: "22px",
+                        fontWeight: "bold",
+                        color: getColor("hired"),
+                      }}
+                    >
+                      {statistics.hired || 0}
+                    </span>
+                  </CardTitle>
+                </CardHeader>
+              </>
+            )}
+          </>
+        )}
+      </div>
     </div>
   )
 }

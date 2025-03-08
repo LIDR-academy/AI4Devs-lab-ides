@@ -1,0 +1,91 @@
+:root {
+  /* Colors */
+  --primary: #6366f1;
+  --primary-rgb: 99, 102, 241;
+  --primary-dark: #4f46e5;
+  --secondary: #64748b;
+  --success: #22c55e;
+  --error: #ef4444;
+  --warning: #f59e0b;
+  --info: #3b82f6;
+
+  /* Text Colors */
+  --text-primary: #1f2937;
+  --text-secondary: #64748b;
+  --text-disabled: #9ca3af;
+  --text-inverse: #ffffff;
+
+  /* Background Colors */
+  --background: #ffffff;
+  --background-alt: #f9fafb;
+  --background-hover: #f3f4f6;
+  --background-disabled: #e5e7eb;
+
+  /* Border Colors */
+  --border-color: #e5e7eb;
+  --border-color-hover: #d1d5db;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* Spacing */
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-10: 2.5rem;
+  --spacing-12: 3rem;
+
+  /* Border Radius */
+  --radius-sm: 0.125rem;
+  --radius: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-full: 9999px;
+
+  /* Font Sizes */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+
+  /* Font Weights */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  /* Z-Index */
+  --z-0: 0;
+  --z-10: 10;
+  --z-20: 20;
+  --z-30: 30;
+  --z-40: 40;
+  --z-50: 50;
+  --z-auto: auto;
+
+  /* Transitions */
+  --transition-all: all 0.2s ease-in-out;
+  --transition-colors: background-color, border-color, color, fill,
+    stroke 0.2s ease-in-out;
+  --transition-opacity: opacity 0.2s ease-in-out;
+  --transition-shadow: box-shadow 0.2s ease-in-out;
+  --transition-transform: transform 0.2s ease-in-out;
+
+  /* Status Colors */
+  --status-pending: #f59e0b;
+  --status-evaluated: #3b82f6;
+  --status-rejected: #ef4444;
+  --status-interview: #10b981;
+  --status-offered: #8b5cf6;
+  --status-hired: #6366f1;
+}

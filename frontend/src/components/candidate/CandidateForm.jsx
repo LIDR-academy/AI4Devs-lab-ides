@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import {
   createCandidate,
   getEducationSuggestions,
   getExperienceSuggestions,
   updateCandidate,
-} from "../../lib/api"
+} from "../../services/api"
+import { StatusIconSelect } from "../shared/StatusIcon"
 import { Button } from "../ui/button"
 import { Form, FormItem, FormLabel, FormMessage } from "../ui/form"
 import { Input } from "../ui/input"
@@ -39,6 +40,9 @@ const CandidateForm = ({ candidate, onSuccess, onCancel }) => {
     useState(false)
   const [showExperienceSuggestions, setShowExperienceSuggestions] =
     useState(false)
+
+  // Status state
+  const [isStatusOpen, setIsStatusOpen] = useState(false)
 
   // Initialize form with candidate data if editing
   useEffect(() => {
@@ -107,6 +111,12 @@ const CandidateForm = ({ candidate, onSuccess, onCancel }) => {
     } else if (field === "experience") {
       setShowExperienceSuggestions(false)
     }
+  }
+
+  // Handle status click
+  const handleStatusClick = (value) => {
+    handleChange({ target: { name: "status", value } })
+    setIsStatusOpen(false)
   }
 
   // Validate form data
@@ -376,23 +386,17 @@ const CandidateForm = ({ candidate, onSuccess, onCancel }) => {
         )}
       </FormItem>
 
-      {/* Status (only for editing) */}
-      {candidate && (
-        <FormItem>
-          <FormLabel htmlFor="status">Status</FormLabel>
-          <select
-            id="status"
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-md"
-          >
-            <option value="PENDING">Pending</option>
-            <option value="VALUATED">Valuated</option>
-            <option value="DISCARDED">Discarded</option>
-          </select>
-        </FormItem>
-      )}
+      {/* Status */}
+      <FormItem>
+        <FormLabel htmlFor="status">Status</FormLabel>
+        <StatusIconSelect
+          value={formData.status}
+          onChange={(value) =>
+            handleChange({ target: { name: "status", value } })
+          }
+        />
+        {errors.status && <FormMessage>{errors.status}</FormMessage>}
+      </FormItem>
 
       {/* Form Actions */}
       <div className="flex justify-end space-x-4">

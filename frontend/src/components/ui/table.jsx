@@ -5,10 +5,11 @@ const Table = React.forwardRef(({ children, ...props }, ref) => {
     width: "100%",
     borderCollapse: "collapse",
     captionSide: "bottom",
+    borderRadius: "0",
   }
 
   return (
-    <div style={{ overflowX: "auto", width: "100%" }}>
+    <div style={{ overflowX: "auto", width: "100%", borderRadius: "0" }}>
       <table ref={ref} style={{ ...tableStyle, ...props.style }} {...props}>
         {children}
       </table>

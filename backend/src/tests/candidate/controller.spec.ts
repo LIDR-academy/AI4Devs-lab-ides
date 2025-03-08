@@ -37,7 +37,7 @@ const mockCandidate2 = new Candidate({
   address: '456 Oak Ave',
   education: "Master's Degree",
   experience: '3 years',
-  status: Status.VALUATED,
+  status: Status.EVALUATED,
   cvFilePath: '/uploads/cv-2.pdf',
 });
 
@@ -245,7 +245,7 @@ describe('CandidateController', () => {
       req.body = {
         firstName: 'Updated',
         lastName: 'Name',
-        status: Status.VALUATED,
+        status: Status.EVALUATED,
       };
       req.file = { originalname: 'new-cv.pdf' } as Express.Multer.File;
 
@@ -257,7 +257,7 @@ describe('CandidateController', () => {
         address: '123 Main St',
         education: "Bachelor's Degree",
         experience: '5 years',
-        status: Status.VALUATED,
+        status: Status.EVALUATED,
         cvFilePath: '/uploads/new-cv.pdf',
       });
 

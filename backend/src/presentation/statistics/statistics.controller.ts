@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Status } from '@prisma/client';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
@@ -13,24 +13,40 @@ export class StatisticsController {
       // Get total count
       const total = await prisma.candidate.count();
 
-      // Get pending count
+      // Get counts for each status
       const pending = await prisma.candidate.count({
         where: {
-          status: 'PENDING',
+          status: Status.PENDING,
         },
       });
 
-      // Get valuated count
-      const valuated = await prisma.candidate.count({
+      const evaluated = await prisma.candidate.count({
         where: {
-          status: 'VALUATED',
+          status: Status.EVALUATED,
         },
       });
 
-      // Get discarded count
-      const discarded = await prisma.candidate.count({
+      const rejected = await prisma.candidate.count({
         where: {
-          status: 'DISCARDED',
+          status: Status.REJECTED,
+        },
+      });
+
+      const interview = await prisma.candidate.count({
+        where: {
+          status: Status.INTERVIEW,
+        },
+      });
+
+      const offered = await prisma.candidate.count({
+        where: {
+          status: Status.OFFERED,
+        },
+      });
+
+      const hired = await prisma.candidate.count({
+        where: {
+          status: Status.HIRED,
         },
       });
 
@@ -49,8 +65,11 @@ export class StatisticsController {
       res.status(StatusCodes.OK).json({
         total,
         pending,
-        valuated,
-        discarded,
+        evaluated,
+        rejected,
+        interview,
+        offered,
+        hired,
         todayCount,
       });
     } catch (error) {
