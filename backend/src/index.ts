@@ -13,6 +13,14 @@ import {
   configureCandidateRoutes,
 } from './presentation/candidate';
 import { configureMiddleware } from './presentation/middleware';
+import {
+  StatisticsController,
+  configureStatisticsRoutes,
+} from './presentation/statistics';
+import {
+  SuggestionsController,
+  configureSuggestionsRoutes,
+} from './presentation/suggestions';
 
 // Load environment variables
 dotenv.config();
@@ -44,9 +52,13 @@ const fileService = new FileService();
 const candidateRepository = new CandidateRepository(prisma);
 const candidateService = new CandidateService(candidateRepository, fileService);
 const candidateController = new CandidateController(candidateService);
+const statisticsController = new StatisticsController();
+const suggestionsController = new SuggestionsController();
 
 // Configure routes
 configureCandidateRoutes(app, candidateController);
+configureStatisticsRoutes(app, statisticsController);
+configureSuggestionsRoutes(app, suggestionsController);
 
 // Root route
 app.get('/', (req, res) => {

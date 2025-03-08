@@ -1,8 +1,11 @@
 import React, { useState } from "react"
 import "./App.css"
+import CandidateList from "./components/candidate/CandidateList"
+import Dashboard from "./components/dashboard/Dashboard"
 import Layout from "./components/layout/Layout"
-import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card"
-import { DataTable } from "./components/ui/data-table"
+import { Card, CardContent } from "./components/ui/card"
+import { Dialog, DialogContent, DialogHeader } from "./components/ui/dialog"
+import { SearchProvider } from "./lib/context/SearchContext"
 
 // Aggiungiamo uno stile globale per rimuovere qualsiasi effetto di rollover
 const globalStyle = document.createElement("style")
@@ -13,72 +16,93 @@ globalStyle.innerHTML = `
     transform: none !important;
     box-shadow: none !important;
   }
+  
+  button:active, button:focus {
+    outline: none !important;
+    transform: none !important;
+    box-shadow: none !important;
+    opacity: 0.9 !important;
+  }
+  
+  .custom-file-input {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+  
+  .custom-file-input input[type="file"] {
+    position: absolute;
+    left: -9999px;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .custom-file-input label {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    background-color: #f3f4f6;
+    color: #374151;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .custom-file-input label:hover {
+    background-color: #e5e7eb;
+  }
+  
+  .custom-file-input span {
+    margin-left: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .error-input {
+    border-color: #ef4444 !important;
+  }
+  
+  .error-message {
+    color: #ef4444;
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 `
 document.head.appendChild(globalStyle)
 
 function App() {
-  // Dati di esempio per i candidati con data di creazione
-  const candidates = [
-    {
-      id: 1,
-      name: "John Smith",
-      email: "js@mail.com",
-      status: "PENDING",
-      createdAt: "2023-03-05T10:30:00",
-    },
-    {
-      id: 2,
-      name: "Maria García",
-      email: "mg@mail.com",
-      status: "VALUATED",
-      createdAt: "2023-03-07T14:20:00",
-    },
-    {
-      id: 3,
-      name: "Alex Johnson",
-      email: "aj@mail.com",
-      status: "PENDING",
-      createdAt: "2023-03-06T09:15:00",
-    },
-    {
-      id: 4,
-      name: "Sarah Williams",
-      email: "sw@mail.com",
-      status: "VALUATED",
-      createdAt: "2023-03-08T11:45:00",
-    },
-    {
-      id: 5,
-      name: "David Brown",
-      email: "db@mail.com",
-      status: "PENDING",
-      createdAt: "2023-03-08T08:30:00",
-    },
-  ]
+  // State para vistas
+  const [activeView, setActiveView] = useState("dashboard")
 
-  // Calcolo delle statistiche
-  const totalCandidates = candidates.length
-  const pendingCandidates = candidates.filter(
-    (c) => c.status === "PENDING"
-  ).length
-  const valuatedCandidates = candidates.filter(
-    (c) => c.status === "VALUATED"
-  ).length
-  const todayReceivedCandidates = 2 // Esempio di valore statico
+  // Stato per il modal
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedCandidate, setSelectedCandidate] = useState(null)
+  const [formErrors, setFormErrors] = useState({})
+  const [formValues, setFormValues] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    address: "",
+    education: "",
+    experience: "",
+    status: "PENDING",
+    cvFile: null,
+  })
+  const [fileName, setFileName] = useState("")
 
-  // Stato per i tooltip
-  const [activeTooltip, setActiveTooltip] = useState(null)
-
-  // Stili per i pulsanti di azione
-  const actionButtonStyle = {
-    padding: "6px",
-    marginRight: "4px",
-    backgroundColor: "transparent",
-    border: "none",
-    cursor: "pointer",
-    position: "relative",
-    outline: "none",
-  }
+  // Estado para refrescar componentes
+  const [refreshData, setRefreshData] = useState(0)
 
   // Stile per il bottone Add Candidate
   const addButtonStyle = {
@@ -96,22 +120,6 @@ function App() {
     boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
   }
 
-  // Stile per i tooltip
-  const tooltipStyle = {
-    position: "absolute",
-    bottom: "100%",
-    left: "50%",
-    transform: "translateX(-50%)",
-    backgroundColor: "rgba(0, 0, 0, 0.8)",
-    color: "white",
-    padding: "4px 8px",
-    borderRadius: "4px",
-    fontSize: "12px",
-    whiteSpace: "nowrap",
-    zIndex: 10,
-    marginBottom: "5px",
-  }
-
   // Funzione per formattare la data
   const formatDate = (dateString) => {
     const options = {
@@ -124,255 +132,474 @@ function App() {
     return new Date(dateString).toLocaleDateString(undefined, options)
   }
 
-  // Definizione delle colonne per la DataTable
-  const columns = [
-    {
-      accessorKey: "createdAt",
-      header: "Created At",
-      cell: ({ row }) => formatDate(row.createdAt),
-      defaultSort: "desc", // Indica che questa colonna è ordinata per default in modo discendente
-    },
-    {
-      accessorKey: "name",
-      header: "Name",
-    },
-    {
-      accessorKey: "email",
-      header: "Email",
-    },
-    {
-      accessorKey: "status",
-      header: "Status",
-      cell: ({ row }) => {
-        const status = row.status
-        return (
-          <span
-            style={{
-              padding: "4px 8px",
-              borderRadius: "4px",
-              fontSize: "12px",
-              fontWeight: "500",
-              backgroundColor: status === "PENDING" ? "#fef3c7" : "#d1fae5",
-              color: status === "PENDING" ? "#92400e" : "#065f46",
-            }}
-          >
-            {status}
-          </span>
-        )
-      },
-    },
-    {
-      id: "actions",
-      header: "",
-      cell: ({ row }) => {
-        const candidate = row
-        return (
-          <div style={{ display: "flex" }}>
-            {/* Edit button */}
-            <button
-              className="action-button"
-              style={actionButtonStyle}
-              onMouseEnter={() => setActiveTooltip(`edit-${candidate.id}`)}
-              onMouseLeave={() => setActiveTooltip(null)}
-            >
-              {activeTooltip === `edit-${candidate.id}` && (
-                <div style={tooltipStyle}>Edit</div>
-              )}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#3b82f6"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-              </svg>
-            </button>
+  // Handle input change
+  const handleInputChange = (e) => {
+    const { name, value, type, files } = e.target
 
-            {/* Delete button */}
-            <button
-              className="action-button"
-              style={actionButtonStyle}
-              onMouseEnter={() => setActiveTooltip(`delete-${candidate.id}`)}
-              onMouseLeave={() => setActiveTooltip(null)}
-            >
-              {activeTooltip === `delete-${candidate.id}` && (
-                <div style={tooltipStyle}>Delete</div>
-              )}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#ef4444"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M3 6h18"></path>
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
-                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-              </svg>
-            </button>
+    if (type === "file" && files && files[0]) {
+      setFormValues({
+        ...formValues,
+        cvFile: files[0],
+      })
+      setFileName(files[0].name)
+    } else {
+      setFormValues({
+        ...formValues,
+        [name]: value,
+      })
+    }
 
-            {/* Download CSV button */}
-            <button
-              className="action-button"
-              style={actionButtonStyle}
-              onMouseEnter={() => setActiveTooltip(`download-${candidate.id}`)}
-              onMouseLeave={() => setActiveTooltip(null)}
-            >
-              {activeTooltip === `download-${candidate.id}` && (
-                <div style={tooltipStyle}>Download CSV</div>
-              )}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#10b981"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-              </svg>
-            </button>
-          </div>
-        )
-      },
-    },
-  ]
+    // Clear error when field is edited
+    if (formErrors[name]) {
+      setFormErrors({
+        ...formErrors,
+        [name]: "",
+      })
+    }
+  }
 
-  return (
-    <Layout>
-      <div style={{ padding: "24px 0" }}>
-        {/* Cards per le statistiche */}
+  // Validate form
+  const validateForm = () => {
+    const errors = {}
+
+    if (!formValues.firstName.trim())
+      errors.firstName = "First name is required"
+    if (!formValues.lastName.trim()) errors.lastName = "Last name is required"
+    if (!formValues.address.trim()) errors.address = "Address is required"
+    if (!formValues.education.trim()) errors.education = "Education is required"
+    if (!formValues.experience.trim())
+      errors.experience = "Experience is required"
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!formValues.email.trim()) {
+      errors.email = "Email is required"
+    } else if (!emailRegex.test(formValues.email)) {
+      errors.email = "Please enter a valid email"
+    }
+
+    if (!selectedCandidate && !formValues.cvFile) {
+      errors.cvFile = "CV file is required"
+    }
+
+    setFormErrors(errors)
+    return Object.keys(errors).length === 0
+  }
+
+  // Handle form submit
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    if (validateForm()) {
+      // Here you would submit the form to the backend
+      console.log("Form submitted:", formValues)
+      setIsModalOpen(false)
+
+      // Reset form
+      setFormValues({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        address: "",
+        education: "",
+        experience: "",
+        status: "PENDING",
+        cvFile: null,
+      })
+      setFileName("")
+      setFormErrors({})
+
+      // Refresh data
+      handleDataChange()
+    }
+  }
+
+  // Funzione per aprire il modal di aggiunta candidato
+  const handleAddCandidate = () => {
+    setSelectedCandidate(null)
+    setIsModalOpen(true)
+    setFormValues({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      address: "",
+      education: "",
+      experience: "",
+      status: "PENDING",
+      cvFile: null,
+    })
+    setFileName("")
+    setFormErrors({})
+  }
+
+  // Funzione per aprire il modal di modifica candidato
+  const handleEditCandidate = (candidate) => {
+    setSelectedCandidate(candidate)
+    setIsModalOpen(true)
+
+    const [firstName, lastName] = candidate.name
+      ? candidate.name.split(" ")
+      : [candidate.firstName || "", candidate.lastName || ""]
+
+    setFormValues({
+      firstName: firstName || "",
+      lastName: lastName || "",
+      email: candidate.email || "",
+      phone: candidate.phone || "",
+      address: candidate.address || "",
+      education: candidate.education || "",
+      experience: candidate.experience || "",
+      status: candidate.status || "PENDING",
+      cvFile: null,
+    })
+    setFileName("")
+    setFormErrors({})
+  }
+
+  // Función para manejar el cambio de vista
+  const handleViewChange = (view) => {
+    setActiveView(view)
+  }
+
+  // Función para refrescar datos cuando hay cambios
+  const handleDataChange = () => {
+    setRefreshData((prev) => prev + 1)
+  }
+
+  // Form di esempio per il modal
+  const renderCandidateForm = () => {
+    return (
+      <form onSubmit={handleSubmit}>
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: "24px",
-            marginBottom: "32px",
+            gridTemplateColumns: "1fr 1fr",
+            columnGap: "40px",
+            rowGap: "24px",
           }}
         >
-          {/* Candidates received today - Prima card */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Candidates received today</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p
+          {/* First Name */}
+          <div>
+            <input
+              type="text"
+              name="firstName"
+              value={formValues.firstName}
+              onChange={handleInputChange}
+              placeholder="First Name *"
+              style={{
+                padding: "10px 12px",
+                border: "1px solid #e5e7eb",
+                borderRadius: "6px",
+                fontSize: "14px",
+                width: "100%",
+              }}
+            />
+            {formErrors.firstName && (
+              <div className="error-message">{formErrors.firstName}</div>
+            )}
+          </div>
+
+          {/* Last Name */}
+          <div>
+            <input
+              type="text"
+              name="lastName"
+              value={formValues.lastName}
+              onChange={handleInputChange}
+              placeholder="Last Name *"
+              style={{
+                padding: "10px 12px",
+                border: "1px solid #e5e7eb",
+                borderRadius: "6px",
+                fontSize: "14px",
+                width: "100%",
+              }}
+            />
+            {formErrors.lastName && (
+              <div className="error-message">{formErrors.lastName}</div>
+            )}
+          </div>
+
+          {/* Email */}
+          <div>
+            <input
+              type="email"
+              name="email"
+              value={formValues.email}
+              onChange={handleInputChange}
+              placeholder="Email *"
+              style={{
+                padding: "10px 12px",
+                border: "1px solid #e5e7eb",
+                borderRadius: "6px",
+                fontSize: "14px",
+                width: "100%",
+              }}
+            />
+            {formErrors.email && (
+              <div className="error-message">{formErrors.email}</div>
+            )}
+          </div>
+
+          {/* Phone */}
+          <div>
+            <input
+              type="tel"
+              name="phone"
+              value={formValues.phone}
+              onChange={handleInputChange}
+              placeholder="Phone (optional)"
+              style={{
+                padding: "10px 12px",
+                border: "1px solid #e5e7eb",
+                borderRadius: "6px",
+                fontSize: "14px",
+                width: "100%",
+              }}
+            />
+          </div>
+
+          {/* Address */}
+          <div style={{ gridColumn: "span 2" }}>
+            <input
+              type="text"
+              name="address"
+              value={formValues.address}
+              onChange={handleInputChange}
+              placeholder="Address *"
+              maxLength={100}
+              style={{
+                padding: "10px 12px",
+                border: "1px solid #e5e7eb",
+                borderRadius: "6px",
+                fontSize: "14px",
+                width: "100%",
+              }}
+            />
+            {formErrors.address && (
+              <div className="error-message">{formErrors.address}</div>
+            )}
+          </div>
+
+          {/* Education */}
+          <div style={{ gridColumn: "span 2" }}>
+            <textarea
+              name="education"
+              value={formValues.education}
+              onChange={handleInputChange}
+              placeholder="Education *"
+              style={{
+                padding: "10px 12px",
+                border: "1px solid #e5e7eb",
+                borderRadius: "6px",
+                fontSize: "14px",
+                width: "100%",
+                minHeight: "120px",
+                height: "120px",
+                resize: "vertical",
+              }}
+            ></textarea>
+            {formErrors.education && (
+              <div className="error-message">{formErrors.education}</div>
+            )}
+          </div>
+
+          {/* Experience */}
+          <div style={{ gridColumn: "span 2" }}>
+            <textarea
+              name="experience"
+              value={formValues.experience}
+              onChange={handleInputChange}
+              placeholder="Experience *"
+              style={{
+                padding: "10px 12px",
+                border: "1px solid #e5e7eb",
+                borderRadius: "6px",
+                fontSize: "14px",
+                width: "100%",
+                minHeight: "120px",
+                height: "120px",
+                resize: "vertical",
+              }}
+            ></textarea>
+            {formErrors.experience && (
+              <div className="error-message">{formErrors.experience}</div>
+            )}
+          </div>
+
+          {/* CV File */}
+          <div style={{ gridColumn: "span 2" }}>
+            <div className="custom-file-input" style={{ width: "100%" }}>
+              <input
+                type="file"
+                name="cvFile"
+                id="cvFile"
+                accept=".pdf,.docx"
+                onChange={handleInputChange}
+              />
+              <label htmlFor="cvFile" style={{ width: "100%" }}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <span>{fileName || "CV File * (PDF or DOCX)"}</span>
+              </label>
+            </div>
+            {formErrors.cvFile && (
+              <div className="error-message">{formErrors.cvFile}</div>
+            )}
+          </div>
+
+          {/* Status (for editing) */}
+          {selectedCandidate && (
+            <div style={{ gridColumn: "span 2" }}>
+              <select
+                name="status"
+                value={formValues.status}
+                onChange={handleInputChange}
                 style={{
-                  fontSize: "28px",
-                  fontWeight: "bold",
-                  color: "#3b82f6",
-                  margin: 0,
+                  padding: "10px 12px",
+                  border: "1px solid #e5e7eb",
+                  borderRadius: "6px",
+                  fontSize: "14px",
+                  width: "100%",
+                  backgroundColor: "white",
                 }}
               >
-                {todayReceivedCandidates}
-              </p>
-            </CardContent>
-          </Card>
+                <option value="PENDING">⏳ PENDING</option>
+                <option value="EVALUATED">✅ EVALUATED</option>
+                <option value="REJECTED">❌ REJECTED</option>
+                <option value="INTERVIEW">🟡 INTERVIEW</option>
+                <option value="OFFERED">🔵 OFFERED</option>
+                <option value="HIRED">🟣 HIRED</option>
+              </select>
+            </div>
+          )}
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Total Candidates</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p
-                style={{
-                  fontSize: "28px",
-                  fontWeight: "bold",
-                  color: "#111827",
-                  margin: 0,
-                }}
-              >
-                {totalCandidates}
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Pending Candidates</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p
-                style={{
-                  fontSize: "28px",
-                  fontWeight: "bold",
-                  color: "#f59e0b",
-                  margin: 0,
-                }}
-              >
-                {pendingCandidates}
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Valuated Candidates</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p
-                style={{
-                  fontSize: "28px",
-                  fontWeight: "bold",
-                  color: "#10b981",
-                  margin: 0,
-                }}
-              >
-                {valuatedCandidates}
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Pulsante Add Candidate centrato */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginBottom: "32px",
-          }}
-        >
-          <button style={addButtonStyle}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+          {/* Buttons */}
+          <div
+            style={{
+              gridColumn: "span 2",
+              display: "flex",
+              justifyContent: "flex-end",
+              marginTop: "20px",
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(false)}
+              style={{
+                marginRight: "8px",
+                padding: "10px 20px",
+                backgroundColor: "#f3f4f6",
+                color: "#374151",
+                borderRadius: "6px",
+                border: "none",
+                fontSize: "14px",
+                fontWeight: "500",
+                cursor: "pointer",
+              }}
             >
-              <path d="M12 5v14M5 12h14"></path>
-            </svg>
-            Add Candidate
-          </button>
+              Cancel
+            </button>
+            <button
+              type="submit"
+              style={{
+                padding: "10px 20px",
+                backgroundColor: "#3b82f6",
+                color: "white",
+                borderRadius: "6px",
+                border: "none",
+                fontSize: "14px",
+                fontWeight: "500",
+                cursor: "pointer",
+              }}
+            >
+              {selectedCandidate ? "Update Candidate" : "Add Candidate"}
+            </button>
+          </div>
         </div>
+      </form>
+    )
+  }
 
-        {/* Tabella dei candidati con DataTable */}
-        <Card>
-          <CardContent>
-            <DataTable columns={columns} data={candidates} />
-          </CardContent>
-        </Card>
-      </div>
-    </Layout>
+  // Renderizar el contenido según la vista activa
+  const renderContent = () => {
+    switch (activeView) {
+      case "dashboard":
+        return (
+          <>
+            <Dashboard key={refreshData} />
+
+            {/* Tabla de candidatos */}
+            <Card>
+              <CardContent>
+                <CandidateList
+                  onEdit={handleEditCandidate}
+                  onAddNew={handleAddCandidate}
+                  onCandidateChange={handleDataChange}
+                />
+              </CardContent>
+            </Card>
+          </>
+        )
+
+      case "candidates":
+        return (
+          <CandidateList
+            onEdit={handleEditCandidate}
+            onAddNew={handleAddCandidate}
+            onCandidateChange={handleDataChange}
+          />
+        )
+
+      // Redirigir al dashboard por defecto para evitar doble llamada
+      default:
+        setActiveView("dashboard") // Redireccionar al dashboard
+        return null
+    }
+  }
+
+  return (
+    <SearchProvider>
+      <Layout onAddCandidate={handleAddCandidate}>
+        <div style={{ padding: "24px 0" }}>
+          {/* Contenido principal */}
+          {renderContent()}
+
+          {/* Modal de formulario */}
+          <Dialog isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+            <DialogContent>
+              <DialogHeader>
+                <h2
+                  style={{
+                    fontSize: "1.5rem",
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    marginBottom: "16px",
+                  }}
+                >
+                  {selectedCandidate ? "Edit Candidate" : "Add New Candidate"}
+                </h2>
+              </DialogHeader>
+              {renderCandidateForm()}
+            </DialogContent>
+          </Dialog>
+        </div>
+      </Layout>
+    </SearchProvider>
   )
 }
 

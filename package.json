@@ -8,7 +8,7 @@
     "backend"
   ],
   "scripts": {
-    "start": "cd frontend && npm start",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
     "start:backend": "cd backend && npm run start",
     "start:frontend": "cd frontend && npm run start",
     "dev:backend": "cd backend && npm run dev",
@@ -16,12 +16,13 @@
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "build:backend": "cd backend && npm run build",
     "build:frontend": "cd frontend && npm run build",
-    "build": "npm run build:backend && npm run build:frontend",
+    "build": "cd frontend && npm run build",
     "test:backend": "cd backend && npm run test",
     "test:frontend": "cd frontend && npm run test",
-    "test": "npm run test:backend && npm run test:frontend",
+    "test": "concurrently \"cd backend && npm run test\" \"cd frontend && npm run test\"",
     "prisma:generate": "cd backend && npm run prisma:generate",
-    "prisma:seed": "cd backend && npm run prisma:seed"
+    "prisma:seed": "cd backend && npm run prisma:seed",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install"
   },
   "keywords": [
     "recruitment",

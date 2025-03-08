@@ -5,9 +5,6 @@ const Table = React.forwardRef(({ children, ...props }, ref) => {
     width: "100%",
     borderCollapse: "collapse",
     captionSide: "bottom",
-    borderRadius: "8px",
-    overflow: "hidden",
-    border: "1px solid #e5e7eb",
   }
 
   return (

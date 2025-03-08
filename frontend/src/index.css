@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,7 +15,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 221.2 83.2% 53.3%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -30,9 +32,9 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: 221.2 83.2% 53.3%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
   }
 
   .dark {
@@ -45,7 +47,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -62,75 +64,168 @@
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --ring: 224.3 76.3% 48%;
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
-/* Rimuove tutte le scrollbar dal documento principale */
-html,
-body,
-#root {
-  height: 100%;
+* {
+  box-sizing: border-box;
+  transition: background-color 0.2s ease;
   margin: 0;
   padding: 0;
-  overflow: hidden !important;
 }
 
-/* Stili per il layout principale */
+body {
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #f9fafb;
+  color: #0f172a;
+  overflow-x: hidden;
+}
+
 .app-container {
-  height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow: hidden !important;
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .main-content {
   flex: 1;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  overflow: hidden !important;
+  margin: 0;
+  padding: 0;
 }
 
-/* Permette la scrollbar solo nel contenuto principale */
 .scrollable-content {
   flex: 1;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
+  overflow-y: auto;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-/* Rimuove qualsiasi effetto di rollover dai pulsanti di azione */
 .action-button {
-  background-color: transparent !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .action-button:hover,
-.action-button:focus,
-.action-button:active {
-  background-color: transparent !important;
-  opacity: 1 !important;
-  transform: none !important;
-  box-shadow: none !important;
-  outline: none !important;
+.action-button:focus {
+  transform: scale(1.1);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  line-height: inherit;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .app-container {
+    padding: 0;
+  }
+
+  #root,
+  .app-container,
+  .main-content,
+  .scrollable-content {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .search-and-filters {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .search-and-filters > div {
+    width: 100% !important;
+    margin-bottom: 8px;
+  }
+
+  .header-controls {
+    flex-wrap: wrap;
+    gap: 8px !important;
+    margin-right: 0 !important;
+    justify-content: flex-end;
+    padding-right: 70px;
+  }
+}
+
+/* Responsive table */
+@media (max-width: 640px) {
+  .responsive-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    min-width: 500px;
+    border: 1px solid red;
+  }
+}
+
+/* Utility classes for responsiveness */
+.responsive-width {
+  width: 100%;
+  max-width: 100%;
+}
+
+.responsive-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Additional responsive utilities */
+@media (max-width: 480px) {
+  .hide-on-mobile {
+    display: none !important;
+  }
+
+  .full-width-on-mobile {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .header-controls {
+    padding-right: 60px !important;
+  }
 }

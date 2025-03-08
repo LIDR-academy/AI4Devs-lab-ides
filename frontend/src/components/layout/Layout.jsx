@@ -1,19 +1,19 @@
 import React from "react"
 import Header from "./Header"
 
-const Layout = ({ children }) => {
+const Layout = ({ children, onAddCandidate }) => {
   const containerStyle = {
-    maxWidth: "1200px",
     width: "100%",
-    margin: "0 auto",
-    padding: "24px 16px",
+    maxWidth: "100%",
+    margin: 0,
+    padding: "20px",
   }
 
   return (
-    <div className="app-container">
-      <Header />
-      <main className="main-content">
-        <div className="scrollable-content">
+    <div className="app-container" style={{ padding: 0, margin: 0 }}>
+      <Header onAddCandidate={onAddCandidate} />
+      <main className="main-content" style={{ padding: 0, margin: 0 }}>
+        <div className="scrollable-content" style={{ padding: 0, margin: 0 }}>
           <div style={containerStyle}>{children}</div>
         </div>
       </main>
