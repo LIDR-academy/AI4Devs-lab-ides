@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { AppError } from '../middlewares/error.middleware';
+import fs from 'fs';
+import path from 'path';
 
 const prisma = new PrismaClient();
 
@@ -112,6 +114,14 @@ export const createCandidate = async (
       return next(new AppError('Candidate with this email already exists', 400));
     }
 
+    // Datos para el CV si se ha subido un archivo
+    const cvData = req.file ? {
+      cvFilename: req.file.originalname,
+      cvFileUrl: req.file.path,
+      cvFileType: req.file.mimetype,
+      cvUploadedAt: new Date(),
+    } : {};
+
     // Create new candidate
     const newCandidate = await prisma.candidate.create({
       data: {
@@ -125,6 +135,7 @@ export const createCandidate = async (
         skills,
         notes,
         createdById: req.user.id,
+        ...cvData,
       },
     });
 
@@ -180,6 +191,23 @@ export const updateCandidate = async (
       }
     }
 
+    // Datos para el CV si se ha subido un archivo nuevo
+    const cvData = req.file ? {
+      cvFilename: req.file.originalname,
+      cvFileUrl: req.file.path,
+      cvFileType: req.file.mimetype,
+      cvUploadedAt: new Date(),
+    } : {};
+
+    // Si hay un archivo nuevo y ya existía uno anterior, eliminar el archivo anterior
+    if (req.file && candidate.cvFileUrl) {
+      try {
+        fs.unlinkSync(candidate.cvFileUrl);
+      } catch (err) {
+        console.error('Error deleting old CV file:', err);
+      }
+    }
+
     // Update candidate
     const updatedCandidate = await prisma.candidate.update({
       where: { id },
@@ -194,6 +222,7 @@ export const updateCandidate = async (
         skills,
         notes,
         status,
+        ...cvData,
       },
     });
 
@@ -239,6 +268,15 @@ export const deleteCandidate = async (
       );
     }
 
+    // Si el candidato tiene un CV, eliminar el archivo
+    if (candidate.cvFileUrl) {
+      try {
+        fs.unlinkSync(candidate.cvFileUrl);
+      } catch (err) {
+        console.error('Error deleting CV file:', err);
+      }
+    }
+
     // Delete candidate
     await prisma.candidate.delete({
       where: { id },
@@ -248,6 +286,39 @@ export const deleteCandidate = async (
       status: 'success',
       data: null,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Download CV
+export const downloadCV = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    // Check if candidate exists
+    const candidate = await prisma.candidate.findUnique({
+      where: { id },
+    });
+
+    if (!candidate) {
+      return next(new AppError('No candidate found with that ID', 404));
+    }
+
+    // Check if candidate has a CV
+    if (!candidate.cvFileUrl) {
+      return next(new AppError('This candidate does not have a CV', 404));
+    }
+
+    // Enviar el archivo
+    const filePath = candidate.cvFileUrl;
+    const fileName = candidate.cvFilename;
+
+    res.download(filePath, fileName);
   } catch (error) {
     next(error);
   }

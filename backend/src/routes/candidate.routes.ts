@@ -5,8 +5,10 @@ import {
   createCandidate,
   updateCandidate,
   deleteCandidate,
+  downloadCV,
 } from '../controllers/candidate.controller';
 import { protect, restrictTo } from '../middlewares/auth.middleware';
+import upload from '../middlewares/upload.middleware';
 
 const router = Router();
 
@@ -19,12 +21,15 @@ router.use(restrictTo('RECRUITER', 'ADMIN'));
 router
   .route('/')
   .get(getAllCandidates)
-  .post(createCandidate);
+  .post(upload.single('cv'), createCandidate);
 
 router
   .route('/:id')
   .get(getCandidate)
-  .patch(updateCandidate)
+  .patch(upload.single('cv'), updateCandidate)
   .delete(deleteCandidate);
+
+// Ruta para descargar el CV
+router.get('/:id/cv', downloadCV);
 
 export default router; 

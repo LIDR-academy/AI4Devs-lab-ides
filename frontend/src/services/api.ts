@@ -26,6 +26,27 @@ export const candidateApi = {
   create: (data: any) => api.post('/candidates', data),
   update: (id: string, data: any) => api.patch(`/candidates/${id}`, data),
   delete: (id: string) => api.delete(`/candidates/${id}`),
+  createWithFile: (formData: FormData) => {
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    };
+    return axios.post(`${API_URL}/candidates`, formData, config);
+  },
+  updateWithFile: (id: string, formData: FormData) => {
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    };
+    return axios.patch(`${API_URL}/candidates/${id}`, formData, config);
+  },
+  downloadCV: (id: string) => {
+    window.open(`${API_URL}/candidates/${id}/cv`, '_blank');
+  }
 };
 
 // Selection Process API

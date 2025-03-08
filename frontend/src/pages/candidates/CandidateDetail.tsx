@@ -16,6 +16,10 @@ interface Candidate {
   status: string;
   createdAt: string;
   updatedAt: string;
+  cvFilename: string | null;
+  cvFileUrl: string | null;
+  cvFileType: string | null;
+  cvUploadedAt: string | null;
   selectionProcesses: SelectionProcess[];
 }
 
@@ -83,6 +87,12 @@ const CandidateDetail: React.FC = () => {
       setDeleteModalOpen(false);
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const handleDownloadCV = () => {
+    if (id && candidate?.cvFilename) {
+      candidateApi.downloadCV(id);
     }
   };
 
@@ -202,6 +212,28 @@ const CandidateDetail: React.FC = () => {
                 <dt className="text-sm font-medium text-gray-500">Address</dt>
                 <dd className="mt-1 text-sm text-gray-900">{candidate.address || 'Not provided'}</dd>
               </div>
+              {/* CV Information */}
+              {candidate.cvFilename && (
+                <div className="sm:col-span-2">
+                  <dt className="text-sm font-medium text-gray-500">CV</dt>
+                  <dd className="mt-1 text-sm text-gray-900 flex items-center">
+                    <span className="mr-2">{candidate.cvFilename}</span>
+                    <button
+                      onClick={handleDownloadCV}
+                      className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                      aria-label="Download CV"
+                      tabIndex={0}
+                    >
+                      Download
+                    </button>
+                    {candidate.cvUploadedAt && (
+                      <span className="ml-2 text-xs text-gray-500">
+                        (Uploaded on {new Date(candidate.cvUploadedAt).toLocaleDateString()})
+                      </span>
+                    )}
+                  </dd>
+                </div>
+              )}
             </dl>
           </div>
 

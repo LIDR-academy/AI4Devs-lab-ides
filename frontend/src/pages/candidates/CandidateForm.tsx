@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { candidateApi } from '../../services/api';
 
@@ -18,6 +18,7 @@ const CandidateForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isEditMode = !!id;
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState<CandidateFormData>({
     firstName: '',
@@ -31,7 +32,10 @@ const CandidateForm: React.FC = () => {
     notes: '',
   });
 
+  const [cvFile, setCvFile] = useState<File | null>(null);
+  const [currentCvFilename, setCurrentCvFilename] = useState<string | null>(null);
   const [errors, setErrors] = useState<Partial<CandidateFormData>>({});
+  const [fileError, setFileError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(isEditMode);
   const [apiError, setApiError] = useState<string | null>(null);
@@ -55,6 +59,10 @@ const CandidateForm: React.FC = () => {
             skills: candidate.skills || '',
             notes: candidate.notes || '',
           });
+          
+          if (candidate.cvFilename) {
+            setCurrentCvFilename(candidate.cvFilename);
+          }
           
           setApiError(null);
         } catch (err) {
@@ -90,6 +98,27 @@ const CandidateForm: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const validateFile = (file: File | null): boolean => {
+    if (!file) return true; // No file is valid (it's optional)
+    
+    // Check file type
+    const validTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!validTypes.includes(file.type)) {
+      setFileError('Only PDF or DOCX files are allowed');
+      return false;
+    }
+    
+    // Check file size (5MB max)
+    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    if (file.size > maxSize) {
+      setFileError('File size must be less than 5MB');
+      return false;
+    }
+    
+    setFileError(null);
+    return true;
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -100,10 +129,16 @@ const CandidateForm: React.FC = () => {
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setCvFile(file);
+    validateFile(file);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateForm()) {
+    if (!validateForm() || !validateFile(cvFile)) {
       return;
     }
     
@@ -111,10 +146,23 @@ const CandidateForm: React.FC = () => {
     setApiError(null);
     
     try {
+      // Crear un FormData para enviar el archivo
+      const formDataToSend = new FormData();
+      
+      // Añadir todos los campos del formulario
+      Object.entries(formData).forEach(([key, value]) => {
+        formDataToSend.append(key, value);
+      });
+      
+      // Añadir el archivo CV si existe
+      if (cvFile) {
+        formDataToSend.append('cv', cvFile);
+      }
+      
       if (isEditMode) {
-        await candidateApi.update(id, formData);
+        await candidateApi.updateWithFile(id, formDataToSend);
       } else {
-        await candidateApi.create(formData);
+        await candidateApi.createWithFile(formDataToSend);
       }
       
       navigate('/candidates');
@@ -126,6 +174,25 @@ const CandidateForm: React.FC = () => {
       console.error(`Error ${isEditMode ? 'updating' : 'creating'} candidate:`, err);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleRemoveFile = () => {
+    setCvFile(null);
+    setCurrentCvFilename(null);
+    setFileError(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleDownloadCV = async () => {
+    if (isEditMode && id && currentCvFilename) {
+      try {
+        window.open(`http://localhost:3010/api/candidates/${id}/cv`, '_blank');
+      } catch (err) {
+        console.error('Error downloading CV:', err);
+      }
     }
   };
 
@@ -159,7 +226,7 @@ const CandidateForm: React.FC = () => {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* First Name */}
           <div>
@@ -271,6 +338,65 @@ const CandidateForm: React.FC = () => {
               aria-label="Address"
               tabIndex={0}
             />
+          </div>
+
+          {/* CV Upload */}
+          <div className="md:col-span-2">
+            <label htmlFor="cv" className="block text-sm font-medium text-gray-700">
+              CV (PDF or DOCX, max 5MB)
+            </label>
+            <div className="mt-1 flex items-center">
+              <input
+                type="file"
+                id="cv"
+                name="cv"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                className="sr-only"
+                aria-label="Upload CV"
+                tabIndex={0}
+              />
+              <label
+                htmlFor="cv"
+                className="relative cursor-pointer bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
+              >
+                <span>{cvFile ? 'Change file' : 'Upload file'}</span>
+              </label>
+              
+              {(cvFile || currentCvFilename) && (
+                <div className="ml-3 flex items-center">
+                  <span className="text-sm text-gray-500">
+                    {cvFile ? cvFile.name : currentCvFilename}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleRemoveFile}
+                    className="ml-2 text-sm text-red-600 hover:text-red-800"
+                    aria-label="Remove file"
+                    tabIndex={0}
+                  >
+                    Remove
+                  </button>
+                  {!cvFile && currentCvFilename && (
+                    <button
+                      type="button"
+                      onClick={handleDownloadCV}
+                      className="ml-2 text-sm text-blue-600 hover:text-blue-800"
+                      aria-label="Download CV"
+                      tabIndex={0}
+                    >
+                      Download
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+            {fileError && (
+              <p className="mt-2 text-sm text-red-600">
+                {fileError}
+              </p>
+            )}
           </div>
 
           {/* Education */}
