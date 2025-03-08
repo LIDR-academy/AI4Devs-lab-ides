@@ -1,26 +1,33 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from './contexts/AuthContext';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import Layout from './components/Layout';
+import ProtectedRoute from './components/ProtectedRoute';
 
-function App() {
+const App: React.FC = () => {
+  const { isAuthenticated } = useAuth();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        {/* Public routes */}
+        <Route index element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
+        <Route path="login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
+        <Route path="register" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Register />} />
+        
+        {/* Protected routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="dashboard" element={<Dashboard />} />
+        </Route>
+        
+        {/* Catch all - 404 */}
+        <Route path="*" element={<Navigate to="/" />} />
+      </Route>
+    </Routes>
   );
-}
+};
 
 export default App;
