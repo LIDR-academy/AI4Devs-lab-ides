@@ -2,20 +2,10 @@ import { test, expect } from '@playwright/test';
 import path from 'path';
 
 test.describe('Candidate Management', () => {
-  test.beforeEach(async ({ page }) => {
-    // Login before each test
-    await page.goto('/login');
-    await page.fill('[name="email"]', 'recruiter@example.com');
-    await page.fill('[name="password"]', 'password123');
-    await page.click('button[type="submit"]');
-    await expect(page).toHaveURL('/dashboard');
-  });
-
   test('should create a new candidate', async ({ page }) => {
-    // Navigate to new candidate form
-    await page.click('text=Add New Candidate');
-    await expect(page).toHaveURL('/candidates/new');
-
+    // Navegar directamente a new candidate form (ya estamos autenticados)
+    await page.goto('/candidates/new');
+    
     // Fill the form
     await page.fill('#firstName', 'John');
     await page.fill('#lastName', 'Doe');

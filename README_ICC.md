@@ -92,12 +92,21 @@ La aplicación estará disponible en `http://localhost:3000`
 
 ### Preparación del Entorno de Pruebas
 
-1. Crear estructura de carpetas para pruebas:
+1. Asegúrate de que la aplicación está en ejecución:
 ```bash
+# Terminal 1: Iniciar la aplicación
+npm run dev
+
+# Esperar a que la aplicación esté disponible en http://localhost:3000
+```
+
+2. Crear estructura de carpetas para pruebas (en una nueva terminal):
+```bash
+# Terminal 2: Preparar entorno de pruebas
 mkdir -p tests/test-files tests/downloads
 ```
 
-2. Crear archivos de prueba:
+3. Crear archivos de prueba:
 ```bash
 cd tests/test-files
 
@@ -116,27 +125,40 @@ fsutil file createnew large-file.pdf 6291456
 
 ### Ejecutar Pruebas
 
-1. Ejecutar todas las pruebas:
+1. **IMPORTANTE**: Asegúrate de que la aplicación está en ejecución en http://localhost:3000 antes de ejecutar las pruebas.
+
+2. En una terminal separada, ejecuta las pruebas:
+
 ```bash
+# Ejecutar todas las pruebas
 npx playwright test
-```
 
-2. Ejecutar pruebas específicas:
-```bash
-# Pruebas de candidatos
+# O ejecutar pruebas específicas
 npx playwright test tests/candidates.spec.ts
-
-# Pruebas de procesos
 npx playwright test tests/processes.spec.ts
-
-# Pruebas de documentos
 npx playwright test tests/documents.spec.ts
 ```
 
-3. Ejecutar pruebas con interfaz visual:
+3. Para ejecutar pruebas con interfaz visual:
 ```bash
 npx playwright test --ui
 ```
+
+### Solución de Problemas Comunes
+
+#### Error de Timeout en Login
+Si encuentras errores de timeout durante el login:
+1. Verifica que la aplicación está ejecutándose en http://localhost:3000
+2. Asegúrate de que las credenciales son correctas:
+   ```
+   Email: recruiter@lti-talent.com
+   Password: 12345aA!
+   ```
+3. Aumenta el timeout en la configuración de las pruebas:
+   ```bash
+   # Ejecutar con timeout aumentado
+   npx playwright test --timeout=60000
+   ```
 
 ### Visualización de Resultados
 
