@@ -296,3 +296,7 @@ Añade a .gitignore los resultados de los tests
 
 # Prompt 10
 Crea un nuevo README_ICC.md con las instrucciones para ejecutar la aplicación, la bateria de pruebas asi como dónde ver los resultados de éstas y la descripción del proyecto y sus funcionalidades.
+
+# Verificación:
+En la documentación @README_ICC.md no especificas las credenciales para poder entrar como Recuiter o como Admin
+El password para ambos usuarios es 12345aA!

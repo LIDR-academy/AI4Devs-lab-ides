@@ -3,6 +3,23 @@
 ## Descripción del Proyecto
 El LTI Talent Tracking System es una aplicación web diseñada para ayudar a los reclutadores a gestionar candidatos y procesos de selección de manera eficiente. La aplicación está construida con tecnologías modernas y sigue las mejores prácticas de desarrollo y accesibilidad.
 
+### Credenciales de Acceso
+Para acceder al sistema, puedes utilizar las siguientes credenciales según el rol:
+
+#### Administrador
+```
+Email: admin@lti-talent.com
+Password: 12345aA!
+```
+
+#### Reclutador
+```
+Email: recruiter@lti-talent.com
+Password: 12345aA!
+```
+
+> **Nota**: Estas son credenciales de prueba. En un entorno de producción, asegúrate de cambiar estas contraseñas por unas más seguras y únicas para cada usuario.
+
 ### Características Principales
 - **Gestión de Candidatos**
   - Crear, editar y eliminar perfiles de candidatos
