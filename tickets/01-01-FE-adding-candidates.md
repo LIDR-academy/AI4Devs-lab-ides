@@ -17,7 +17,7 @@ Implement the user interface for adding candidates to the ATS system.
 * Consider integrating autocomplete functionalities for the education and work experience fields, based on existing data in the system.
 
 ## Development Tasks:
-- [ ] Create a button or link on the recruiter’s main dashboard page to add a new candidate.
+- [ ] DEFER: Create a button or link on the recruiter’s main dashboard page to add a new candidate.
 - [ ] Develop a form to capture the candidate’s information, including first name, last name, email, phone number, address, education, and work experience.
 - [ ] Implement client-side validation for the form to ensure completeness and correctness of the entered data.
 - [ ] Add functionality to upload the candidate’s CV in PDF or DOCX format.

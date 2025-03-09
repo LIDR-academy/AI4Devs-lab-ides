@@ -14,3 +14,15 @@ Develop the backend required to process the information entered in the candidate
 ## Notes:
 * Follow best practices for API development and data security.
 * Consider scalability and performance when designing the backend architecture.
+
+## Development Tasks:
+- [ ] Create API endpoint for submitting candidate information
+- [ ] Implement data validation middleware for candidate submissions
+- [ ] Implement error handling middleware
+- [ ] Create database schema and models for candidate data
+- [ ] Add API documentation using OpenAPI/Swagger
+- [ ] Write unit tests for the candidate submission flow
+
+## Comments:
+- We'll store the uploaded CVs as blobs in the database for simplicity.
+- Maybe we should encrypt PII data in the database to enhance security, but we'll defer that until a security review.
