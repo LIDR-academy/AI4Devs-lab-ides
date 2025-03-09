@@ -99,5 +99,8 @@ Jest has detected the following 1 open handle potentially keeping Jest from exit
 
 ## Prompt: Let's get started!
 
-@workspace OK, do we have enough info to get started on the implementation?
-Please note that the backend part of the project lives in the folder /backend, and a lot of the setup has already been done. Please proceed!
+OK, do we have enough info to get started on the implementation?
+...
+I want to do this following TDD. So tests first, let me run them and see them fail, then implementation. Rinse, repeat. Small steps. Can you do that?
+...
+Please back up one step and notice that jest is already set up. Please don't touch that. Just add the test file.
