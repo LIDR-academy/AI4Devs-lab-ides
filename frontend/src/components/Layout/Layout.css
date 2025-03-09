@@ -1,0 +1,144 @@
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #F8F9FA;
+  position: relative;
+}
+
+.sidebar {
+  width: 240px;
+  background-color: #FFFFFF;
+  padding: 16px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  border-right: 1px solid #F0F0F5;
+  transition: transform 0.3s ease;
+  z-index: 20;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 240px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  transition: margin-left 0.3s ease;
+}
+
+.content-area {
+  padding: 24px;
+  flex: 1;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+
+  .navbar {
+    padding: 0 16px;
+  }
+
+  .content-area {
+    padding: 16px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* Tablet styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Menu toggle button for mobile */
+.menu-toggle {
+  display: none;
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 30;
+  background: #FFFFFF;
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+  }
+}
+
+.navbar {
+  height: 72px;
+  background-color: #FFFFFF;
+  border-bottom: 1px solid #F0F0F5;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.icon-button {
+  background-color: #F8F9FA !important;
+  padding: 8px !important;
+}
+
+.icon-button:hover {
+  background-color: #F1F3F5 !important;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background-color: #FFFFFF;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

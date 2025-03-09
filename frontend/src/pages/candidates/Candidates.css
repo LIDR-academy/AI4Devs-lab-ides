@@ -1,0 +1,303 @@
+.candidates-container {
+  padding: 24px;
+}
+
+.candidates-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.candidates-header h1 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1E293B;
+}
+
+.candidates-table {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+}
+
+.candidates-table .MuiTableHead-root {
+  background-color: #F8F9FA;
+}
+
+.candidates-table .MuiTableHead-root .MuiTableCell-head {
+  font-weight: 600;
+  color: #475569;
+  padding: 16px;
+}
+
+.candidates-table .MuiTableBody-root .MuiTableCell-body {
+  padding: 16px;
+  color: #1E293B;
+}
+
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.section-content {
+  padding: 2rem;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.info-item {
+  margin-bottom: 1rem;
+}
+
+.detail-item {
+  margin-bottom: 2rem;
+}
+
+.item-divider {
+  margin: 2rem 0;
+}
+
+.description {
+  margin-top: 1rem;
+  white-space: pre-line;
+}
+
+.document-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.document-item:last-child {
+  border-bottom: none;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.status-badge.active {
+  background-color: #DCFCE7;
+  color: #166534;
+}
+
+.status-badge.pending {
+  background-color: #FEF3C7;
+  color: #92400E;
+}
+
+.status-badge.rejected {
+  background-color: #FEE2E2;
+  color: #991B1B;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+@media (max-width: 768px) {
+  .candidates-container {
+    padding: 16px;
+  }
+
+  .candidates-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .candidates-table {
+    overflow-x: auto;
+  }
+
+  .MuiTableCell-root {
+    padding: 12px !important;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+
+.candidate-form-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #FFFFFF;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 32px;
+}
+
+.form-section {
+  margin-bottom: 32px;
+}
+
+.form-section-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1E293B;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #F1F5F9;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-field label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #475569;
+}
+
+.form-field .MuiTextField-root {
+  width: 100%;
+}
+
+.form-field .MuiOutlinedInput-root {
+  background-color: #F8FAFC;
+  border-radius: 8px;
+}
+
+.form-field .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #CBD5E1;
+}
+
+.form-field .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #4338CA;
+}
+
+.add-section-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #4338CA;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background-color: #EEF2FF;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  margin-bottom: 32px;
+}
+
+.add-section-button:hover {
+  background-color: #E0E7FF;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid #F1F5F9;
+}
+
+.form-actions button {
+  padding: 8px 24px;
+  border-radius: 8px;
+  font-weight: 500;
+  text-transform: none;
+}
+
+.form-actions .cancel-button {
+  color: #475569;
+  background-color: #F1F5F9;
+}
+
+.form-actions .cancel-button:hover {
+  background-color: #E2E8F0;
+}
+
+.form-actions .save-button {
+  background-color: #4338CA;
+  color: white;
+}
+
+.form-actions .save-button:hover {
+  background-color: #3730A3;
+}
+
+.date-field .MuiInputBase-root {
+  padding-right: 8px;
+}
+
+.description-field .MuiOutlinedInput-root {
+  min-height: 120px;
+}
+
+@media (max-width: 768px) {
+  .candidate-form-container {
+    padding: 20px;
+    margin: 16px;
+    border-radius: 8px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+    gap: 12px;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+}
+
+.form-row {
+  position: relative;
+  padding-right: 40px;
+}
+
+.remove-button {
+  position: absolute !important;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #EF4444 !important;
+  background-color: #FEE2E2 !important;
+}
+
+.remove-button:hover {
+  background-color: #FEE2E2 !important;
+  color: #DC2626 !important;
+}
