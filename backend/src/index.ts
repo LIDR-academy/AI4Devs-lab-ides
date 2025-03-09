@@ -4,13 +4,15 @@ import candidateRoutes from './routes/candidateRoutes';
 import { errorHandler } from './middleware/errorMiddleware';
 import { swaggerUi, specs, swaggerOptions } from './config/swagger';
 import path from 'path';
-import prisma from './prisma'; // Importamos prisma desde el nuevo módulo
+import prisma from './prisma';
+import cors from 'cors';
 
 dotenv.config();
 export const app = express();
 const port = process.env.PORT || 3010;
 
 // Middlewares
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
