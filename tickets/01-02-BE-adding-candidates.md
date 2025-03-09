@@ -26,3 +26,49 @@ Develop the backend required to process the information entered in the candidate
 ## Comments:
 - We'll store the uploaded CVs as blobs in the database for simplicity.
 - Maybe we should encrypt PII data in the database to enhance security, but we'll defer that until a security review.
+
+## Data Requirements:
+
+### Database Schema Overview:
+- Candidates (main table):
+  - UUID (primary key)
+  - Personal Information Fields
+  - Professional Summary Fields
+  - Created At
+  - Updated At
+  - Status (Active/Archived)
+
+- Work Experience (one-to-many):
+  - UUID (primary key)
+  - Candidate ID (foreign key)
+  - Experience Fields
+  - Order Index
+
+- Education (one-to-many):
+  - UUID (primary key)
+  - Candidate ID (foreign key)
+  - Education Fields
+  - Order Index
+
+- Skills (many-to-many):
+  - Skill ID
+  - Candidate ID
+  - Proficiency Level
+
+- Attachments (one-to-many):
+  - UUID (primary key)
+  - Candidate ID (foreign key)
+  - File Type (CV/CoverLetter/Portfolio)
+  - File Name
+  - File Path/URL
+  - Upload Date
+
+### Data Validation Rules:
+- Email: RFC 5322 standard
+- Phone: E.164 format
+- URLs: Valid URL format
+- Dates: ISO 8601 format
+- File attachments:
+  - Max size: 10MB
+  - Formats: PDF, DOCX
+  - Virus scanning required

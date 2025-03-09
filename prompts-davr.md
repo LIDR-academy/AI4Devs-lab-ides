@@ -1,14 +1,14 @@
 # Prompts used in development
 
-## Prompt 1: Adding Candidates
+## Prompt: Adding Candidates
 
 Take the user story etc in #file:01-00-adding-candidates.md and create one frontend ticket in #file:01-01-FE-adding-candidates.md and one backend ticket in #file:01-02-BE-adding-candidates.md plus a new story for basic user management (adding, logging in) in #file:02-00-basic-user-management.md
 
-## Prompt 2: Refining 1
+## Prompt: Refining 1
 
 Look at #file:01-01-FE-adding-candidates.md and add development tasks in a new section. Each task on a separate line with a markdown type checkbox.
 
-## Prompt 3: Loose threads
+## Prompt: Loose threads
 
 The first task mentions a dashboard but we have no dashboard yet. Are there any other things mentioned that don't exist?
 
@@ -33,6 +33,19 @@ _Switching to Claude 3.5 Sonnet (preview)_
 >
 > Would you like me to create tickets for any of these missing prerequisites?
 
-## Prompt 4: Adding Prerequisites
+## Prompt/reply
 
-Yes, please add those stories.
+Yes, please add those stories.  _(And it added 3 files, but with the wrong names.)_
+
+## Several prompts, lost to time: Please rename the tickets
+
+_The bot didn't understand my naming scheme.  I explained and asked it to rename the tickets.  It understood and wanted to do it, but failed.  In the end I had to do it manually._
+
+## Prompt: Add "development tasks" to the new tickets
+
+Add tasks to #file:01-02-BE-adding-candidates.md like you did to #file:01-01-FE-adding-candidates.md
+
+## Prompt: About the data
+
+Let's talk about the data. Name, email, fine. What about the rest of the fields? Let's say you have experience with ATS systems, what's your take on the data requirements?
+

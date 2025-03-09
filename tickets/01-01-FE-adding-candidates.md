@@ -12,6 +12,55 @@ Implement the user interface for adding candidates to the ATS system.
 * In case of an error (e.g., server connection failure), the system should display an appropriate message informing the user of the issue.
 * The functionality should be accessible and compatible with different devices and web browsers.
 
+## Data Requirements:
+
+### Required Fields:
+- Personal Information:
+  - First Name
+  - Last Name
+  - Email
+  - Phone Number
+  - Current Location (City, Country)
+  - LinkedIn Profile URL
+  - Willing to Relocate (Yes/No)
+
+- Professional Summary:
+  - Current Job Title
+  - Years of Experience
+  - Key Skills (multiple)
+  - Expected Salary Range
+
+### Optional Fields:
+- Work Experience (multiple entries):
+  - Company Name
+  - Position
+  - Location
+  - Start Date
+  - End Date
+  - Description
+  - Technologies/Tools Used
+
+- Education (multiple entries):
+  - Institution Name
+  - Degree/Certification
+  - Field of Study
+  - Graduation Date
+  - GPA (if applicable)
+
+- Additional Information:
+  - Portfolio URL
+  - GitHub Profile
+  - Other Social Media
+  - Preferred Work Type (Remote/Hybrid/Onsite)
+  - Notice Period
+  - Visa Status
+  - Languages (with proficiency levels)
+
+### Attachments:
+- CV/Resume (PDF/DOCX)
+- Cover Letter (optional)
+- Portfolio/Work Samples (optional)
+
 ## Notes:
 * The interface should be intuitive and easy to use to minimize the training time required for new recruiters.
 * Consider integrating autocomplete functionalities for the education and work experience fields, based on existing data in the system.
