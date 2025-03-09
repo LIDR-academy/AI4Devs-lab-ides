@@ -55,5 +55,49 @@ _(I got **amazing** suggestions!)_
 
 You have very strong points there. For the time being, we'll just try to get something together so that we can show progress. Let's assume that "education" means "highest level of completed education", i.e. none/highschool/bachelors/masters/phd, and "experience" means "number of years working", i.e. an integer. Please update the design documents accordingly.
 
+## Prompt: Let's fix the test runner
 
+@workspace When running tests it doesn't finish properly. I get this message:
+
+```
+> backend@1.0.0 test
+> jest --detectOpenHandles
+
+  console.log
+    Server is running at http://localhost:3010
+
+      at Server.<anonymous> (src/index.ts:25:11)
+
+ PASS  src/tests/app.test.ts
+  GET /
+    ✓ responds with Hola LTI! (32 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        0.958 s, estimated 1 s
+Ran all test suites.
+
+Jest has detected the following 1 open handle potentially keeping Jest from exiting:
+
+  ●  TCPSERVERWRAP
+
+      22 | });
+      23 |
+    > 24 | app.listen(port, () => {
+         |     ^
+      25 |   console.log(`Server is running at http://localhost:${port}`);
+      26 | });
+      27 |
+
+      at Function.listen (node_modules/express/lib/application.js:635:24)
+      at Object.<anonymous> (src/index.ts:24:5)
+      at Object.<anonymous> (src/tests/app.test.ts:2:1)
+
+^C
+```
+
+## Prompt: Let's get started!
+
+@workspace OK, do we have enough info to get started on the implementation?
 Please note that the backend part of the project lives in the folder /backend, and a lot of the setup has already been done. Please proceed!
