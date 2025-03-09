@@ -1,0 +1,47 @@
+/* src/components/CandidateForm/CandidateForm.module.css */
+.formContainer {
+    padding: 2rem;
+    margin-bottom: 2rem;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.formHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.form {
+    width: 100%;
+}
+
+.uploadButton {
+    padding: 10px;
+    border: 1px dashed #aaa;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.actionButtons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+@media (max-width: 600px) {
+    .formContainer {
+        padding: 1rem;
+    }
+
+    .actionButtons {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .actionButtons button {
+        width: 100%;
+    }
+}
