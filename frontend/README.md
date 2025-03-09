@@ -18,8 +18,7 @@ frontend/src/
 ├── hooks/              # Hooks personalizados (useCandidates, useToast, etc.)
 │
 ├── pages/              # Páginas de la aplicación
-│   ├── Dashboard/      # Página del dashboard
-│   └── CandidateList/  # Página de lista de candidatos
+│   └── Dashboard/      # Página del dashboard (incluye estadísticas y lista de candidatos)
 │
 ├── services/           # Servicios para API y lógica de negocio
 │

@@ -21,7 +21,6 @@ const Dashboard = () => {
   const statistics = stats || {
     total: 0,
     pending: 0,
-    evaluated: 0,
     rejected: 0,
     interview: 0,
     offered: 0,
@@ -36,8 +35,6 @@ const Dashboard = () => {
     switch (cardType) {
       case "pending":
         return "🟡" // Amber
-      case "evaluated":
-        return "🟢" // Green
       case "rejected":
         return "🔴" // Red
       case "interview":
@@ -45,7 +42,7 @@ const Dashboard = () => {
       case "offered":
         return "🔵" // Blue
       case "hired":
-        return "🟣" // Purple
+        return "🟢" // Verde (invece di 🟣)
       case "total":
         return "⚪" // White
       default:
@@ -60,15 +57,9 @@ const Dashboard = () => {
 
     // Si el statusFilter es uno de los valores válidos para nuestras tarjetas, actualizamos activeFilter
     if (
-      [
-        "pending",
-        "evaluated",
-        "rejected",
-        "interview",
-        "offered",
-        "hired",
-        "all",
-      ].includes(currentFilter)
+      ["pending", "rejected", "interview", "offered", "hired", "all"].includes(
+        currentFilter
+      )
     ) {
       setActiveFilter(currentFilter === "all" ? "total" : currentFilter)
     }
@@ -83,10 +74,6 @@ const Dashboard = () => {
       case "pending":
         setSearchTerm("")
         setStatusFilter("PENDING")
-        break
-      case "evaluated":
-        setSearchTerm("")
-        setStatusFilter("EVALUATED")
         break
       case "rejected":
         setSearchTerm("")
@@ -129,11 +116,6 @@ const Dashboard = () => {
         hoverBackgroundColor = "rgba(245, 158, 11, 0.1)"
         activeBackgroundColor = "rgba(245, 158, 11, 0.2)"
         break
-      case "evaluated":
-        baseColor = "#10b981" // Green
-        hoverBackgroundColor = "rgba(16, 185, 129, 0.1)"
-        activeBackgroundColor = "rgba(16, 185, 129, 0.2)"
-        break
       case "rejected":
         baseColor = "#ef4444" // Red
         hoverBackgroundColor = "rgba(239, 68, 68, 0.1)"
@@ -150,9 +132,9 @@ const Dashboard = () => {
         activeBackgroundColor = "rgba(59, 130, 246, 0.2)"
         break
       case "hired":
-        baseColor = "#9333ea" // Purple (matching the dot color)
-        hoverBackgroundColor = "rgba(147, 51, 234, 0.1)"
-        activeBackgroundColor = "rgba(147, 51, 234, 0.2)"
+        baseColor = "#22c55e" // Verde (invece di Purple #9333ea)
+        hoverBackgroundColor = "rgba(34, 197, 94, 0.1)"
+        activeBackgroundColor = "rgba(34, 197, 94, 0.2)"
         break
       case "total":
         baseColor = "#6366f1" // Purple/Indigo
@@ -209,8 +191,6 @@ const Dashboard = () => {
     switch (cardType) {
       case "pending":
         return "#f59e0b" // Amber
-      case "evaluated":
-        return "#10b981" // Green
       case "rejected":
         return "#ef4444" // Red
       case "interview":
@@ -218,7 +198,7 @@ const Dashboard = () => {
       case "offered":
         return "#3b82f6" // Light Blue
       case "hired":
-        return "#9333ea" // Purple
+        return "#22c55e" // Verde (invece di #9333ea Purple)
       case "total":
         return "#6366f1" // Purple/Indigo
       default:
@@ -386,43 +366,6 @@ const Dashboard = () => {
                       }}
                     >
                       {statistics.pending || 0}
-                    </span>
-                  </CardTitle>
-                </CardHeader>
-              </>
-            )}
-
-            {/* Evaluated Card */}
-            {renderCardWithBorder(
-              "evaluated",
-              <>
-                <CardHeader>
-                  <CardTitle
-                    style={{
-                      ...titleStyle,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px",
-                      }}
-                    >
-                      <span>{getIcon("evaluated")}</span>
-                      <span>EVALUATED</span>
-                    </div>
-                    <span
-                      style={{
-                        fontSize: "22px",
-                        fontWeight: "bold",
-                        color: getColor("evaluated"),
-                      }}
-                    >
-                      {statistics.evaluated || 0}
                     </span>
                   </CardTitle>
                 </CardHeader>

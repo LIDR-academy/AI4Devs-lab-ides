@@ -5,7 +5,6 @@ const useStatistics = () => {
   const [stats, setStats] = useState({
     total: 0,
     pending: 0,
-    evaluated: 0,
     rejected: 0,
     interview: 0,
     offered: 0,

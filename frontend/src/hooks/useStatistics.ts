@@ -13,7 +13,6 @@ const useStatistics = (): UseStatisticsResult => {
   const [stats, setStats] = useState<StatusCountStats>({
     total: 0,
     pending: 0,
-    evaluated: 0,
     rejected: 0,
     interview: 0,
     offered: 0,

@@ -1,9 +1,10 @@
+import React from "react"
+
 // Tipos globales para la aplicación
 
 // Enums
-export enum CandidateStatus {
+export enum Status {
   PENDING = "PENDING",
-  EVALUATED = "EVALUATED",
   REJECTED = "REJECTED",
   INTERVIEW = "INTERVIEW",
   OFFERED = "OFFERED",
@@ -20,7 +21,7 @@ export interface Candidate {
   address: string
   education: string
   experience: string
-  status: CandidateStatus
+  status: Status
   cvFilePath?: string
   notes?: string
   createdAt: string
@@ -35,7 +36,7 @@ export interface CandidateFormData {
   address: string
   education: string
   experience: string
-  status: CandidateStatus
+  status: Status
   cvFile?: File | null
   notes?: string
 }
@@ -43,7 +44,14 @@ export interface CandidateFormData {
 export interface StatusCountStats {
   total: number
   pending: number
-  evaluated: number
+  rejected: number
+  interview: number
+  offered: number
+  hired: number
+}
+
+export interface StatisticsData {
+  pending: number
   rejected: number
   interview: number
   offered: number

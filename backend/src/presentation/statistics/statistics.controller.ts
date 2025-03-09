@@ -20,12 +20,6 @@ export class StatisticsController {
         },
       });
 
-      const evaluated = await prisma.candidate.count({
-        where: {
-          status: Status.EVALUATED,
-        },
-      });
-
       const rejected = await prisma.candidate.count({
         where: {
           status: Status.REJECTED,
@@ -65,7 +59,6 @@ export class StatisticsController {
       res.status(StatusCodes.OK).json({
         total,
         pending,
-        evaluated,
         rejected,
         interview,
         offered,

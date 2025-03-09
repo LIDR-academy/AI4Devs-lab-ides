@@ -1,0 +1,4 @@
+# Ignore in all directories
+**/.DS_Store
+**/.env
+**/.env.*

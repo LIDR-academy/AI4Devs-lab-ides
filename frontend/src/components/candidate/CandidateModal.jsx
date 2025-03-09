@@ -1,4 +1,3 @@
-import React from "react"
 import { Dialog, DialogClose, DialogContent, DialogHeader } from "../ui/dialog"
 import CandidateForm from "./CandidateForm"
 
@@ -10,7 +9,7 @@ const CandidateModal = ({ isOpen, onClose, candidate, onSuccess }) => {
 
   // Crear el título del modal
   const modalTitle = candidate
-    ? `Edit Candidate: ${candidate.firstName} ${candidate.lastName}`
+    ? `${candidate.firstName} ${candidate.lastName}`
     : "Add New Candidate"
 
   return (

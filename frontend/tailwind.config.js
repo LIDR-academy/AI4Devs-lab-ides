@@ -40,11 +40,38 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        status: {
+          pending: "#f59e0b",
+          rejected: "#ef4444",
+          interview: "#10b981",
+          offered: "#8b5cf6",
+          hired: "#22c55e",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        sm: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+        DEFAULT:
+          "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+        md: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+        lg: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+      },
+      transitionProperty: {
+        all: "all",
+        colors: "background-color, border-color, color, fill, stroke",
+        opacity: "opacity",
+        shadow: "box-shadow",
+        transform: "transform",
+      },
+      transitionDuration: {
+        200: "200ms",
+      },
+      transitionTimingFunction: {
+        "ease-in-out": "cubic-bezier(0.4, 0, 0.2, 1)",
       },
     },
   },

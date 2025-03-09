@@ -68,164 +68,28 @@
   }
 }
 
-* {
-  box-sizing: border-box;
-  transition: background-color 0.2s ease;
-  margin: 0;
-  padding: 0;
+@layer base {
+  * {
+    @apply box-border m-0 p-0;
+  }
+
+  body {
+    @apply m-0 p-0 antialiased font-['Poppins',_sans-serif] bg-gray-50 text-slate-900;
+  }
+
+  html,
+  body {
+    @apply h-full w-full overflow-x-hidden;
+  }
+
+  code {
+    @apply font-mono;
+  }
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
-    "Helvetica Neue", sans-serif;
-}
-
-html,
-body {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  background-color: #f9fafb;
-  color: #0f172a;
-  overflow-x: hidden;
-}
-
-.app-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-.main-content {
-  flex: 1;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-  padding: 0;
-}
-
-.scrollable-content {
-  flex: 1;
-  overflow-y: auto;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-.action-button {
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.action-button:hover,
-.action-button:focus {
-  transform: scale(1.1);
-}
-
+/* Animazioni globali che non sono facilmente implementabili con Tailwind */
 @keyframes spin {
   to {
     transform: rotate(360deg);
-  }
-}
-
-body {
-  margin: 0;
-  line-height: inherit;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
-}
-
-/* Responsive styles */
-@media (max-width: 768px) {
-  .app-container {
-    padding: 0;
-  }
-
-  #root,
-  .app-container,
-  .main-content,
-  .scrollable-content {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
-  }
-
-  .search-and-filters {
-    flex-direction: column;
-    align-items: stretch;
-    width: 100%;
-  }
-
-  .search-and-filters > div {
-    width: 100% !important;
-    margin-bottom: 8px;
-  }
-
-  .header-controls {
-    flex-wrap: wrap;
-    gap: 8px !important;
-    margin-right: 0 !important;
-    justify-content: flex-end;
-    padding-right: 70px;
-  }
-}
-
-/* Responsive table */
-@media (max-width: 640px) {
-  .responsive-table {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  table {
-    min-width: 500px;
-    border: 1px solid red;
-  }
-}
-
-/* Utility classes for responsiveness */
-.responsive-width {
-  width: 100%;
-  max-width: 100%;
-}
-
-.responsive-card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
-}
-
-.text-ellipsis {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Additional responsive utilities */
-@media (max-width: 480px) {
-  .hide-on-mobile {
-    display: none !important;
-  }
-
-  .full-width-on-mobile {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-
-  .header-controls {
-    padding-right: 60px !important;
   }
 }

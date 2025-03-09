@@ -291,7 +291,7 @@ export function DataTable({ columns, data, style, defaultSort, totalItems }) {
             }
           }}
         >
-          Previous
+          &lt;&lt; PREVIOUS
         </button>
         <span style={{ fontSize: "14px", margin: "0 8px" }}>
           Page {currentPage + 1} of {Math.max(1, pageCount)}
@@ -322,7 +322,7 @@ export function DataTable({ columns, data, style, defaultSort, totalItems }) {
             }
           }}
         >
-          Next
+          NEXT &gt;&gt;
         </button>
       </div>
     </div>

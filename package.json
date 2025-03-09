@@ -35,9 +35,5 @@
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^8.2.2"
-  },
-  "dependencies": {
-    "react": "^19.0.0",
-    "react-router-dom": "^7.3.0"
   }
 }

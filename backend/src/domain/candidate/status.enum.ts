@@ -4,7 +4,6 @@
  */
 export enum Status {
   PENDING = 'PENDING',
-  EVALUATED = 'EVALUATED',
   REJECTED = 'REJECTED',
   INTERVIEW = 'INTERVIEW',
   OFFERED = 'OFFERED',

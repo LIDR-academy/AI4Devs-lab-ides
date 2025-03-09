@@ -1,11 +1,10 @@
 const statusConfig = {
   ALL: { label: "ALL STATUSES", emoji: "⚪" },
   PENDING: { label: "PENDING", emoji: "🟠", color: "#f59e0b" },
-  EVALUATED: { label: "EVALUATED", emoji: "🟢", color: "#10b981" },
   REJECTED: { label: "REJECTED", emoji: "🔴", color: "#ef4444" },
   INTERVIEW: { label: "INTERVIEW", emoji: "🟠", color: "#fb923c" },
   OFFERED: { label: "OFFERED", emoji: "🔵", color: "#3b82f6" },
-  HIRED: { label: "HIRED", emoji: "🟣", color: "#4f46e5" },
+  HIRED: { label: "HIRED", emoji: "🟢", color: "#22c55e" },
 }
 
 // Simple status circle component

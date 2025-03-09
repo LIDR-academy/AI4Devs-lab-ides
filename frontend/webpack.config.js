@@ -52,8 +52,6 @@ module.exports = {
       hooks: path.resolve(__dirname, "src/hooks"),
       contexts: path.resolve(__dirname, "src/contexts"),
       types: path.resolve(__dirname, "src/types"),
-      react: path.resolve("./node_modules/react"),
-      "react-dom": path.resolve("./node_modules/react-dom"),
     },
     fallback: {
       assert: require.resolve("assert/"),
@@ -84,7 +82,7 @@ module.exports = {
     static: {
       directory: path.join(__dirname, "public"),
     },
-    port: 3000,
+    port: 3001,
     historyApiFallback: true,
     proxy: [
       {
