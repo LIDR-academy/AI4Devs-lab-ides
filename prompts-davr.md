@@ -55,3 +55,5 @@ _(I got **amazing** suggestions!)_
 
 You have very strong points there. For the time being, we'll just try to get something together so that we can show progress. Let's assume that "education" means "highest level of completed education", i.e. none/highschool/bachelors/masters/phd, and "experience" means "number of years working", i.e. an integer. Please update the design documents accordingly.
 
+
+Please note that the backend part of the project lives in the folder /backend, and a lot of the setup has already been done. Please proceed!
