@@ -3,15 +3,13 @@ import React, { useState } from "react"
 interface Column {
   header: string
   accessorKey: string
-  cell?: (props: { row: any }) => React.ReactNode
-  defaultSort?: string
-  // Proprietà che indica se la colonna è essenziale e deve essere mostrata anche su mobile
   showOnMobile?: boolean
+  cell?: (props: any) => React.ReactNode
 }
 
 interface DefaultSort {
-  id: string
-  desc: boolean
+  column: string
+  direction: "asc" | "desc"
 }
 
 interface DataTableProps {
@@ -20,16 +18,10 @@ interface DataTableProps {
   style?: React.CSSProperties
   defaultSort?: DefaultSort
   totalItems?: number
-  fullHeight?: boolean // Prop para indicar si utilizar altura completa
-  rowMaxHeight?: string // Nuevo prop para la altura máxima de las filas
+  fullHeight?: boolean
+  rowMaxHeight?: string
 }
 
-interface SortConfig {
-  key: string | null
-  direction: "ascending" | "descending"
-}
-
-// DataTable component with sorting and pagination
 export function DataTable({
   columns,
   data,
@@ -37,24 +29,14 @@ export function DataTable({
   defaultSort,
   totalItems,
   fullHeight = true,
-  rowMaxHeight = "52px", // Reduced from 56px to 52px for better display
+  rowMaxHeight = "56px",
 }: DataTableProps) {
-  // Debug log: verifying that data is reaching the component
-  React.useEffect(() => {
-    if (process.env.NODE_ENV === "development") {
-      console.log("DataTable received data:", data)
-    }
-  }, [data])
-
-  // State for mobile detection
-  const [isMobile, setIsMobile] = React.useState<boolean>(false)
-
-  // State for pagination
+  // Estado para la paginación
   const [currentPage, setCurrentPage] = useState(0)
   const itemsPerPage = 10
 
-  // State for sorting, initialized with default sort if present
-  const [sortConfig, setSortConfig] = React.useState<{
+  // Estado para el ordenamiento
+  const [sortConfig, setSortConfig] = useState<{
     key: string
     direction: "asc" | "desc"
   } | null>(
@@ -63,30 +45,12 @@ export function DataTable({
       : null
   )
 
-  // Detect mobile devices
-  React.useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
+  // Filtrar columnas visibles
+  const visibleColumns = columns.filter(
+    (col) => !col.accessorKey.startsWith("_")
+  )
 
-    handleResize()
-    window.addEventListener("resize", handleResize)
-
-    return () => {
-      window.removeEventListener("resize", handleResize)
-    }
-  }, [])
-
-  // Filter visible columns
-  const visibleColumns = React.useMemo(() => {
-    // On mobile, only show columns marked as showOnMobile
-    if (isMobile) {
-      return columns.filter((col) => col.showOnMobile)
-    }
-    return columns
-  }, [columns, isMobile])
-
-  // Sort data
+  // Ordenar datos
   const sortedData = React.useMemo(() => {
     let sortableData = [...data]
     if (sortConfig !== null) {
@@ -109,16 +73,16 @@ export function DataTable({
     return sortableData
   }, [data, sortConfig])
 
-  // Calculate paginated data
+  // Calcular datos paginados
   const paginatedData = sortedData.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   )
 
-  // Calculate total pages
+  // Calcular número total de páginas
   const totalPages = Math.ceil((totalItems || sortedData.length) / itemsPerPage)
 
-  // Handlers for page changes
+  // Manejadores para cambiar de página
   const handlePreviousPage = () => {
     setCurrentPage((prev) => Math.max(0, prev - 1))
   }
@@ -127,7 +91,7 @@ export function DataTable({
     setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))
   }
 
-  // Handle sort change
+  // Manejar cambio de ordenamiento
   const handleSort = (column: string) => {
     setSortConfig((prev) => {
       if (prev && prev.key === column) {
@@ -140,46 +104,16 @@ export function DataTable({
     })
   }
 
-  // Styles for pagination controls
-  const paginationContainerStyle: React.CSSProperties = {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "16px",
-    borderTop: "1px solid #e5e7eb",
-  }
-
-  // Apply base style with any custom style
-  const tableStyle = {
-    width: "100%",
-    borderCollapse: "collapse" as const,
-    ...(fullHeight && { height: "100%" }),
-    ...style,
-  }
-
-  // Container style che supporta fullHeight
-  const containerStyle: React.CSSProperties = {
-    display: "flex",
-    flexDirection: "column",
-    ...(fullHeight && { height: "100%", minHeight: 0 }),
-  }
-
-  // Style del corpo della tabella con flex-grow quando fullHeight è true
-  const tableBodyContainerStyle: React.CSSProperties = {
-    ...(fullHeight && {
-      flexGrow: 1,
-      minHeight: 0,
-    }),
-  }
-
-  // Mobile card view styles
-  const cardStyle: React.CSSProperties = {
-    border: "1px solid #e5e7eb",
-    borderRadius: "8px",
-    padding: "16px",
-    marginBottom: "16px",
-    backgroundColor: "white",
-    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+  // Renderizar indicador de ordenamiento
+  const renderSortIndicator = (column: Column) => {
+    if (!sortConfig || sortConfig.key !== column.accessorKey) {
+      return null
+    }
+    return (
+      <span style={{ marginLeft: "4px" }}>
+        {sortConfig.direction === "asc" ? " ↑" : " ↓"}
+      </span>
+    )
   }
 
   return (
@@ -189,107 +123,87 @@ export function DataTable({
         ...style,
         width: "100%",
         height: fullHeight ? "100%" : "auto",
+        minHeight: "400px",
         display: "flex",
         flexDirection: "column",
+        overflow: "hidden",
         border: "1px solid #e2e8f0",
         borderRadius: "8px",
-        overflow: "hidden", // Solo el contenedor principal tiene overflow hidden
+        position: "relative",
       }}
     >
-      {/* Contenedor de la tabla con scroll */}
       <div
         style={{
           flexGrow: 1,
-          overflow: "auto", // Solo este contenedor tiene scroll
-          position: "relative",
+          overflow: "auto",
+          marginBottom: "50px",
+          paddingBottom: "10px",
         }}
       >
-        {isMobile ? (
-          // Vista de tarjetas para móvil
-          <div className="mobile-cards-container">
-            {paginatedData.map((row, rowIndex) => (
-              <div key={rowIndex} style={cardStyle}>
-                {visibleColumns.map((column) => (
-                  <div key={column.accessorKey} style={{ marginBottom: "8px" }}>
-                    <div style={{ fontWeight: "bold", marginBottom: "4px" }}>
-                      {column.header}
-                    </div>
-                    <div>
-                      {column.cell
-                        ? column.cell({ row: { original: row } })
-                        : row[column.accessorKey]}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-        ) : (
-          // Vista de tabla tradicional para desktop
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-            }}
-          >
-            <thead>
-              <tr>
-                {visibleColumns.map((column) => (
-                  <th
-                    key={column.accessorKey}
-                    onClick={() => handleSort(column.accessorKey)}
-                    style={{
-                      padding: "12px 16px",
-                      textAlign: "left",
-                      background: "#f8fafc",
-                      position: "sticky",
-                      top: 0,
-                      cursor: "pointer",
-                      borderBottom: "1px solid #e2e8f0",
-                      whiteSpace: "nowrap",
-                      zIndex: 1,
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      {column.header}
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedData.map((row, rowIndex) => (
-                <tr
-                  key={rowIndex}
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+          }}
+        >
+          <thead>
+            <tr>
+              {visibleColumns.map((column) => (
+                <th
+                  key={column.accessorKey}
+                  onClick={() => handleSort(column.accessorKey)}
                   style={{
+                    padding: "12px 16px",
+                    textAlign: "left",
+                    background: "#f8fafc",
+                    position: "sticky",
+                    top: 0,
+                    cursor: "pointer",
                     borderBottom: "1px solid #e2e8f0",
-                    height: rowMaxHeight,
+                    whiteSpace: "nowrap",
+                    zIndex: 10,
                   }}
                 >
-                  {visibleColumns.map((column) => (
-                    <td
-                      key={column.accessorKey}
-                      style={{
-                        padding: "10px 16px",
-                        height: rowMaxHeight,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {column.cell
-                        ? column.cell({ row: { original: row } })
-                        : row[column.accessorKey]}
-                    </td>
-                  ))}
-                </tr>
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    {column.header}
+                    {renderSortIndicator(column)}
+                  </div>
+                </th>
               ))}
-            </tbody>
-          </table>
-        )}
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedData.map((row, rowIndex) => (
+              <tr
+                key={rowIndex}
+                style={{
+                  borderBottom: "1px solid #e2e8f0",
+                  height: "56px",
+                }}
+              >
+                {visibleColumns.map((column) => (
+                  <td
+                    key={column.accessorKey}
+                    style={{
+                      padding: "10px 16px",
+                      height: "56px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {column.cell
+                      ? column.cell({ row: { original: row } })
+                      : row[column.accessorKey]}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      {/* Paginación como elemento normal al final (sin position sticky/absolute) */}
+      {/* Pagination controls */}
       <div
         style={{
           display: "flex",
@@ -298,8 +212,12 @@ export function DataTable({
           padding: "12px 16px",
           borderTop: "1px solid #e2e8f0",
           backgroundColor: "#f8fafc",
-          borderRadius: "0 0 8px 8px",
-          flexShrink: 0, // Evita que se encoja
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 20,
+          height: "50px",
         }}
       >
         <div>

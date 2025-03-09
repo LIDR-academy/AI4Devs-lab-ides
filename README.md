@@ -1,147 +1,108 @@
-# LTI Candidate Management System
+# LTI - Sistema de Seguimiento de Talento
 
-A full-stack application for managing candidates in a recruitment process.
+Este proyecto es una aplicación full-stack con un frontend en React y un backend en Express usando Prisma como ORM. El frontend se inicia con Create React App y el backend está escrito en TypeScript.
 
-## Features
+## Explicación de Directorios y Archivos
 
-- Dashboard with key statistics
-- Candidate management (add, edit, delete)
-- CV file upload and download
-- Filtering and searching candidates
-- Status tracking (Pending, Valuated, Discarded)
-- Responsive design
+- `backend/`: Contiene el código del lado del servidor escrito en Node.js.
+  - `src/`: Contiene el código fuente para el backend.
+    - `index.ts`: El punto de entrada para el servidor backend.
+  - `prisma/`: Contiene el archivo de esquema de Prisma para ORM.
+  - `tsconfig.json`: Archivo de configuración de TypeScript.
+  - `.env`: Contiene las variables de entorno.
+- `frontend/`: Contiene el código del lado del cliente escrito en React.
+  - `src/`: Contiene el código fuente para el frontend.
+  - `public/`: Contiene archivos estáticos como el archivo HTML e imágenes.
+  - `build/`: Contiene la construcción lista para producción del frontend.
+- `docker-compose.yml`: Contiene la configuración de Docker Compose para gestionar los servicios de tu aplicación.
+- `README.md`: Este archivo contiene información sobre el proyecto e instrucciones sobre cómo ejecutarlo.
 
-## Tech Stack
+## Estructura del Proyecto
+
+El proyecto está dividido en dos directorios principales: `frontend` y `backend`.
 
 ### Frontend
 
-- React with JavaScript
-- shadcn/ui components
-- Responsive design with Tailwind CSS
+El frontend es una aplicación React y sus archivos principales están ubicados en el directorio `src`. El directorio `public` contiene activos estáticos y el directorio `build` contiene la construcción de producción de la aplicación.
 
 ### Backend
 
-- Node.js with Express
-- TypeScript
-- Prisma ORM
-- PostgreSQL database
-- Domain-Driven Design architecture
+El backend es una aplicación Express escrita en TypeScript.
 
-## Prerequisites
+- El directorio `src` contiene el código fuente
+- El directorio `prisma` contiene el esquema de Prisma.
 
-- Node.js (v14 or higher)
-- npm (v6 or higher)
-- PostgreSQL (v12 or higher)
-- Docker (optional, for containerized database)
+## Primeros Pasos
 
-## Getting Started
+Para comenzar con este proyecto, sigue estos pasos:
 
-### 1. Clone the repository
+1. Clona el repositorio.
+2. Instala las dependencias para el frontend y el backend:
 
-```bash
-git clone <repository-url>
-cd AI4Devs-lab-ides
+```sh
+cd frontend
+npm install
+
+cd ../backend
+npm install
 ```
 
-### 2. Install dependencies
+3. Construye el servidor backend:
 
-```bash
-npm run install:all
 ```
-
-This will install dependencies for the root project, backend, and frontend.
-
-### 3. Set up the database
-
-Make sure PostgreSQL is running. You can use the included Docker Compose file:
-
-```bash
-docker-compose up -d
-```
-
-### 4. Configure environment variables
-
-The backend uses environment variables for configuration. A sample `.env` file is provided in the backend directory.
-
-```bash
-# Navigate to backend directory
 cd backend
-
-# Copy the sample .env file
-cp .env.example .env
-
-# Edit the .env file with your database credentials
-```
-
-### 5. Run database migrations
-
-```bash
-cd backend
-npm run prisma:migrate
-npm run prisma:generate
-```
-
-### 6. Start the application
-
-From the root directory:
-
-```bash
-npm start
-```
-
-This will start both the backend and frontend servers:
-
-- Backend: http://localhost:3010
-- Frontend: http://localhost:3000
-
-## Project Structure
-
-```
-.
-├── backend/                # Backend application
-│   ├── prisma/             # Prisma schema and migrations
-│   ├── src/                # Source code
-│   │   ├── application/    # Application services
-│   │   ├── domain/         # Domain entities and interfaces
-│   │   ├── infrastructure/ # Infrastructure implementations
-│   │   └── presentation/   # API controllers and routes
-│   └── uploads/            # Uploaded files storage
-│
-├── frontend/               # Frontend application
-│   ├── public/             # Static assets
-│   └── src/                # Source code
-│       ├── components/     # React components
-│       ├── lib/            # Utilities and services
-│       └── App.js          # Main application component
-│
-└── docker-compose.yml      # Docker Compose configuration
-```
-
-## API Endpoints
-
-- `GET /api/candidates` - List all candidates
-- `GET /api/candidates/:id` - Get a specific candidate
-- `POST /api/candidates` - Create a new candidate
-- `PUT /api/candidates/:id` - Update a candidate
-- `DELETE /api/candidates/:id` - Delete a candidate
-- `GET /api/candidates/:id/cv` - Download a candidate's CV
-- `GET /api/statistics` - Get dashboard statistics
-- `GET /api/suggestions/education` - Get education suggestions
-
-## Development
-
-### Running tests
-
-```bash
-npm test
-```
-
-### Building for production
-
-```bash
 npm run build
 ```
 
-## License
+4. Inicia el servidor backend:
 
-This project is licensed under the MIT License - see the LICENSE.md file for details.
+```
+cd backend
+npm run dev
+```
+
+5. En una nueva ventana de terminal, construye el servidor frontend:
+
+```
+cd frontend
+npm run build
+```
+
+6. Inicia el servidor frontend:
+
+```
+cd frontend
+npm start
+```
+
+El servidor backend estará corriendo en http://localhost:3010 y el frontend estará disponible en http://localhost:3000.
+
+## Docker y PostgreSQL
+
+Este proyecto usa Docker para ejecutar una base de datos PostgreSQL. Así es cómo ponerlo en marcha:
+
+Instala Docker en tu máquina si aún no lo has hecho. Puedes descargarlo desde aquí.
+Navega al directorio raíz del proyecto en tu terminal.
+Ejecuta el siguiente comando para iniciar el contenedor Docker:
+
+```
+docker-compose up -d
+```
+
+Esto iniciará una base de datos PostgreSQL en un contenedor Docker. La bandera -d corre el contenedor en modo separado, lo que significa que se ejecuta en segundo plano.
+
+Para acceder a la base de datos PostgreSQL, puedes usar cualquier cliente PostgreSQL con los siguientes detalles de conexión:
+
+- Host: localhost
+- Port: 5432
+- User: postgres
+- Password: password
+- Database: mydatabase
+
+Por favor, reemplaza User, Password y Database con el usuario, la contraseña y el nombre de la base de datos reales especificados en tu archivo .env.
+
+Para detener el contenedor Docker, ejecuta el siguiente comando:
+
+```
+docker-compose down
+```

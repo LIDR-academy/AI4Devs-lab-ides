@@ -358,9 +358,9 @@ Please refer to the following documentation for detailed development standards:
 
 ### Ticket 4: Other small adjustments
 
-- log
+- Logs
 - UI
-- error message
-- autocompletion system for Education and Experience
-- react router
-- reasuble components
+- Toas error messages
+- Autocompletion system for Education and Experience
+- React router
+- Reasuble components
