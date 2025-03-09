@@ -1,66 +1,63 @@
+import axios, { AxiosResponse, AxiosError } from 'axios';
+
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3010/api';
 
-// Función genérica para realizar peticiones HTTP
-const fetchAPI = async (endpoint: string, options: RequestInit = {}) => {
-  const url = `${API_URL}${endpoint}`;
-  
-  const defaultHeaders = {
+// Crear instancia de axios con configuración base
+const instance = axios.create({
+  baseURL: API_URL,
+  headers: {
     'Content-Type': 'application/json',
-  };
+  },
+});
 
-  const config = {
-    ...options,
-    headers: {
-      ...defaultHeaders,
-      ...options.headers,
-    },
-  };
-
-  try {
-    const response = await fetch(url, config);
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error?.message || 'Error en la petición');
-    }
-
-    return data;
-  } catch (error) {
-    console.error('Error en la petición:', error);
-    throw error;
+// Interceptor para manejar errores
+instance.interceptors.response.use(
+  (response: AxiosResponse) => response,
+  (error: AxiosError) => {
+    console.error('API Error:', error.response || error);
+    return Promise.reject(error);
   }
-};
+);
 
 // Servicios para usuarios
 export const userService = {
   // Obtener todos los usuarios
-  getAll: () => fetchAPI('/users'),
+  getAll: async () => {
+    const response = await instance.get('/users');
+    return response.data;
+  },
 
   // Obtener un usuario por ID
-  getById: (id: number) => fetchAPI(`/users/${id}`),
+  getById: async (id: number) => {
+    const response = await instance.get(`/users/${id}`);
+    return response.data;
+  },
 
   // Crear un nuevo usuario
-  create: (userData: { email: string; name?: string }) =>
-    fetchAPI('/users', {
-      method: 'POST',
-      body: JSON.stringify(userData),
-    }),
+  create: async (userData: { email: string; name?: string }) => {
+    const response = await instance.post('/users', userData);
+    return response.data;
+  },
 
   // Actualizar un usuario
-  update: (id: number, userData: { email?: string; name?: string }) =>
-    fetchAPI(`/users/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(userData),
-    }),
+  update: async (id: number, userData: { email?: string; name?: string }) => {
+    const response = await instance.put(`/users/${id}`, userData);
+    return response.data;
+  },
 
   // Eliminar un usuario
-  delete: (id: number) =>
-    fetchAPI(`/users/${id}`, {
-      method: 'DELETE',
-    }),
+  delete: async (id: number) => {
+    const response = await instance.delete(`/users/${id}`);
+    return response.data;
+  },
 };
 
+// API genérica con métodos HTTP
 const api = {
+  get: (url: string, config = {}) => instance.get(url, config),
+  post: (url: string, data = {}, config = {}) => instance.post(url, data, config),
+  put: (url: string, data = {}, config = {}) => instance.put(url, data, config),
+  delete: (url: string, config = {}) => instance.delete(url, config),
   userService,
 };
 

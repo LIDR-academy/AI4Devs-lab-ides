@@ -3,7 +3,9 @@ import { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { PrismaClient } from '@prisma/client';
+import path from 'path';
 import userRoutes from './routes/userRoutes';
+import candidateRoutes from './routes/candidateRoutes';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 
 // Cargar variables de entorno
@@ -22,6 +24,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Servir archivos estáticos
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 // Ruta de prueba
 app.get('/', (req: Request, res: Response) => {
   res.send('API del Sistema LTI funcionando correctamente');
@@ -29,6 +34,7 @@ app.get('/', (req: Request, res: Response) => {
 
 // Rutas de la API
 app.use('/api/users', userRoutes);
+app.use('/api/candidates', candidateRoutes);
 
 // Middleware para rutas no encontradas
 app.use(notFoundHandler);
