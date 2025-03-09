@@ -303,3 +303,10 @@ Vamos a iterar para ir añadiendo algunas cuestiones:
 
 ## Prompt 2
 Vamos a implementar un endpoint que devuelva los candidatos de la base de datos y a mostrarlo en la pantalla de candidatos ya que ahora se muestra el 404 y debe ser debido a que no existe el endpoint
+
+## Prompt 3
+Vamos a corregir los siguientes puntos:
+- La pantalla de visualización de un candidato no carga correctamente. Sale la pantalla en blanco.
+- El formato del teléfono solicita 10 dígitos, cuando deben ser nueve.
+- Cuando el back no responde, se está mostrando mucho detalle al usuario que no le interesa, solo hay que indicar que el sistema no funciona correctamente.
+- Los documentos PDF que se suben, deben excluirse el git

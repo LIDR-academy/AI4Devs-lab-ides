@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import FormularioCandidato from './components/FormularioCandidato';
 import ListaCandidatos from './components/ListaCandidatos';
+import DetalleCandidato from './components/DetalleCandidato';
 import './App.css';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
             <Route path="/" element={<Navigate to="/candidatos" replace />} />
             <Route path="/candidatos" element={<ListaCandidatos />} />
             <Route path="/candidatos/nuevo" element={<FormularioCandidato />} />
+            <Route path="/candidatos/:id" element={<DetalleCandidato />} />
           </Routes>
         </main>
         <footer className="App-footer">

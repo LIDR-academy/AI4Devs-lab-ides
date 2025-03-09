@@ -15,7 +15,7 @@ const validationSchema = Yup.object({
     .email('Formato de email inválido')
     .required('El email es obligatorio'),
   telefono: Yup.string()
-    .matches(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/, 'Formato de teléfono inválido')
+    .matches(/^[+]?[(]?[0-9]{1,3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{3,6}$/, 'Formato de teléfono inválido. Debe tener 9 dígitos.')
     .required('El teléfono es obligatorio'),
   direccion: Yup.string(),
   educacion: Yup.array().of(

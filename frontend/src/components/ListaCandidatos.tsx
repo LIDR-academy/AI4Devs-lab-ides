@@ -36,7 +36,6 @@ const ListaCandidatos: React.FC = () => {
   const [candidatos, setCandidatos] = useState<Candidato[]>([]);
   const [cargando, setCargando] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [errorDetalle, setErrorDetalle] = useState<string | null>(null);
   const [busqueda, setBusqueda] = useState<string>('');
   const [paginaActual, setPaginaActual] = useState<number>(1);
   const candidatosPorPagina = 10;
@@ -48,14 +47,12 @@ const ListaCandidatos: React.FC = () => {
       try {
         setCargando(true);
         setError(null);
-        setErrorDetalle(null);
         
         // Primero verificamos la conexión con el backend
         const conexionExitosa = await verificarConexion();
         
         if (!conexionExitosa) {
-          setError('No se pudo conectar con el servidor. Verificando si el servidor está en ejecución...');
-          setErrorDetalle('Asegúrate de que el servidor backend esté en ejecución en http://localhost:3010');
+          setError('El sistema no está funcionando correctamente. Por favor, inténtelo de nuevo más tarde.');
           // Usar datos de ejemplo
           setCandidatos(DATOS_EJEMPLO);
           return;
@@ -67,34 +64,15 @@ const ListaCandidatos: React.FC = () => {
           setCandidatos(data);
         } catch (backendError: any) {
           console.error('Error al obtener candidatos del backend:', backendError);
-          
-          let mensajeError = 'Error al cargar los candidatos. Por favor, intenta de nuevo más tarde.';
-          let detalleError = '';
-          
-          if (backendError.response) {
-            // El servidor respondió con un código de error
-            mensajeError = `Error ${backendError.response.status}: ${backendError.response.statusText}`;
-            detalleError = JSON.stringify(backendError.response.data);
-          } else if (backendError.request) {
-            // La solicitud se realizó pero no se recibió respuesta
-            mensajeError = 'No se recibió respuesta del servidor';
-            detalleError = 'Verifica que el servidor backend esté en ejecución y que la URL sea correcta';
-          } else {
-            // Error al configurar la solicitud
-            mensajeError = backendError.message;
-            detalleError = 'Error en la configuración de la solicitud';
-          }
-          
-          setError(mensajeError);
-          setErrorDetalle(detalleError);
-          
+          setError('El sistema no está funcionando correctamente. Por favor, inténtelo de nuevo más tarde.');
           // Usar datos de ejemplo
           setCandidatos(DATOS_EJEMPLO);
         }
       } catch (error: any) {
         console.error('Error general al cargar candidatos:', error);
-        setError('Error al cargar los candidatos. Por favor, intenta de nuevo más tarde.');
-        setErrorDetalle(error.message);
+        setError('El sistema no está funcionando correctamente. Por favor, inténtelo de nuevo más tarde.');
+        // Usar datos de ejemplo
+        setCandidatos(DATOS_EJEMPLO);
       } finally {
         setCargando(false);
       }
@@ -155,20 +133,6 @@ const ListaCandidatos: React.FC = () => {
         <h1 className="lista-titulo">Candidatos</h1>
         <div className="alerta alerta-error">
           {error}
-          {errorDetalle && (
-            <div style={{ marginTop: '10px', fontSize: '0.9rem' }}>
-              <strong>Detalles:</strong> {errorDetalle}
-            </div>
-          )}
-        </div>
-        <div style={{ marginTop: '20px', marginBottom: '20px' }}>
-          <h3>Solución de problemas:</h3>
-          <ol style={{ textAlign: 'left', lineHeight: '1.6' }}>
-            <li>Asegúrate de que el servidor backend esté en ejecución en <code>http://localhost:3010</code></li>
-            <li>Verifica que no haya errores en la consola del navegador (F12 &gt; Console)</li>
-            <li>Comprueba que la configuración CORS en el backend permita solicitudes desde <code>http://localhost:3000</code></li>
-            <li>Intenta acceder directamente a <a href="http://localhost:3010/api/health" target="_blank" rel="noopener noreferrer">http://localhost:3010/api/health</a> para verificar que el backend responde</li>
-          </ol>
         </div>
         <div className="botones">
           <button 
