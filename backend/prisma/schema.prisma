@@ -14,7 +14,131 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id                Int         @id @default(autoincrement())
+  email             String      @unique
+  password          String      @default("")
+  firstName         String      @default("")
+  lastName          String      @default("")
+  role              String      @default("USER")
+  isActive          Boolean     @default(true)
+  lastLogin         DateTime?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  candidates        Candidate[]
+  activities        Activity[]
+  dataAccessLogs    DataAccessLog[]
+}
+
+model Candidate {
+  id                Int               @id @default(autoincrement())
+  firstName         String
+  lastName          String
+  email             String            @unique
+  phone             String?
+  address           String?
+  status            String            @default("new")
+  notes             String?           @db.Text
+  dataConsent       Boolean           @default(false)
+  consentDate       DateTime?
+  dataRetentionDate DateTime?
+  isActive          Boolean           @default(true)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  recruiter         User              @relation(fields: [recruiterId], references: [id])
+  recruiterId       Int
+  education         Education[]
+  experience        WorkExperience[]
+  documents         Document[]
+  skills            CandidateSkill[]
+  dataAccessLogs    DataAccessLog[]
+  privacySettings   CandidatePrivacySettings?
+}
+
+model Education {
+  id            Int       @id @default(autoincrement())
+  institution   String
+  degree        String
+  fieldOfStudy  String?
+  startDate     DateTime
+  endDate       DateTime?
+  description   String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  candidate     Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateId   Int
+}
+
+model WorkExperience {
+  id          Int       @id @default(autoincrement())
+  company     String
+  position    String
+  startDate   DateTime
+  endDate     DateTime?
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateId Int
+}
+
+model Document {
+  id            Int      @id @default(autoincrement())
+  name          String
+  type          String
+  fileUrl       String
+  fileType      String
+  isEncrypted   Boolean  @default(false)
+  encryptionKey String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  candidateId   Int
+  candidate     Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+}
+
+model DataAccessLog {
+  id          Int       @id @default(autoincrement())
+  action      String    // e.g., "view", "edit", "delete"
+  description String?
+  ipAddress   String?
+  userAgent   String?
+  timestamp   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
+  candidate   Candidate? @relation(fields: [candidateId], references: [id])
+  candidateId Int?
+}
+
+model CandidatePrivacySettings {
+  id                Int       @id @default(autoincrement())
+  shareWithThirdParties Boolean @default(false)
+  showContactInfo   Boolean   @default(true)
+  showEducation     Boolean   @default(true)
+  showExperience    Boolean   @default(true)
+  candidate         Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateId       Int       @unique
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model CandidateSkill {
+  id          Int       @id @default(autoincrement())
+  name        String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateId Int
+
+  @@unique([candidateId, name])
+}
+
+model Activity {
+  id          Int      @id @default(autoincrement())
+  action      String   // CREATE, UPDATE, DELETE, etc.
+  entityType  String   // USER, CANDIDATE, DOCUMENT, etc.
+  entityId    String   // ID del registro afectado
+  description String
+  metadata    Json?    // Datos adicionales en formato JSON
+  createdAt   DateTime @default(now())
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
 }

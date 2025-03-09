@@ -5,6 +5,9 @@
 **/node_modules
 **/prompts_master.md
 
+# Uploads directory
+backend/uploads/
+
 # other dependencies
 /.pnp
 .pnp.js
