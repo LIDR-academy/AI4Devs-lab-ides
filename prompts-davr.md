@@ -106,3 +106,13 @@ I want to do this following TDD. So tests first, let me run them and see them fa
 Please back up one step and notice that jest is already set up. Please don't touch that. Just add the test file.
 ...
 Data persistence, test-first, please!
+
+## Prompt: next, please!
+
+OK, what's the next step?
+
+> GitHub Copilot
+> Now that we have our basic create endpoint and tests working, let's add validation before saving the candidate data. We'll do this test-first. Here's the plan:
+> 
+> 1. First, add more test cases for validation
+> 1. Then implement the validation middleware

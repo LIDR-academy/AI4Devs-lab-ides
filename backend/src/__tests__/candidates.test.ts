@@ -86,4 +86,32 @@ describe('POST /api/candidates', () => {
     expect(response.body).toHaveProperty('error');
     expect(response.body.error).toMatch(/email.*already exists/i);
   });
+
+  it('should validate required fields', async () => {
+    const invalidData = {
+      firstName: '',
+      lastName: 'Doe',
+      email: 'invalid-email',
+      phoneNumber: '123', // invalid format
+      currentLocation: '',
+      yearsExperience: -1, // invalid negative number
+      educationLevel: 'Invalid Degree'
+    };
+
+    const response = await request(app)
+      .post('/api/candidates')
+      .send(invalidData);
+
+    expect(response.status).toBe(400);
+    expect(response.body.errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ field: 'firstName', message: expect.any(String) }),
+        expect.objectContaining({ field: 'email', message: expect.any(String) }),
+        expect.objectContaining({ field: 'phoneNumber', message: expect.any(String) }),
+        expect.objectContaining({ field: 'currentLocation', message: expect.any(String) }),
+        expect.objectContaining({ field: 'yearsExperience', message: expect.any(String) }),
+        expect.objectContaining({ field: 'educationLevel', message: expect.any(String) })
+      ])
+    );
+  });
 });

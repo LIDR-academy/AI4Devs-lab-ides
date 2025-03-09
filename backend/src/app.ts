@@ -1,13 +1,13 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
-import type { Candidate } from './types/candidate';
+import { validateCandidate } from './middleware/validateCandidate';
 
 const prisma = new PrismaClient();
 export const app = express();
 
 app.use(express.json());
 
-app.post('/api/candidates', async (req, res) => {
+app.post('/api/candidates', validateCandidate, async (req, res) => {
   try {
     const candidate = await prisma.candidate.create({
       data: {
