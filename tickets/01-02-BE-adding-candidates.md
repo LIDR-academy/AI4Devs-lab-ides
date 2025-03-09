@@ -32,42 +32,35 @@ Develop the backend required to process the information entered in the candidate
 ### Database Schema Overview:
 - Candidates (main table):
   - UUID (primary key)
-  - Personal Information Fields
-  - Professional Summary Fields
-  - Created At
-  - Updated At
-  - Status (Active/Archived)
+  - First Name (varchar)
+  - Last Name (varchar)
+  - Email (varchar, unique)
+  - Phone Number (varchar)
+  - Current Location (varchar)
+  - Years Experience (integer)
+  - Education Level (enum)
+  - Current Job Title (varchar)
+  - Key Skills (text)
+  - LinkedIn Profile (varchar, nullable)
+  - Expected Salary Range (varchar, nullable)
+  - Preferred Work Type (enum, nullable)
+  - Notice Period (integer, nullable)
+  - Created At (timestamp)
+  - Updated At (timestamp)
+  - Status (enum: Active/Archived)
 
-- Work Experience (one-to-many):
+- Attachments:
   - UUID (primary key)
   - Candidate ID (foreign key)
-  - Experience Fields
-  - Order Index
-
-- Education (one-to-many):
-  - UUID (primary key)
-  - Candidate ID (foreign key)
-  - Education Fields
-  - Order Index
-
-- Skills (many-to-many):
-  - Skill ID
-  - Candidate ID
-  - Proficiency Level
-
-- Attachments (one-to-many):
-  - UUID (primary key)
-  - Candidate ID (foreign key)
-  - File Type (CV/CoverLetter/Portfolio)
-  - File Name
-  - File Path/URL
-  - Upload Date
+  - File Name (varchar)
+  - File Content (blob)
+  - Upload Date (timestamp)
 
 ### Data Validation Rules:
 - Email: RFC 5322 standard
 - Phone: E.164 format
-- URLs: Valid URL format
-- Dates: ISO 8601 format
+- Years Experience: Non-negative integer
+- Education Level: One of [None, High School, Bachelor's, Master's, PhD]
 - File attachments:
   - Max size: 10MB
   - Formats: PDF, DOCX

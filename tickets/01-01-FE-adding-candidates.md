@@ -21,45 +21,21 @@ Implement the user interface for adding candidates to the ATS system.
   - Email
   - Phone Number
   - Current Location (City, Country)
-  - LinkedIn Profile URL
-  - Willing to Relocate (Yes/No)
 
-- Professional Summary:
+- Professional Information:
+  - Years of Experience (integer)
+  - Education Level (select: None/High School/Bachelor's/Master's/PhD)
   - Current Job Title
-  - Years of Experience
-  - Key Skills (multiple)
-  - Expected Salary Range
+  - Key Skills (comma-separated list)
 
 ### Optional Fields:
-- Work Experience (multiple entries):
-  - Company Name
-  - Position
-  - Location
-  - Start Date
-  - End Date
-  - Description
-  - Technologies/Tools Used
-
-- Education (multiple entries):
-  - Institution Name
-  - Degree/Certification
-  - Field of Study
-  - Graduation Date
-  - GPA (if applicable)
-
-- Additional Information:
-  - Portfolio URL
-  - GitHub Profile
-  - Other Social Media
+  - LinkedIn Profile URL
+  - Expected Salary Range
   - Preferred Work Type (Remote/Hybrid/Onsite)
-  - Notice Period
-  - Visa Status
-  - Languages (with proficiency levels)
+  - Notice Period (in weeks)
 
 ### Attachments:
-- CV/Resume (PDF/DOCX)
-- Cover Letter (optional)
-- Portfolio/Work Samples (optional)
+  - CV/Resume (PDF/DOCX)
 
 ## Notes:
 * The interface should be intuitive and easy to use to minimize the training time required for new recruiters.

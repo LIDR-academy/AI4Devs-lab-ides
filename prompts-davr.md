@@ -49,3 +49,9 @@ Add tasks to #file:01-02-BE-adding-candidates.md like you did to #file:01-01-FE-
 
 Let's talk about the data. Name, email, fine. What about the rest of the fields? Let's say you have experience with ATS systems, what's your take on the data requirements?
 
+_(I got **amazing** suggestions!)_
+
+## Prompt: Let's dial it back
+
+You have very strong points there. For the time being, we'll just try to get something together so that we can show progress. Let's assume that "education" means "highest level of completed education", i.e. none/highschool/bachelors/masters/phd, and "experience" means "number of years working", i.e. an integer. Please update the design documents accordingly.
+
