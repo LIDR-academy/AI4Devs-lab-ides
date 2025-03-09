@@ -1,0 +1,254 @@
+.education-selector {
+  margin-bottom: var(--space-6);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  background-color: var(--neutral-50);
+}
+
+.education-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+.education-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--neutral-800);
+  font-weight: 600;
+}
+
+.education-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.add-custom-button {
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.add-custom-button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.add-custom-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+}
+
+.add-custom-button:active {
+  transform: translateY(0);
+}
+
+.education-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.education-item {
+  padding: var(--space-4);
+  background-color: white;
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-md);
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
+}
+
+.education-item:hover {
+  border-color: var(--neutral-300);
+  box-shadow: var(--shadow-md);
+}
+
+.education-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.education-item-header h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--neutral-900);
+  font-weight: 600;
+}
+
+.education-item-details {
+  font-size: 0.875rem;
+  color: var(--neutral-700);
+  line-height: 1.5;
+}
+
+.remove-button {
+  background-color: transparent;
+  border: none;
+  color: var(--danger);
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-md);
+  transition: all 0.2s;
+}
+
+.remove-button:hover {
+  background-color: #fff5f5;
+  text-decoration: none;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: var(--space-4);
+  animation: backdropFadeIn 0.2s ease-in-out;
+}
+
+@keyframes backdropFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.custom-education-form {
+  background-color: white;
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: educationFormSlideUp 0.3s ease-out;
+}
+
+@keyframes educationFormSlideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.custom-education-form h4 {
+  margin-top: 0;
+  margin-bottom: var(--space-4);
+  color: var(--neutral-900);
+  font-size: 1.25rem;
+  font-weight: 600;
+  border-bottom: 1px solid var(--neutral-200);
+  padding-bottom: var(--space-3);
+}
+
+.form-row {
+  display: flex;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  margin: var(--space-4) 0;
+  gap: var(--space-2);
+}
+
+.checkbox-group input {
+  margin: 0;
+}
+
+.checkbox-group label {
+  font-size: 0.9rem;
+  color: var(--neutral-800);
+  cursor: pointer;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+  border-top: 1px solid var(--neutral-200);
+  padding-top: var(--space-4);
+}
+
+.form-actions button {
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.form-actions button:first-child {
+  background-color: var(--neutral-100);
+  color: var(--neutral-800);
+}
+
+.form-actions button:first-child:hover {
+  background-color: var(--neutral-200);
+}
+
+.form-actions button:last-child {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.form-actions button:last-child:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-actions button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+}
+
+.form-actions button:last-child:active {
+  transform: translateY(0);
+}
+
+.no-education-message {
+  text-align: center;
+  color: var(--neutral-500);
+  font-style: italic;
+  padding: var(--space-4);
+  background-color: var(--neutral-100);
+  border-radius: var(--radius-md);
+} 

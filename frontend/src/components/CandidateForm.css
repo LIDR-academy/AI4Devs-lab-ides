@@ -1,0 +1,219 @@
+.candidate-form-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: var(--space-4);
+  animation: formFadeIn 0.2s ease-in-out;
+}
+
+@keyframes formFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.candidate-form {
+  background-color: white;
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 550px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: formSlideUp 0.3s ease-out;
+}
+
+@keyframes formSlideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.candidate-form h2 {
+  margin-top: 0;
+  margin-bottom: var(--space-6);
+  color: var(--neutral-900);
+  font-size: 1.5rem;
+  font-weight: 700;
+  border-bottom: 1px solid var(--neutral-200);
+  padding-bottom: var(--space-4);
+}
+
+.form-group {
+  margin-bottom: var(--space-6);
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-weight: 600;
+  color: var(--neutral-700);
+  font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--neutral-300);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  background-color: white;
+  color: var(--neutral-900);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px;
+  padding-right: 2.5rem;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.form-group input.error,
+.form-group textarea.error,
+.form-group select.error {
+  border-color: var(--danger);
+  background-color: #fff5f5;
+}
+
+.error-message {
+  color: var(--danger);
+  margin-top: var(--space-1);
+  font-size: 0.875rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-4);
+  margin-top: var(--space-8);
+  border-top: 1px solid var(--neutral-200);
+  padding-top: var(--space-6);
+}
+
+.cancel-button,
+.submit-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  font-size: 0.9rem;
+}
+
+.cancel-button {
+  background-color: var(--neutral-100);
+  color: var(--neutral-800);
+}
+
+.submit-button {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: var(--neutral-200);
+}
+
+.submit-button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.submit-button:focus,
+.cancel-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+}
+
+.submit-button:active {
+  transform: translateY(0);
+}
+
+/* File upload styles */
+.file-input {
+  display: none;
+}
+
+.file-input-wrapper {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.file-select-button {
+  background-color: var(--neutral-100);
+  color: var(--neutral-800);
+  border: 1px solid var(--neutral-300);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.file-select-button:hover {
+  background-color: var(--neutral-200);
+}
+
+.file-name {
+  font-size: 0.875rem;
+  color: var(--neutral-700);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0.25rem 0;
+}
+
+.file-remove-button {
+  background-color: #fff5f5;
+  color: var(--danger);
+  border: 1px solid #fecaca;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.file-remove-button:hover {
+  background-color: #fee2e2;
+}
+
+.file-hint {
+  font-size: 0.75rem;
+  color: var(--neutral-500);
+  margin-top: var(--space-2);
+} 
