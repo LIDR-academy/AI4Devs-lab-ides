@@ -32,6 +32,7 @@ Hay varios problemas a solucionar en el formulario:
 - Hay que controlar que la fecha de fin no sean anterior a la de inicio y validarse en tiempo real.
 - El campo telefono solo tiene que admitir numeros de telefonos validos con o sin prefijos prefijos y tiene que validarse en tiempo real.
 - Los campos de fecha de fin son opcionales.
+
 ¿Puedes arreglarlo? Preguntame cualquier duda antes de continuar.
 
 # Prompt 5: implementación de la parte front-end (Cursor + Sonnet 3.7)
@@ -40,7 +41,7 @@ Teniendo en cuenta la historia de usuario @user-story.md y los criterios tecnico
 
 # Prompt 6: validación y correcciones de la parte back-end (Cursor + Sonnet 3.7)
 
-Existe un error en el front-end al guardar el candidato, dando un error de tipo http-status *500*. Te adjunto el error de la salida de la parte front-end y back-end en los terminales @node @node respectivamente.
+Existe un error en el front-end al guardar el candidato, dando un error de tipo http-status *500*. Te adjunto el error de la salida de la parte front-end y back-end en los terminales @node @node respectivamente. Creo que está relacionado con los fechas de fin que son ahora opcionales.
 
 # Prompt 7: proteccion de datos sensibles en la parte back-end (Cursor + Sonnet 3.7)
 
@@ -48,3 +49,5 @@ Existe un error en el front-end al guardar el candidato, dando un error de tipo 
 - Los datos sensibles deben estar protegidos adecuadamente.
 
 Si no es así, me gustaría proteger al menos: teléfono, dirección y correo electrónico.
+
+`Esta criterio no la ha conseguido arreglar del todo, causando errores poco descriptivos en el guardado`
