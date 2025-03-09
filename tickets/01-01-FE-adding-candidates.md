@@ -25,14 +25,14 @@ Implement the user interface for adding candidates to the ATS system.
 - Professional Information:
   - Years of Experience (integer)
   - Education Level (select: None/High School/Bachelor's/Master's/PhD)
-  - Current Job Title
-  - Key Skills (comma-separated list)
+  - (v2) Current Job Title
+  - (v2) Key Skills (comma-separated list)
 
 ### Optional Fields:
-  - LinkedIn Profile URL
-  - Expected Salary Range
-  - Preferred Work Type (Remote/Hybrid/Onsite)
-  - Notice Period (in weeks)
+  - (v2) LinkedIn Profile URL
+  - (v2) Expected Salary Range
+  - (v2) Preferred Work Type (Remote/Hybrid/Onsite)
+  - (v2) Notice Period (in weeks)
 
 ### Attachments:
   - CV/Resume (PDF/DOCX)

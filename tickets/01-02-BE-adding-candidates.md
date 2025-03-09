@@ -39,12 +39,12 @@ Develop the backend required to process the information entered in the candidate
   - Current Location (varchar)
   - Years Experience (integer)
   - Education Level (enum)
-  - Current Job Title (varchar)
-  - Key Skills (text)
-  - LinkedIn Profile (varchar, nullable)
-  - Expected Salary Range (varchar, nullable)
-  - Preferred Work Type (enum, nullable)
-  - Notice Period (integer, nullable)
+  - (v2) Current Job Title (varchar)
+  - (v2) Key Skills (text)
+  - (v2) LinkedIn Profile (varchar, nullable)
+  - (v2) Expected Salary Range (varchar, nullable)
+  - (v2) Preferred Work Type (enum, nullable)
+  - (v2) Notice Period (integer, nullable)
   - Created At (timestamp)
   - Updated At (timestamp)
   - Status (enum: Active/Archived)
@@ -64,4 +64,4 @@ Develop the backend required to process the information entered in the candidate
 - File attachments:
   - Max size: 10MB
   - Formats: PDF, DOCX
-  - Virus scanning required
+  - (v2) Virus scanning required
