@@ -5,9 +5,10 @@ import '../styles/formulario.scss';
 interface CargarCVProps {
   onChange: (file: File | null) => void;
   error?: string;
+  disabled?: boolean;
 }
 
-const CargarCV: React.FC<CargarCVProps> = ({ onChange, error }) => {
+const CargarCV: React.FC<CargarCVProps> = ({ onChange, error, disabled = false }) => {
   const [archivo, setArchivo] = useState<File | null>(null);
   const [arrastrandoArchivo, setArrastrandoArchivo] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -26,6 +27,8 @@ const CargarCV: React.FC<CargarCVProps> = ({ onChange, error }) => {
 
   // Manejar el cambio de archivo
   const manejarCambioArchivo = (e: ChangeEvent<HTMLInputElement>) => {
+    if (disabled) return;
+    
     const files = e.target.files;
     if (files && files.length > 0) {
       const file = files[0];
@@ -51,6 +54,8 @@ const CargarCV: React.FC<CargarCVProps> = ({ onChange, error }) => {
 
   // Manejar el arrastre de archivos
   const manejarArrastre = (e: React.DragEvent<HTMLDivElement>) => {
+    if (disabled) return;
+    
     e.preventDefault();
     e.stopPropagation();
     
@@ -63,6 +68,8 @@ const CargarCV: React.FC<CargarCVProps> = ({ onChange, error }) => {
 
   // Manejar la soltura de archivos
   const manejarSoltar = (e: React.DragEvent<HTMLDivElement>) => {
+    if (disabled) return;
+    
     e.preventDefault();
     e.stopPropagation();
     setArrastrandoArchivo(false);
@@ -87,6 +94,8 @@ const CargarCV: React.FC<CargarCVProps> = ({ onChange, error }) => {
 
   // Eliminar el archivo seleccionado
   const eliminarArchivo = () => {
+    if (disabled) return;
+    
     setArchivo(null);
     onChange(null);
     if (inputRef.current) {
@@ -96,6 +105,8 @@ const CargarCV: React.FC<CargarCVProps> = ({ onChange, error }) => {
 
   // Abrir el selector de archivos
   const abrirSelectorArchivos = () => {
+    if (disabled) return;
+    
     if (inputRef.current) {
       inputRef.current.click();
     }
@@ -105,7 +116,7 @@ const CargarCV: React.FC<CargarCVProps> = ({ onChange, error }) => {
     <div className="campo">
       <label htmlFor="cv">CV (PDF o DOCX, máx. 5MB) *</label>
       <div 
-        className={`carga-archivo ${arrastrandoArchivo ? 'arrastrando' : ''}`}
+        className={`carga-archivo ${arrastrandoArchivo ? 'arrastrando' : ''} ${disabled ? 'disabled' : ''}`}
         onDragEnter={manejarArrastre}
         onDragOver={manejarArrastre}
         onDragLeave={manejarArrastre}
@@ -113,7 +124,7 @@ const CargarCV: React.FC<CargarCVProps> = ({ onChange, error }) => {
         onClick={abrirSelectorArchivos}
         aria-label="Área para cargar CV"
         role="button"
-        tabIndex={0}
+        tabIndex={disabled ? -1 : 0}
       >
         <input 
           type="file" 
@@ -124,6 +135,7 @@ const CargarCV: React.FC<CargarCVProps> = ({ onChange, error }) => {
           onChange={manejarCambioArchivo}
           aria-invalid={!!error}
           aria-describedby={error ? "cv-error" : undefined}
+          disabled={disabled}
         />
         
         {!archivo ? (
@@ -142,6 +154,7 @@ const CargarCV: React.FC<CargarCVProps> = ({ onChange, error }) => {
                 eliminarArchivo();
               }}
               aria-label="Eliminar archivo"
+              disabled={disabled}
             >
               ✕
             </button>

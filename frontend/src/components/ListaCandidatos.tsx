@@ -38,8 +38,30 @@ const ListaCandidatos: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [busqueda, setBusqueda] = useState<string>('');
   const [paginaActual, setPaginaActual] = useState<number>(1);
+  const [mensajeExito, setMensajeExito] = useState<string | null>(null);
   const candidatosPorPagina = 10;
   const navigate = useNavigate();
+
+  // Verificar si se ha creado un candidato recientemente
+  useEffect(() => {
+    const candidatoCreado = sessionStorage.getItem('candidatoCreado');
+    const nombreCandidato = sessionStorage.getItem('nombreCandidato');
+    
+    if (candidatoCreado === 'true' && nombreCandidato) {
+      setMensajeExito(`El candidato ${nombreCandidato} ha sido creado exitosamente.`);
+      
+      // Limpiar el sessionStorage
+      sessionStorage.removeItem('candidatoCreado');
+      sessionStorage.removeItem('nombreCandidato');
+      
+      // Ocultar el mensaje después de 5 segundos
+      const timer = setTimeout(() => {
+        setMensajeExito(null);
+      }, 5000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   // Cargar candidatos al montar el componente
   useEffect(() => {
@@ -150,6 +172,13 @@ const ListaCandidatos: React.FC = () => {
   return (
     <div className="lista-container">
       <h1 className="lista-titulo">Candidatos</h1>
+      
+      {/* Mensaje de éxito */}
+      {mensajeExito && (
+        <div className="alerta alerta-exito">
+          {mensajeExito}
+        </div>
+      )}
       
       {/* Barra de acciones */}
       <div className="acciones-bar">

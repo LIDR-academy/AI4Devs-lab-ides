@@ -310,3 +310,7 @@ Vamos a corregir los siguientes puntos:
 - El formato del teléfono solicita 10 dígitos, cuando deben ser nueve.
 - Cuando el back no responde, se está mostrando mucho detalle al usuario que no le interesa, solo hay que indicar que el sistema no funciona correctamente.
 - Los documentos PDF que se suben, deben excluirse el git
+
+## Prompt 4
+Vamos a realizar una nueva mejora. Al guardar un candidato, debería aparecer en pantalla un loading que indique al usuario que la aplicación está realizando una acción.
+Una vez creado el usuario, cuando volvamos a la pantalla con el listado de candidatos, se debe indicar de alguna, temporal, un mensaje que diga que se ha creado un candidato.

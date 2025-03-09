@@ -86,6 +86,10 @@ const FormularioCandidato: React.FC = () => {
         formik.resetForm();
         setArchivo(null);
         
+        // Guardar en sessionStorage que se ha creado un candidato
+        sessionStorage.setItem('candidatoCreado', 'true');
+        sessionStorage.setItem('nombreCandidato', `${values.nombre} ${values.apellido}`);
+        
         // Redirigir a la lista de candidatos después de 2 segundos
         setTimeout(() => {
           navigate('/candidatos');
@@ -95,7 +99,6 @@ const FormularioCandidato: React.FC = () => {
           tipo: 'error',
           texto: error.response?.data?.error || 'Error al añadir candidato'
         });
-      } finally {
         setEnviando(false);
       }
     }
@@ -124,8 +127,20 @@ const FormularioCandidato: React.FC = () => {
     descripcion: ''
   };
 
+  // Componente de overlay de carga
+  const LoadingOverlay = () => (
+    <div className="loading-overlay">
+      <div className="loading-content">
+        <div className="spinner"></div>
+        <p>Guardando candidato...</p>
+      </div>
+    </div>
+  );
+
   return (
     <div className="formulario-container">
+      {enviando && <LoadingOverlay />}
+      
       <h1 className="formulario-titulo">Añadir Nuevo Candidato</h1>
       
       {mensaje && (
@@ -154,6 +169,7 @@ const FormularioCandidato: React.FC = () => {
                   onBlur={formik.handleBlur}
                   aria-invalid={formik.touched.nombre && !!formik.errors.nombre}
                   aria-describedby={formik.touched.nombre && formik.errors.nombre ? "nombre-error" : undefined}
+                  disabled={enviando}
                 />
                 {formik.touched.nombre && formik.errors.nombre && (
                   <div className="error-mensaje" id="nombre-error">
@@ -173,6 +189,7 @@ const FormularioCandidato: React.FC = () => {
                   onBlur={formik.handleBlur}
                   aria-invalid={formik.touched.apellido && !!formik.errors.apellido}
                   aria-describedby={formik.touched.apellido && formik.errors.apellido ? "apellido-error" : undefined}
+                  disabled={enviando}
                 />
                 {formik.touched.apellido && formik.errors.apellido && (
                   <div className="error-mensaje" id="apellido-error">
@@ -194,6 +211,7 @@ const FormularioCandidato: React.FC = () => {
                   onBlur={formik.handleBlur}
                   aria-invalid={formik.touched.email && !!formik.errors.email}
                   aria-describedby={formik.touched.email && formik.errors.email ? "email-error" : undefined}
+                  disabled={enviando}
                 />
                 {formik.touched.email && formik.errors.email && (
                   <div className="error-mensaje" id="email-error">
@@ -213,6 +231,7 @@ const FormularioCandidato: React.FC = () => {
                   onBlur={formik.handleBlur}
                   aria-invalid={formik.touched.telefono && !!formik.errors.telefono}
                   aria-describedby={formik.touched.telefono && formik.errors.telefono ? "telefono-error" : undefined}
+                  disabled={enviando}
                 />
                 {formik.touched.telefono && formik.errors.telefono && (
                   <div className="error-mensaje" id="telefono-error">
@@ -232,6 +251,7 @@ const FormularioCandidato: React.FC = () => {
                 onBlur={formik.handleBlur}
                 aria-invalid={formik.touched.direccion && !!formik.errors.direccion}
                 aria-describedby={formik.touched.direccion && formik.errors.direccion ? "direccion-error" : undefined}
+                disabled={enviando}
               />
               {formik.touched.direccion && formik.errors.direccion && (
                 <div className="error-mensaje" id="direccion-error">
@@ -257,6 +277,7 @@ const FormularioCandidato: React.FC = () => {
                         className="eliminar-btn"
                         onClick={() => remove(index)}
                         aria-label="Eliminar educación"
+                        disabled={enviando}
                       >
                         ✕
                       </button>
@@ -275,6 +296,7 @@ const FormularioCandidato: React.FC = () => {
                               formik.touched.educacion?.[index]?.institucion && 
                               !!(formik.errors.educacion?.[index] as any)?.institucion
                             }
+                            disabled={enviando}
                           />
                           {formik.touched.educacion?.[index]?.institucion && 
                             (formik.errors.educacion?.[index] as any)?.institucion && (
@@ -297,6 +319,7 @@ const FormularioCandidato: React.FC = () => {
                               formik.touched.educacion?.[index]?.titulo && 
                               !!(formik.errors.educacion?.[index] as any)?.titulo
                             }
+                            disabled={enviando}
                           />
                           {formik.touched.educacion?.[index]?.titulo && 
                             (formik.errors.educacion?.[index] as any)?.titulo && (
@@ -321,6 +344,7 @@ const FormularioCandidato: React.FC = () => {
                               formik.touched.educacion?.[index]?.fecha_inicio && 
                               !!(formik.errors.educacion?.[index] as any)?.fecha_inicio
                             }
+                            disabled={enviando}
                           />
                           {formik.touched.educacion?.[index]?.fecha_inicio && 
                             (formik.errors.educacion?.[index] as any)?.fecha_inicio && (
@@ -339,6 +363,7 @@ const FormularioCandidato: React.FC = () => {
                             value={formik.values.educacion[index].fecha_fin || ''}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
+                            disabled={enviando}
                           />
                         </div>
                       </div>
@@ -350,6 +375,7 @@ const FormularioCandidato: React.FC = () => {
                     className="agregar-btn"
                     onClick={() => push(nuevaEducacion)}
                     aria-label="Agregar educación"
+                    disabled={enviando}
                   >
                     + Agregar educación
                   </button>
@@ -374,6 +400,7 @@ const FormularioCandidato: React.FC = () => {
                         className="eliminar-btn"
                         onClick={() => remove(index)}
                         aria-label="Eliminar experiencia"
+                        disabled={enviando}
                       >
                         ✕
                       </button>
@@ -392,6 +419,7 @@ const FormularioCandidato: React.FC = () => {
                               formik.touched.experiencia_laboral?.[index]?.empresa && 
                               !!(formik.errors.experiencia_laboral?.[index] as any)?.empresa
                             }
+                            disabled={enviando}
                           />
                           {formik.touched.experiencia_laboral?.[index]?.empresa && 
                             (formik.errors.experiencia_laboral?.[index] as any)?.empresa && (
@@ -414,6 +442,7 @@ const FormularioCandidato: React.FC = () => {
                               formik.touched.experiencia_laboral?.[index]?.puesto && 
                               !!(formik.errors.experiencia_laboral?.[index] as any)?.puesto
                             }
+                            disabled={enviando}
                           />
                           {formik.touched.experiencia_laboral?.[index]?.puesto && 
                             (formik.errors.experiencia_laboral?.[index] as any)?.puesto && (
@@ -438,6 +467,7 @@ const FormularioCandidato: React.FC = () => {
                               formik.touched.experiencia_laboral?.[index]?.fecha_inicio && 
                               !!(formik.errors.experiencia_laboral?.[index] as any)?.fecha_inicio
                             }
+                            disabled={enviando}
                           />
                           {formik.touched.experiencia_laboral?.[index]?.fecha_inicio && 
                             (formik.errors.experiencia_laboral?.[index] as any)?.fecha_inicio && (
@@ -456,6 +486,7 @@ const FormularioCandidato: React.FC = () => {
                             value={formik.values.experiencia_laboral[index].fecha_fin || ''}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
+                            disabled={enviando}
                           />
                         </div>
                       </div>
@@ -468,6 +499,7 @@ const FormularioCandidato: React.FC = () => {
                           value={formik.values.experiencia_laboral[index].descripcion || ''}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
+                          disabled={enviando}
                         />
                       </div>
                     </div>
@@ -478,6 +510,7 @@ const FormularioCandidato: React.FC = () => {
                     className="agregar-btn"
                     onClick={() => push(nuevaExperiencia)}
                     aria-label="Agregar experiencia laboral"
+                    disabled={enviando}
                   >
                     + Agregar experiencia laboral
                   </button>
@@ -487,7 +520,7 @@ const FormularioCandidato: React.FC = () => {
           </div>
           
           {/* Carga de CV */}
-          <CargarCV onChange={manejarCambioArchivo} error={archivoError} />
+          <CargarCV onChange={manejarCambioArchivo} error={archivoError} disabled={enviando} />
           
           {/* Botones */}
           <div className="botones">
@@ -504,7 +537,7 @@ const FormularioCandidato: React.FC = () => {
               className="btn-primario"
               disabled={enviando}
             >
-              {enviando ? 'Enviando...' : 'Guardar Candidato'}
+              {enviando ? 'Guardando...' : 'Guardar Candidato'}
             </button>
           </div>
         </form>
