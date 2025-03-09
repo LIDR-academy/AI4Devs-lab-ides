@@ -1,18 +1,25 @@
 import express from 'express';
-import { v4 as uuidv4 } from 'uuid';
+import { PrismaClient } from '@prisma/client';
 import type { Candidate } from './types/candidate';
 
+const prisma = new PrismaClient();
 export const app = express();
 
 app.use(express.json());
 
-app.post('/api/candidates', (req, res) => {
-  const candidate: Candidate = {
-    id: uuidv4(),
-    ...req.body
-  };
-
-  // For now, just return the created candidate
-  // We'll add database persistence in the next iteration
-  res.status(201).json(candidate);
+app.post('/api/candidates', async (req, res) => {
+  try {
+    const candidate = await prisma.candidate.create({
+      data: {
+        ...req.body
+      }
+    });
+    res.status(201).json(candidate);
+  } catch (error: any) {
+    if (error.code === 'P2002') {
+      res.status(400).json({ error: 'A candidate with this email already exists' });
+    } else {
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
 });
