@@ -18,3 +18,17 @@ model User {
   email String  @unique
   name  String?
 }
+
+model Candidate {
+  id          String   @id @default(uuid())
+  nombre      String
+  apellido    String
+  email       String   @unique
+  telefono    String?
+  direccion   String?
+  educacion   String
+  experiencia String
+  cv_path     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
