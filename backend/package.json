@@ -7,7 +7,9 @@
         "start": "node dist/index.js",
         "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
         "build": "tsc",
-        "test": "jest",
+        "test": "jest --config jest.config.js --verbose --runInBand",
+        "test:coverage": "jest --config jest.config.js --coverage --verbose",
+        "test:watch": "jest --config jest.config.js --watch --verbose",
         "prisma:init": "npx prisma init",
         "prisma:generate": "npx prisma generate",
         "start:prod": "npm run build && npm start"

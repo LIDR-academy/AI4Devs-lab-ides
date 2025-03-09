@@ -27,8 +27,6 @@ const EducationSelector: React.FC<EducationSelectorProps> = ({
   const handleBackdropClick = (e: React.MouseEvent) => {
     // Only close if clicking the backdrop itself, not the form
     if (e.target === e.currentTarget) {
-      console.log('Backdrop clicked');
-      
       // Check if there's data in the form
       const hasData = !!(
         customEducation.degree || 
@@ -71,18 +69,14 @@ const EducationSelector: React.FC<EducationSelectorProps> = ({
 
   const handleCustomSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    console.log('Submitting education form', customEducation);
     
     // Validate required fields
     if (!customEducation.degree || !customEducation.institution || 
         !customEducation.fieldOfStudy || !customEducation.startYear) {
-      console.error('Missing required fields in education form', customEducation);
       // Show validation errors to the user
       alert('Please fill in all required fields for education');
       return; // Don't submit if required fields are missing
     }
-    
-    console.log('Adding education:', customEducation);
     
     // Ensure all fields are properly formatted
     const validatedEducation: Education = {
@@ -96,11 +90,8 @@ const EducationSelector: React.FC<EducationSelectorProps> = ({
       isCurrentlyStudying: Boolean(customEducation.isCurrentlyStudying)
     };
     
-    console.log('Validated education:', validatedEducation);
-    
     // Add to the selected education list
     const newEducationList = [...selectedEducation, validatedEducation];
-    console.log('New education list:', newEducationList);
     onChange(newEducationList);
     
     // Reset the form
@@ -113,7 +104,7 @@ const EducationSelector: React.FC<EducationSelectorProps> = ({
       isCurrentlyStudying: false
     });
     
-    // Hide the form after successful submission
+    // Close the form
     setShowForm(false);
   };
 

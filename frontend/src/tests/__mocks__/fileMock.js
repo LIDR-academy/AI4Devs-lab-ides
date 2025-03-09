@@ -1,2 +1,2 @@
-// Mock file for assets like images, SVGs, etc.
+// Mock file imports
 module.exports = 'test-file-stub'; 

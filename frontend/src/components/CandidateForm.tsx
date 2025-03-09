@@ -49,8 +49,6 @@ const CandidateForm: React.FC<CandidateFormProps> = ({
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     // Only close if clicking on the backdrop, not the form itself
     if (e.target === e.currentTarget) {
-      console.log('Backdrop clicked');
-      
       // If form has data entered, confirm before closing
       if (hasFilledFields()) {
         if (window.confirm('Are you sure you want to close this form? Your unsaved data will be lost.')) {
@@ -135,13 +133,9 @@ const CandidateForm: React.FC<CandidateFormProps> = ({
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    console.log('Form submission triggered');
     e.preventDefault();
     
-    console.log('Running form validation...');
     if (validateForm()) {
-      console.log('Validation passed');
-      
       // Include the selected file and education in the submission
       const submissionData: CandidateFormData = {
         ...formData,
@@ -149,28 +143,17 @@ const CandidateForm: React.FC<CandidateFormProps> = ({
       };
       
       if (selectedFile) {
-        console.log('Adding file to submission:', selectedFile.name);
         submissionData.resume = selectedFile;
       }
       
-      console.log('Submission data prepared:', JSON.stringify(submissionData, (key, value) => {
-        // Don't try to stringify the File object
-        if (key === 'resume' && value instanceof File) {
-          return `File: ${value.name} (${value.size} bytes)`;
-        }
-        return value;
-      }, 2));
-      
-      console.log('Calling onSubmit with data');
       onSubmit(submissionData);
     } else {
-      console.warn('Form validation failed, not submitting');
-      console.log('Current errors:', errors);
+      // Form validation failed, not submitting
     }
   };
 
   return (
-    <div className="candidate-form-container" onClick={handleBackdropClick}>
+    <div className="candidate-form-container" data-testid="candidate-form-container" onClick={handleBackdropClick}>
       <form className="candidate-form" onSubmit={handleSubmit} ref={formRef}>
         <h2>{isEditing ? 'Edit Candidate' : 'Add New Candidate'}</h2>
         
@@ -297,15 +280,18 @@ const CandidateForm: React.FC<CandidateFormProps> = ({
         </div>
         
         <div className="form-actions">
-          <button type="button" className="cancel-button" onClick={onCancel}>
+          <button 
+            type="button" 
+            className="cancel-button" 
+            onClick={onCancel}
+          >
             Cancel
           </button>
           <button 
             type="submit" 
             className="submit-button"
-            onClick={() => console.log('Submit button clicked - form will submit')}
           >
-            {isEditing ? 'Update' : 'Add'} Candidate
+            {initialData ? 'Update' : 'Add'} Candidate
           </button>
         </div>
       </form>

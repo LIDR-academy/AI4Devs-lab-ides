@@ -14,12 +14,10 @@ const prisma = new PrismaClient() as PrismaClient & {
 
 // Get all candidates
 router.get('/', async (req, res) => {
-  console.log('GET /candidates request received');
   try {
     // Check if Prisma is connected
     try {
       await prisma.$connect();
-      console.log('Prisma connected successfully');
     } catch (connectError) {
       console.error('Error connecting to database:', connectError);
       return res.status(500).json({ 
@@ -28,7 +26,6 @@ router.get('/', async (req, res) => {
       });
     }
 
-    console.log('Attempting to fetch candidates');
     const candidates = await prisma.candidate.findMany({
       include: {
         education: true
@@ -38,7 +35,6 @@ router.get('/', async (req, res) => {
       }
     });
     
-    console.log(`Found ${candidates.length} candidates`);
     res.json(candidates);
   } catch (error) {
     console.error('Error fetching candidates:', error);
@@ -85,7 +81,6 @@ router.get('/:id/resume', async (req, res) => {
     }
     
     const filePath = path.join(process.cwd(), 'uploads', candidate.resumeFilename);
-    console.log('Resume file path:', filePath);
     
     if (!fs.existsSync(filePath)) {
       console.error('Resume file not found at path:', filePath);
@@ -112,10 +107,6 @@ router.post('/', async (req: Request, res: Response) => {
     // Get the form data from req.body
     const { name, email, phone, position, status, notes, education } = req.body;
     
-    // Debug the received data
-    console.log('Received education data:', education);
-    console.log('Request body:', req.body);
-    
     // Basic validation
     if (!name || !email || !phone || !position || !status) {
       // If a file was uploaded but validation fails, delete it
@@ -131,16 +122,12 @@ router.post('/', async (req: Request, res: Response) => {
       try {
         // Check if already a string or object
         if (typeof education === 'string') {
-          console.log('Education data is a string, attempting to parse');
           educationData = JSON.parse(education);
         } else if (Array.isArray(education)) {
-          console.log('Education data is already an array');
           educationData = education;
         } else if (typeof education === 'object') {
-          console.log('Education data is an object, converting to array');
           educationData = [education];
         }
-        console.log('Parsed education data:', educationData);
       } catch (e) {
         console.error('Error parsing education data:', e);
         // Continue with empty education data rather than failing
@@ -189,17 +176,14 @@ router.post('/', async (req: Request, res: Response) => {
       
       // Now create education records separately if any
       if (Array.isArray(educationData) && educationData.length > 0) {
-        console.log('Creating', educationData.length, 'education records for candidate', candidate.id);
-        
         for (const edu of educationData) {
           try {
-            const educationRecord = await prisma.education.create({
+            await prisma.education.create({
               data: {
                 ...edu,
                 candidateId: candidate.id
               }
             });
-            console.log('Created education record:', educationRecord);
           } catch (eduError) {
             console.error('Failed to create education record:', edu, eduError);
           }
@@ -240,44 +224,35 @@ router.post('/', async (req: Request, res: Response) => {
 
 // Update a candidate
 router.put('/:id', async (req: Request, res: Response) => {
-  console.log('📝 PUT /candidates/:id route hit');
-  console.log('Candidate ID for update:', req.params.id);
-  console.log('Request body keys:', Object.keys(req.body));
-  console.log('Request headers:', req.headers);
-  
   try {
     const { id } = req.params;
     
     // Handle file upload first
     const file = await handleFileUpload(req);
-    console.log('File upload processed:', file ? 'File received' : 'No file received');
     
     // Get the form data from req.body
     const { name, email, phone, position, status, notes, education } = req.body;
-    console.log('Update - Request data:', { name, email, phone, position, status, notes });
-    console.log('Update - Received education data:', education);
     
-    // Get existing candidate to check if we need to delete an old resume
-    const existingCandidate = await prisma.candidate.findUnique({
-      where: { id: Number(id) },
-      include: {
-        education: true
-      }
-    });
-    
-    if (!existingCandidate) {
-      // If a file was uploaded but candidate doesn't exist, delete it
+    // Basic validation
+    if (!name || !email || !phone || !position) {
+      // If a file was uploaded but validation fails, delete it safely
       if (file && file.path) {
-        fs.unlinkSync(file.path);
+        try {
+          if (fs.existsSync(file.path)) {
+            fs.unlinkSync(file.path);
+          }
+        } catch (error) {
+          // Just log the error but don't let it fail the request
+          console.error(`Error cleaning up file after validation failure:`, error);
+        }
       }
-      return res.status(404).json({ error: 'Candidate not found' });
+      return res.status(400).json({ error: 'Missing required fields' });
     }
     
     // Parse education data if provided
     let educationData = [];
     if (education) {
       try {
-        // Check if already a string or object
         if (typeof education === 'string') {
           educationData = JSON.parse(education);
         } else if (Array.isArray(education)) {
@@ -285,92 +260,120 @@ router.put('/:id', async (req: Request, res: Response) => {
         } else if (typeof education === 'object') {
           educationData = [education];
         }
-        console.log('Update - Parsed education data:', educationData);
       } catch (e) {
-        console.error('Update - Error parsing education data:', e);
-        // Continue with empty education data rather than failing
+        console.error('Error parsing education data:', e);
       }
     }
     
-    // Prepare update data
-    const updateData: any = {
-      name,
-      email,
-      phone,
-      position,
-      status,
-      notes
-    };
-    
-    // If a new file was uploaded, add file details
-    if (file) {
-      updateData.resumeFilename = path.basename(file.path);
-      updateData.resumeOriginalName = file.originalname;
-      updateData.resumeMimetype = file.mimetype;
-      updateData.resumeSize = file.size;
-      
-      // Delete old file if exists
-      if (existingCandidate.resumeFilename) {
-        const oldFilePath = path.join(process.cwd(), 'uploads', existingCandidate.resumeFilename);
-        console.log('Attempting to delete old resume file:', oldFilePath);
-        if (fs.existsSync(oldFilePath)) {
-          try {
-            fs.unlinkSync(oldFilePath);
-            console.log('Successfully deleted old resume file');
-          } catch (err) {
-            console.error('Error deleting old resume file:', err);
-            // Continue processing even if delete fails
-          }
-        } else {
-          console.log('Old resume file does not exist:', oldFilePath);
-        }
-      }
-    }
-    
-    // First, delete all existing education records
     try {
-      await prisma.education.deleteMany({
-        where: {
-          candidateId: Number(id)
-        }
+      // First find the existing candidate to get the old resume path
+      const existingCandidate = await prisma.candidate.findUnique({
+        where: { id: Number(id) }
       });
-    } catch (e) {
-      console.error('Error deleting existing education records:', e);
-    }
-    
-    // Update candidate
-    const candidate = await prisma.candidate.update({
-      where: { id: Number(id) },
-      data: {
-        ...updateData,
-        education: {
-          create: Array.isArray(educationData) && educationData.length > 0 
-            ? educationData.map((edu: any) => ({
-                degree: edu.degree || '',
-                institution: edu.institution || '',
-                fieldOfStudy: edu.fieldOfStudy || '',
-                startYear: Number(edu.startYear) || new Date().getFullYear(),
-                endYear: edu.endYear ? Number(edu.endYear) : null,
-                isCurrentlyStudying: edu.isCurrentlyStudying === true
-              }))
-            : []
+      
+      if (!existingCandidate) {
+        // If a file was uploaded but candidate doesn't exist, delete it safely
+        if (file && file.path) {
+          try {
+            if (fs.existsSync(file.path)) {
+              fs.unlinkSync(file.path);
+            }
+          } catch (error) {
+            console.error(`Error cleaning up file for non-existent candidate:`, error);
+          }
         }
-      },
-      include: {
-        education: true
+        return res.status(404).json({ error: 'Candidate not found' });
       }
-    });
-    
-    res.json(candidate);
+      
+      // Delete old resume file if a new one is uploaded and old one exists
+      if (file && file.path && existingCandidate.resumeFilename) {
+        const oldFilePath = path.join(process.cwd(), 'uploads', existingCandidate.resumeFilename);
+        try {
+          if (fs.existsSync(oldFilePath)) {
+            fs.unlinkSync(oldFilePath);
+          }
+        } catch (fileError) {
+          // Just log the error but continue with the update
+          console.error(`Error deleting old resume file ${oldFilePath}:`, fileError);
+        }
+      }
+      
+      // Update the candidate
+      const updateData = {
+        name,
+        email,
+        phone,
+        position,
+        status: status || existingCandidate.status,
+        notes,
+        ...(file && file.filename && {
+          resumeFilename: file.filename,
+          resumeOriginalName: file.originalname,
+          resumeMimetype: file.mimetype,
+          resumeSize: file.size
+        })
+      };
+      
+      // Update candidate first
+      const candidate = await prisma.candidate.update({
+        where: { id: Number(id) },
+        data: updateData
+      });
+      
+      // Handle education records separately
+      if (Array.isArray(educationData)) {
+        // First delete all existing education records for this candidate
+        await prisma.education.deleteMany({
+          where: { candidateId: Number(id) }
+        });
+        
+        // Then add new education records
+        if (educationData.length > 0) {
+          for (const edu of educationData) {
+            try {
+              await prisma.education.create({
+                data: {
+                  degree: String(edu.degree || ''),
+                  institution: String(edu.institution || ''),
+                  fieldOfStudy: String(edu.fieldOfStudy || ''),
+                  startYear: Number(edu.startYear) || new Date().getFullYear(),
+                  endYear: edu.endYear ? Number(edu.endYear) : null,
+                  isCurrentlyStudying: edu.isCurrentlyStudying === true,
+                  candidateId: Number(id)
+                }
+              });
+            } catch (eduError) {
+              console.error('Failed to create education record:', edu, eduError);
+            }
+          }
+        }
+      }
+      
+      // Get the updated candidate with education
+      const updatedCandidate = await prisma.candidate.findUnique({
+        where: { id: Number(id) },
+        include: { education: true }
+      });
+      
+      res.json(updatedCandidate);
+    } catch (error) {
+      console.error(`Error updating candidate ${req.params.id}:`, error);
+      if ((error as any).code === 'P2025') {
+        return res.status(404).json({ error: 'Candidate not found' });
+      }
+      res.status(500).json({ 
+        error: 'Failed to update candidate',
+        details: String(error),
+        stack: (error as Error).stack
+      });
+    }
   } catch (error) {
-    console.error(`Error updating candidate ${req.params.id}:`, error);
-    if ((error as any).code === 'P2025') {
-      return res.status(404).json({ error: 'Candidate not found' });
-    }
-    if ((error as any).code === 'P2002') {
-      return res.status(400).json({ error: 'Email already exists' });
-    }
-    res.status(500).json({ error: 'Failed to update candidate', details: String(error) });
+    console.error(`Top level error updating candidate ${req.params.id}:`, error);
+    res.status(500).json({ 
+      error: 'Failed to update candidate',
+      details: String(error),
+      stack: (error as Error).stack
+    });
   }
 });
 
@@ -379,7 +382,7 @@ router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     
-    // Get candidate to check for resume file
+    // First find the candidate to get their resume info
     const candidate = await prisma.candidate.findUnique({
       where: { id: Number(id) }
     });
@@ -388,34 +391,31 @@ router.delete('/:id', async (req, res) => {
       return res.status(404).json({ error: 'Candidate not found' });
     }
     
-    // Delete resume file if exists
-    if (candidate.resumeFilename) {
-      const filePath = path.join(process.cwd(), 'uploads', candidate.resumeFilename);
-      console.log('Attempting to delete resume file:', filePath);
-      if (fs.existsSync(filePath)) {
-        try {
-          fs.unlinkSync(filePath);
-          console.log('Successfully deleted resume file');
-        } catch (err) {
-          console.error('Error deleting resume file:', err);
-          // Continue processing even if delete fails
-        }
-      } else {
-        console.log('Resume file does not exist:', filePath);
-      }
-    }
+    // Delete associated education records
+    await prisma.education.deleteMany({
+      where: { candidateId: Number(id) }
+    });
     
-    // Delete candidate from database
+    // Delete the candidate
     await prisma.candidate.delete({
       where: { id: Number(id) }
     });
     
-    res.status(204).send();
+    // Delete resume file if it exists
+    if (candidate.resumeFilename) {
+      const filePath = path.join(process.cwd(), 'uploads', candidate.resumeFilename);
+      try {
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      } catch (fileError) {
+        console.error(`Error deleting resume file ${filePath}:`, fileError);
+      }
+    }
+    
+    res.status(204).end();
   } catch (error) {
     console.error(`Error deleting candidate ${req.params.id}:`, error);
-    if ((error as any).code === 'P2025') {
-      return res.status(404).json({ error: 'Candidate not found' });
-    }
     res.status(500).json({ error: 'Failed to delete candidate' });
   }
 });

@@ -1,75 +1,74 @@
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 
-// Ensure uploads directory exists using an absolute path from project root
+// Directory for file uploads
 const uploadDir = path.join(process.cwd(), 'uploads');
-console.log('Upload directory path:', uploadDir);
 
+// Ensure uploads directory exists
 if (!fs.existsSync(uploadDir)) {
-  console.log('Creating uploads directory');
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Configure storage
+// Configure multer storage
 const storage = multer.diskStorage({
-  destination: (req: any, file: any, cb: any) => {
-    console.log('Setting file destination to:', uploadDir);
+  destination: (req, file, cb) => {
     cb(null, uploadDir);
   },
-  filename: (req: any, file: any, cb: any) => {
-    // Create a unique filename with timestamp and original extension
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const ext = path.extname(file.originalname);
-    const filename = `resume-${uniqueSuffix}${ext}`;
-    console.log('Setting filename to:', filename);
+  filename: (req, file, cb) => {
+    // Generate a unique filename with original extension
+    const filename = `resume-${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(file.originalname)}`;
     cb(null, filename);
   }
 });
 
-// File filter to allow only specific file types
-const fileFilter = (req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-  // Accept PDF, DOC, DOCX files
-  const allowedFileTypes = ['.pdf', '.doc', '.docx'];
+// File filter to allow specific file types
+const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+  // Extract file extension
   const ext = path.extname(file.originalname).toLowerCase();
   
-  console.log('Checking file type:', file.originalname, ext);
-  
-  if (allowedFileTypes.includes(ext)) {
+  // Allow common document/PDF types
+  const allowed = ['.pdf', '.doc', '.docx', '.txt', '.rtf'];
+  if (allowed.includes(ext)) {
     cb(null, true);
   } else {
-    console.log('File type rejected:', ext);
-    cb(new Error('Only PDF, DOC, and DOCX files are allowed'));
+    cb(new Error(`File type ${ext} not allowed. Allowed types: ${allowed.join(', ')}`));
   }
 };
 
-// Create and export the multer middleware
-export const uploadResume = multer({
+// Multer upload instance
+const upload = multer({
   storage,
-  fileFilter,
   limits: {
-    fileSize: 10 * 1024 * 1024, // Limit file size to 10MB
-  }
-}).single('resume'); // 'resume' is the field name in the form
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+  fileFilter
+});
 
-// Helper function to handle file uploads
-export const handleFileUpload = (req: Request): Promise<Express.Multer.File | null> => {
-  return new Promise((resolve, reject) => {
-    console.log('Starting file upload process');
-    uploadResume(req, req.res as any, (err) => {
-      if (err) {
-        console.error('File upload error:', err);
-        return reject(err);
-      }
+// Handler function to process file upload
+export const handleFileUpload = async (req: Request): Promise<Express.Multer.File | null> => {
+  try {
+    // Create a Promise-based wrapper around multer's single upload
+    return await new Promise((resolve, reject) => {
+      const singleUpload = upload.single('resume');
       
-      if (!req.file) {
-        console.log('No file was uploaded');
-        return resolve(null);
-      }
-      
-      console.log('File uploaded successfully:', req.file.filename);
-      resolve(req.file);
+      singleUpload(req, {} as Response, (err) => {
+        if (err) {
+          console.error('File upload error:', err);
+          reject(err);
+          return;
+        }
+        
+        if (req.file) {
+          resolve(req.file);
+        } else {
+          resolve(null);
+        }
+      });
     });
-  });
+  } catch (error) {
+    console.error('Error in handleFileUpload:', error);
+    return null;
+  }
 }; 

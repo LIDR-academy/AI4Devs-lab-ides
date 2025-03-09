@@ -12,118 +12,80 @@ const CandidatesPage: React.FC = () => {
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
   const [editingCandidate, setEditingCandidate] = useState<Candidate | null>(null);
-  
-  const fetchCandidates = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      console.log('Fetching candidates...');
-      const data = await candidateService.getCandidates();
-      console.log('Candidates fetched:', data);
-      setCandidates(data);
-      if (data.length === 0) {
-        console.log('No candidates returned from API');
-      }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : String(err);
-      setError(`Failed to load candidates: ${errorMessage}`);
-      console.error('Error fetching candidates:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const [refresh, setRefresh] = useState<number>(0);
   
   useEffect(() => {
+    const fetchCandidates = async () => {
+      setIsLoading(true);
+      try {
+        const data = await candidateService.getCandidates();
+        setCandidates(data || []);
+      } catch (error) {
+        // Handle API errors
+        setError('Failed to load candidates. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     fetchCandidates();
-  }, []);
+  }, [refresh]);
   
   const handleAddCandidate = async (formData: CandidateFormData) => {
     setIsLoading(true);
-    setError(null);
     try {
-      console.log('Adding new candidate with form data:', formData);
-      console.log('Education data in form:', formData.education);
-      
-      // Validate that we have at least some data in the education field
-      if (!formData.education || formData.education.length === 0) {
-        console.warn('No education data provided');
-      }
-      
       const newCandidate = await candidateService.createCandidate(formData);
       
       if (newCandidate) {
-        console.log('Successfully created candidate:', newCandidate);
-        setCandidates(prev => [...prev, newCandidate]);
+        // Refresh the candidates list
+        setRefresh(prev => prev + 1);
         setShowForm(false);
       } else {
-        throw new Error('Failed to create candidate - no data returned');
+        setError('Failed to add candidate. Please try again.');
       }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : String(err);
-      setError(`Failed to add candidate: ${errorMessage}`);
-      console.error('Error adding candidate:', err);
+    } catch (error) {
+      setError('An error occurred while adding the candidate.');
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleEditCandidate = async (formData: CandidateFormData) => {
-    console.log('handleEditCandidate called with formData:', formData);
-    console.log('Current editingCandidate:', editingCandidate);
+    if (!editingCandidate || typeof editingCandidate.id !== 'number') return;
     
-    if (!editingCandidate || !editingCandidate.id) {
-      const errorMsg = 'No candidate selected for editing';
-      console.error(errorMsg);
-      setError(errorMsg);
-      return;
-    }
-
+    // Map endYear from null to undefined for the frontend type
+    const processedFormData: CandidateFormData = {
+      ...formData,
+      education: formData.education.map(edu => ({
+        ...edu,
+        startYear: Number(edu.startYear),
+        // Make sure we use undefined instead of null for the frontend type
+        endYear: edu.endYear ? Number(edu.endYear) : undefined,
+        isCurrentlyStudying: Boolean(edu.isCurrentlyStudying)
+      }))
+    };
+    
     setIsLoading(true);
-    setError(null);
     try {
-      console.log('Updating candidate with ID:', editingCandidate.id);
-      console.log('Update data being sent:', JSON.stringify(formData, (key, value) => {
-        // Don't try to stringify the File object
-        if (key === 'resume' && value instanceof File) {
-          return `File: ${value.name} (${value.size} bytes)`;
-        }
-        return value;
-      }, 2));
-      
-      // Use the status from formData if provided, otherwise use the existing status
-      console.log('Calling candidateService.updateCandidate...');
       const updatedCandidate = await candidateService.updateCandidate(
         editingCandidate.id, 
-        formData // Use formData directly - it includes status if changed
+        {
+          ...processedFormData,
+          status: editingCandidate.status
+        }
       );
       
-      console.log('Response from updateCandidate API call:', updatedCandidate);
-      
       if (updatedCandidate) {
-        console.log('Successfully updated candidate:', updatedCandidate);
-        
-        // Update the candidate in the list
-        setCandidates(prev => 
-          prev.map(candidate => 
-            candidate.id === updatedCandidate.id ? updatedCandidate : candidate
-          )
-        );
-        
-        // Close the form and reset the editing state
-        console.log('Closing form and resetting editing state');
-        setShowForm(false);
+        // Refresh the candidates list
+        setRefresh(prev => prev + 1);
         setEditingCandidate(null);
+        setShowForm(false);
       } else {
-        const errorMsg = 'Failed to update candidate - no data returned';
-        console.error(errorMsg);
-        throw new Error(errorMsg);
+        setError('Failed to update candidate. Please try again.');
       }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : String(err);
-      console.error('Error updating candidate:', err);
-      setError(`Failed to update candidate: ${errorMessage}`);
+    } catch (error) {
+      setError('An error occurred while updating the candidate.');
     } finally {
-      console.log('Update process completed, setting isLoading to false');
       setIsLoading(false);
     }
   };
@@ -165,6 +127,10 @@ const CandidatesPage: React.FC = () => {
       default:
         return '#9e9e9e'; // Grey
     }
+  };
+  
+  const handleCloseDetailsModal = () => {
+    setSelectedCandidate(null);
   };
   
   return (
@@ -297,7 +263,7 @@ const CandidatesPage: React.FC = () => {
               <h2>{selectedCandidate.name}</h2>
               <button 
                 className="close-button"
-                onClick={() => setShowDetails(false)}
+                onClick={handleCloseDetailsModal}
               >
                 &times;
               </button>
@@ -393,7 +359,7 @@ const CandidatesPage: React.FC = () => {
             <div className="details-footer">
               <button 
                 className="close-button"
-                onClick={() => setShowDetails(false)}
+                onClick={handleCloseDetailsModal}
               >
                 Close
               </button>
