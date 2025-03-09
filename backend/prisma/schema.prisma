@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -17,4 +11,57 @@ model User {
   id    Int     @id @default(autoincrement())
   email String  @unique
   name  String?
+}
+
+model Candidato {
+  id                 Int                  @id @default(autoincrement())
+  nombre             String               @db.VarChar(100)
+  apellido           String               @db.VarChar(100)
+  email              String               @unique @db.VarChar(255)
+  telefono           String               @db.VarChar(15)
+  direccion          String?
+  fechaCreacion      DateTime             @default(now()) @map("fecha_creacion")
+  fechaActualizacion DateTime             @updatedAt @map("fecha_actualizacion")
+  documentos         Documento[]
+  educacion          Educacion[]
+  experienciaLaboral ExperienciaLaboral[]
+
+  @@map("candidatos")
+}
+
+model Educacion {
+  id          Int       @id @default(autoincrement())
+  candidatoId Int       @map("candidato_id")
+  institucion String    @db.VarChar(255)
+  titulo      String    @db.VarChar(255)
+  fechaInicio DateTime  @map("fecha_inicio") @db.Date
+  fechaFin    DateTime? @map("fecha_fin") @db.Date
+  candidato   Candidato @relation(fields: [candidatoId], references: [id], onDelete: Cascade)
+
+  @@map("educacion")
+}
+
+model ExperienciaLaboral {
+  id          Int       @id @default(autoincrement())
+  candidatoId Int       @map("candidato_id")
+  empresa     String    @db.VarChar(255)
+  puesto      String    @db.VarChar(255)
+  fechaInicio DateTime  @map("fecha_inicio") @db.Date
+  fechaFin    DateTime? @map("fecha_fin") @db.Date
+  descripcion String?
+  candidato   Candidato @relation(fields: [candidatoId], references: [id], onDelete: Cascade)
+
+  @@map("experiencia_laboral")
+}
+
+model Documento {
+  id            Int       @id @default(autoincrement())
+  candidatoId   Int       @map("candidato_id")
+  tipoDocumento String    @map("tipo_documento") @db.VarChar(50)
+  nombreArchivo String    @map("nombre_archivo") @db.VarChar(255)
+  rutaArchivo   String    @map("ruta_archivo") @db.VarChar(255)
+  fechaSubida   DateTime  @default(now()) @map("fecha_subida")
+  candidato     Candidato @relation(fields: [candidatoId], references: [id], onDelete: Cascade)
+
+  @@map("documentos")
 }
