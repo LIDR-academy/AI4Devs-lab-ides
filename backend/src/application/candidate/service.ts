@@ -1,10 +1,11 @@
 import {
   Candidate,
   CandidateInput,
-  CandidateUpdateInput,
-  ICandidateRepository,
   candidateSchema,
+  CandidateUpdateInput,
   candidateUpdateSchema,
+  ICandidateRepository,
+  Status,
 } from '../../domain/candidate';
 import { FileService } from '../../infrastructure/file.service';
 
@@ -28,6 +29,9 @@ export class CandidateService {
   ): Promise<Candidate> {
     // Validate the input data
     const validatedData = candidateSchema.parse(data);
+
+    // Explicitly force status to PENDING for new candidates, regardless of what was sent
+    validatedData.status = Status.PENDING;
 
     let cvFilePath: string | null = null;
 

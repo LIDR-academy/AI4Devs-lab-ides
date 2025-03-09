@@ -37,6 +37,15 @@ export class CandidateController {
       const candidateData = req.body;
       const file = req.file;
 
+      // Check if client tried to set a status other than PENDING
+      if (candidateData.status && candidateData.status !== 'PENDING') {
+        console.warn(
+          `Client attempted to set status to ${candidateData.status}. Forcing to PENDING.`,
+        );
+        // Remove the status to let the service use the default
+        delete candidateData.status;
+      }
+
       const candidate = await this.candidateService.createCandidate(
         candidateData,
         file,

@@ -5,6 +5,14 @@ const CandidateModal = ({ isOpen, onClose, candidate, onSuccess }) => {
   const handleSuccess = (result) => {
     onSuccess(result)
     onClose()
+
+    // Reload the page only when adding a new candidate (not when editing)
+    if (!candidate) {
+      // Add a small delay to ensure the UI responds before reload
+      setTimeout(() => {
+        window.location.reload()
+      }, 500)
+    }
   }
 
   // Crear el título del modal

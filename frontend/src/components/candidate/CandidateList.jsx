@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useSearch } from "../../contexts/SearchContext"
+import { useToast } from "../../contexts/ToastContext"
 import useCandidates from "../../hooks/useCandidates"
 import { downloadCV } from "../../services/api"
 import ConfirmationDialog from "../ui/confirmation-dialog"
@@ -35,6 +36,8 @@ const CandidateList = ({ onEdit, onAddNew, onCandidateChange }) => {
 
   // Estado para indicar operación de eliminación en progreso
   const [isDeleting, setIsDeleting] = useState(false)
+
+  const { showToast } = useToast()
 
   // Effect para generar datos de prueba adicionales
   useEffect(() => {
@@ -159,14 +162,18 @@ const CandidateList = ({ onEdit, onAddNew, onCandidateChange }) => {
         onCandidateChange()
       }
 
-      // Mostrar notificación de éxito (podría ser reemplazado por un componente de toast)
-      alert(
-        `Candidate ${candidateToDelete.firstName} ${candidateToDelete.lastName} has been deleted successfully.`
-      )
+      // Mostrar notificación de éxito con toast
+      showToast({
+        message: `Candidate ${candidateToDelete.firstName} ${candidateToDelete.lastName} has been deleted successfully.`,
+        type: "success",
+      })
     } catch (error) {
       console.error("Error deleting candidate:", error)
-      // Mostrar mensaje de error al usuario
-      alert(`Failed to delete candidate: ${error.message || "Unknown error"}`)
+      // Mostrar mensaje de error al usuario con toast
+      showToast({
+        message: `Failed to delete candidate: ${error.message || "Unknown error"}`,
+        type: "error",
+      })
     } finally {
       // Limpiar estado y cerrar diálogo
       setDeleteDialogOpen(false)
@@ -181,7 +188,7 @@ const CandidateList = ({ onEdit, onAddNew, onCandidateChange }) => {
     setCandidateToDelete(null)
   }
 
-  // Descargar CV
+  // Download CV
   const handleDownload = async (id, name) => {
     try {
       const blob = await downloadCV(id)
@@ -193,9 +200,19 @@ const CandidateList = ({ onEdit, onAddNew, onCandidateChange }) => {
       a.click()
       window.URL.revokeObjectURL(url)
       document.body.removeChild(a)
+
+      // Show success toast
+      showToast({
+        message: `CV for ${name} successfully downloaded`,
+        type: "success",
+      })
     } catch (error) {
       console.error("Error downloading CV:", error)
-      alert("Failed to download CV")
+      // Show error toast instead of alert
+      showToast({
+        message: `Failed to download CV: ${error.message || "Unknown error"}`,
+        type: "error",
+      })
     }
   }
 
@@ -275,6 +292,7 @@ const CandidateList = ({ onEdit, onAddNew, onCandidateChange }) => {
       id: "email",
       header: "EMAIL",
       accessorKey: "email",
+      disableSorting: true,
       cell: ({ row }) => row.email,
       hideOnMobile: true,
     },
@@ -282,6 +300,7 @@ const CandidateList = ({ onEdit, onAddNew, onCandidateChange }) => {
       id: "phone",
       header: "PHONE",
       accessorKey: "phone",
+      disableSorting: true,
       cell: ({ row }) => row.phone || "-",
       hideOnMobile: true,
     },
@@ -300,10 +319,6 @@ const CandidateList = ({ onEdit, onAddNew, onCandidateChange }) => {
             color = "#f59e0b" // Amber
             icon = "🟡"
             break
-          case "EVALUATED":
-            color = "#10b981" // Green
-            icon = "🟢"
-            break
           case "REJECTED":
             color = "#ef4444" // Red
             icon = "🔴"
@@ -317,8 +332,8 @@ const CandidateList = ({ onEdit, onAddNew, onCandidateChange }) => {
             icon = "🔵"
             break
           case "HIRED":
-            color = "#4f46e5" // Indigo/Navy
-            icon = "🟣"
+            color = "#22c55e" // Verde
+            icon = "🟢"
             break
           default:
             color = "#6b7280"
@@ -367,6 +382,7 @@ const CandidateList = ({ onEdit, onAddNew, onCandidateChange }) => {
     {
       id: "actions",
       header: "", // Eliminado el texto "Actions"
+      disableSorting: true,
       cell: ({ row }) => {
         const candidate = row
         return (
@@ -500,55 +516,53 @@ const CandidateList = ({ onEdit, onAddNew, onCandidateChange }) => {
   }
 
   return (
-    <div style={{ padding: "4px 0" }}>
-      {loading ? (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "200px",
-          }}
-        >
+    <div style={{ padding: "0", marginTop: "-40px" }}>
+      <div style={{ position: "relative", width: "100%" }}>
+        {/* Tabla de candidatos */}
+        {loading ? (
           <div
             style={{
-              width: "40px",
-              height: "40px",
-              border: "3px solid rgba(0, 0, 0, 0.1)",
-              borderTopColor: "#3b82f6",
-              borderRadius: "50%",
-              animation: "spin 1s linear infinite",
+              display: "flex",
+              justifyContent: "center",
+              padding: "2rem",
             }}
-          ></div>
-        </div>
-      ) : error ? (
-        <div
-          style={{
-            padding: "16px",
-            backgroundColor: "#fee2e2",
-            border: "1px solid #ef4444",
-            borderRadius: "6px",
-            color: "#b91c1c",
-          }}
-        >
-          {error}
-        </div>
-      ) : (
-        <>
-          <div className="responsive-table">
+          >
+            <div className="loading-spinner"></div>
+          </div>
+        ) : error ? (
+          <div
+            style={{
+              padding: "1rem",
+              backgroundColor: "#fee2e2",
+              borderRadius: "0.5rem",
+              color: "#ef4444",
+            }}
+          >
+            Error loading candidates: {error}
+          </div>
+        ) : filteredCandidates && filteredCandidates.length > 0 ? (
+          <>
             <DataTable
               columns={columns}
-              data={filteredCandidates || []}
-              style={tableStyle}
-              defaultSort={{
-                id: "createdAt",
-                desc: true,
-              }}
-              totalItems={filteredCandidates?.length || 0}
+              data={filteredCandidates}
+              style={{ width: "100%" }}
+              defaultSort={{ id: "createdAt", desc: true }}
+              totalItems={filteredCandidates.length}
             />
+          </>
+        ) : (
+          <div
+            style={{
+              padding: "2rem",
+              textAlign: "center",
+              backgroundColor: "#f9fafb",
+              borderRadius: "0.5rem",
+            }}
+          >
+            No candidates found with the current filters.
           </div>
-        </>
-      )}
+        )}
+      </div>
 
       {/* Diálogo de confirmación de eliminación */}
       <ConfirmationDialog

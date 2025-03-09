@@ -17,7 +17,7 @@ export function DataTable({ columns, data, style, defaultSort, totalItems }) {
 
   // Stato per la paginazione
   const [currentPage, setCurrentPage] = React.useState(0)
-  const pageSize = 5 // Cambiado a 5 elementos por página
+  const pageSize = 10 // Changed from 7 to 10 items per page
 
   // Stato per l'ordinamento, inizializzato con l'ordinamento predefinito se presente
   const [sortConfig, setSortConfig] = React.useState(() => {
@@ -43,6 +43,18 @@ export function DataTable({ columns, data, style, defaultSort, totalItems }) {
     let sortableData = [...data]
     if (sortConfig.key) {
       sortableData.sort((a, b) => {
+        // Caso speciale per l'ordinamento per nome e cognome quando la chiave è firstName
+        if (sortConfig.key === "firstName" && a.lastName && b.lastName) {
+          // Ordina prima per nome e poi per cognome
+          const fullNameA = `${a.firstName} ${a.lastName}`.toLowerCase()
+          const fullNameB = `${b.firstName} ${b.lastName}`.toLowerCase()
+
+          if (sortConfig.direction === "ascending") {
+            return fullNameA.localeCompare(fullNameB)
+          }
+          return fullNameB.localeCompare(fullNameA)
+        }
+
         // Gestione speciale per le date
         if (
           a[sortConfig.key] &&
@@ -132,7 +144,22 @@ export function DataTable({ columns, data, style, defaultSort, totalItems }) {
                 {sortDirection === "ascending" ? "↑" : "↓"}
               </span>
             ) : (
-              <span style={{ color: "#d1d5db" }}>↕</span>
+              <span style={{ color: "#d1d5db" }}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M7 15l5 5 5-5" />
+                  <path d="M7 9l5-5 5 5" />
+                </svg>
+              </span>
             )}
           </span>
         )}

@@ -2,15 +2,7 @@
 **/.DS_Store
 # Environment variables
 **/.env
-**/.env.*
-**/.env.local
-**/.env.development
-**/.env.test
-**/.env.production
-**/.env.development.local
-**/.env.test.local
-**/.env.production.local
-**/.env.example
+
 
 # other rules from original file
 
@@ -40,3 +32,6 @@ yarn-error.log*
 
 # Backend uploads
 backend/uploads/
+
+backend/node_modules/
+frontend/node_modules/

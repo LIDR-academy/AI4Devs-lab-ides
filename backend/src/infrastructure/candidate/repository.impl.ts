@@ -86,8 +86,17 @@ export class CandidateRepository implements ICandidateRepository {
       where: { status: mapDomainStatusToPrisma(Status.PENDING) },
     });
 
+    // Count candidates in interview, offered or hired as valuated
     const valuated = await this.prisma.candidate.count({
-      where: { status: mapDomainStatusToPrisma(Status.EVALUATED) },
+      where: {
+        status: {
+          in: [
+            mapDomainStatusToPrisma(Status.INTERVIEW),
+            mapDomainStatusToPrisma(Status.OFFERED),
+            mapDomainStatusToPrisma(Status.HIRED),
+          ],
+        },
+      },
     });
 
     const discarded = await this.prisma.candidate.count({

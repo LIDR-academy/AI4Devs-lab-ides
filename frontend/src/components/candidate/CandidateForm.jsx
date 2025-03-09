@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useToast } from "../../contexts/ToastContext"
 import {
   createCandidate,
   getEducationSuggestions,
@@ -12,6 +13,9 @@ import { Input } from "../ui/input"
 import { Textarea } from "../ui/textarea"
 
 const CandidateForm = ({ candidate, onSuccess, onCancel }) => {
+  // Toast hook
+  const { showToast } = useToast()
+
   // Form state
   const [formData, setFormData] = useState({
     firstName: "",
@@ -79,6 +83,15 @@ const CandidateForm = ({ candidate, onSuccess, onCancel }) => {
     const { name, value, files } = e.target
 
     if (name === "cvFile" && files && files[0]) {
+      // Check file size - 5MB limit (5 * 1024 * 1024 bytes)
+      if (files[0].size > 5 * 1024 * 1024) {
+        setErrors((prev) => ({
+          ...prev,
+          cvFile: "File size exceeds 5MB limit. Please upload a smaller file.",
+        }))
+        return
+      }
+
       setFormData((prev) => ({
         ...prev,
         cvFile: files[0],
@@ -158,6 +171,12 @@ const CandidateForm = ({ candidate, onSuccess, onCancel }) => {
       if (!validTypes.includes(fileType)) {
         newErrors.cvFile = "Only PDF or DOCX files are allowed"
       }
+
+      // Check file size - 5MB limit
+      if (formData.cvFile.size > 5 * 1024 * 1024) {
+        newErrors.cvFile =
+          "File size exceeds 5MB limit. Please upload a smaller file."
+      }
     }
 
     setErrors(newErrors)
@@ -192,9 +211,28 @@ const CandidateForm = ({ candidate, onSuccess, onCancel }) => {
         ? await updateCandidate(candidate.id, formDataToSend)
         : await createCandidate(formDataToSend)
 
+      // Show success toast with fallback for first name and last name
+      const firstName = result?.firstName || formData.firstName || "Candidate"
+      const lastName = result?.lastName || formData.lastName || ""
+
+      showToast({
+        message: candidate
+          ? `Candidate ${firstName} ${lastName} updated successfully!`
+          : `Candidate ${firstName} ${lastName} created successfully!`,
+        type: "success",
+      })
+
       onSuccess(result)
     } catch (error) {
       console.error("Error submitting form:", error)
+
+      // Show error toast
+      showToast({
+        message:
+          error.message || "An error occurred while saving the candidate",
+        type: "error",
+      })
+
       setErrors((prev) => ({
         ...prev,
         form: error.message || "An error occurred while saving the candidate",
@@ -368,7 +406,7 @@ const CandidateForm = ({ candidate, onSuccess, onCancel }) => {
       {/* CV File Upload */}
       <FormItem>
         <FormLabel htmlFor="cvFile">
-          CV File {!candidate && "*"} (PDF or DOCX)
+          CV File {!candidate && "*"} (PDF or DOCX, max 5MB)
         </FormLabel>
         <Input
           id="cvFile"
@@ -412,8 +450,8 @@ const CandidateForm = ({ candidate, onSuccess, onCancel }) => {
           {isSubmitting
             ? "Saving..."
             : candidate
-            ? "Update Candidate"
-            : "Add Candidate"}
+              ? "Update Candidate"
+              : "Add Candidate"}
         </Button>
       </div>
     </Form>

@@ -18,7 +18,6 @@ async function main() {
 
   const statuses = [
     Status.PENDING,
-    Status.EVALUATED,
     Status.REJECTED,
     Status.INTERVIEW,
     Status.OFFERED,

@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
 
@@ -46,6 +46,17 @@ if (!fs.existsSync(tempDir)) {
 
 // Configure middleware
 configureMiddleware(app);
+
+// Add error handling middleware for multer errors
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  if (err.name === 'MulterError' && err.code === 'LIMIT_FILE_SIZE') {
+    return res.status(400).json({
+      error: 'File size limit exceeded',
+      message: 'The uploaded file exceeds the 5MB size limit.',
+    });
+  }
+  next(err);
+});
 
 // Initialize services and controllers
 const fileService = new FileService();
