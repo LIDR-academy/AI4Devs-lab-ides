@@ -14,7 +14,29 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id        Int      @id @default(autoincrement())
+  email     String   @unique // Sensitive data - consider encryption
+  name      String?
+  password  String   // Sensitive data - must be hashed
+  role      String   @default("user")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Candidate {
+  id             Int      @id @default(autoincrement())
+  firstName      String
+  lastName       String
+  email          String   @unique // Sensitive data - consider encryption
+  phone          String?  // Sensitive data - consider encryption
+  address        String?  // Sensitive data - consider encryption
+  education      String?
+  workExperience String?
+  cvFilePath     String?  // Path to file, not the file itself
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  createdBy      Int?     // User ID who created this record
+  lastAccessedAt DateTime? // For audit purposes
+  lastAccessedBy Int?     // User ID who last accessed this record
+  consentGiven   Boolean  @default(false) // GDPR compliance
 }
