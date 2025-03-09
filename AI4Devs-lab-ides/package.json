@@ -1,0 +1,39 @@
+{
+  "name": "lti-talent-tracking-system",
+  "version": "1.0.0",
+  "description": "Sistema de Seguimiento de Talento - Full-stack application",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ./run-tests.js --frontend-only",
+    "test:coverage": "node ./run-tests.js --coverage",
+    "test:watch": "node ./run-tests.js --watch",
+    "test:backend": "node ./run-tests.js --backend-only",
+    "test:frontend": "node ./run-tests.js --frontend-only",
+    "test:backend:coverage": "node ./run-tests.js --backend-only --coverage",
+    "test:frontend:coverage": "node ./run-tests.js --frontend-only --coverage",
+    "test:backend:watch": "node ./run-tests.js --backend-only --watch",
+    "test:frontend:watch": "node ./run-tests.js --frontend-only --watch",
+    "test:ci": "CI=true node ./run-tests.js",
+    "test:fix-ts": "cd frontend && npx tsc --noEmit --skipLibCheck && cd ../backend && npx tsc --noEmit --skipLibCheck",
+    "test:no-typecheck": "node ./run-tests.js --no-typecheck",
+    "start:dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm start",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build"
+  },
+  "keywords": [
+    "react",
+    "express",
+    "postgresql",
+    "prisma",
+    "hr",
+    "talent"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+} 

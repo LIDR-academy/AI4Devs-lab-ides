@@ -18,3 +18,32 @@ model User {
   email String  @unique
   name  String?
 }
+
+model Candidate {
+  id             Int         @id @default(autoincrement())
+  name           String
+  email          String      @unique
+  phone          String
+  position       String
+  status         String
+  resumeFilename String?
+  resumeOriginalName String?
+  resumeMimetype String?
+  resumeSize     Int?
+  notes          String?
+  education      Education[]
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model Education {
+  id                  Int       @id @default(autoincrement())
+  degree              String
+  institution         String
+  fieldOfStudy        String
+  startYear           Int
+  endYear             Int?
+  isCurrentlyStudying Boolean   @default(false)
+  candidate           Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateId         Int
+}

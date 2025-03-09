@@ -1,5 +1,8 @@
 .App {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--neutral-50);
 }
 
 .App-logo {
@@ -14,18 +17,50 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  background-color: var(--neutral-900);
   color: white;
+  padding: 1rem 0;
+  box-shadow: var(--shadow-md);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.App-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.header-actions {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.header-link {
+  color: var(--neutral-200);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  transition: all 0.2s;
+}
+
+.header-link:hover {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .App-link {
-  color: #61dafb;
+  color: var(--primary-color);
 }
 
 @keyframes App-logo-spin {
@@ -35,4 +70,87 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+main {
+  flex: 1;
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-6);
+}
+
+.App-footer {
+  background-color: var(--neutral-800);
+  color: var(--neutral-300);
+  padding: 2rem 0;
+  margin-top: auto;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+}
+
+.footer-logo {
+  font-size: 1.25rem;
+  color: white;
+}
+
+.footer-info {
+  text-align: center;
+}
+
+.footer-info p {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.footer-version {
+  margin-top: var(--space-1);
+  color: var(--neutral-500);
+  font-size: 0.75rem !important;
+}
+
+.footer-links {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.footer-links a {
+  color: var(--neutral-300);
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-4);
+  }
+  
+  .footer-links {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+  }
+}
+
+/* Add a container class for consistent page widths */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
 }
