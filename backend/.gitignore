@@ -1,0 +1,61 @@
+# Dependencias
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Archivos de construcción
+/dist
+/build
+/out
+
+# Archivos de caché
+.npm
+.eslintcache
+.cache
+.parcel-cache
+
+# Archivos de logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos de base de datos
+*.sqlite
+*.sqlite3
+*.db
+
+# Archivos de Prisma
+/prisma/migrations/
+/prisma/dev.db
+/prisma/dev.db-journal
+
+# Archivos de CV y uploads (datos sensibles)
+/uploads/*
+!/uploads/.gitkeep
+
+# Archivos de configuración específicos del IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Archivos de cobertura de pruebas
+coverage/
+.nyc_output/
+
+# Archivos temporales
+tmp/
+temp/
+
+# Archivos de claves y certificados
+*.pem
+*.key
+*.cert
+*.crt
+
+# Archivos específicos de seguridad
+encryption_key.txt 
