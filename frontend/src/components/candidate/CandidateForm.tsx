@@ -40,7 +40,7 @@ const candidateSchema = z.object({
       degree: z.string().min(1, 'El título es obligatorio'),
       fieldOfStudy: z.string().min(1, 'El campo de estudio es obligatorio'),
       startDate: z.string().min(1, 'La fecha de inicio es obligatoria'),
-      endDate: z.string().min(1, 'La fecha de finalización es obligatoria'),
+      endDate: z.string().optional(),
       description: z.string().optional(),
     }).refine(data => {
       if (!data.startDate || !data.endDate) return true;
@@ -55,7 +55,7 @@ const candidateSchema = z.object({
       company: z.string().min(1, 'La empresa es obligatoria'),
       position: z.string().min(1, 'El puesto es obligatorio'),
       startDate: z.string().min(1, 'La fecha de inicio es obligatoria'),
-      endDate: z.string().min(1, 'La fecha de finalización es obligatoria'),
+      endDate: z.string().optional(),
       description: z.string().optional(),
     }).refine(data => {
       if (!data.startDate || !data.endDate) return true;
@@ -98,7 +98,6 @@ const CandidateForm: React.FC = () => {
           degree: '',
           fieldOfStudy: '',
           startDate: '',
-          endDate: '',
           description: '',
         },
       ],
@@ -107,7 +106,6 @@ const CandidateForm: React.FC = () => {
           company: '',
           position: '',
           startDate: '',
-          endDate: '',
           description: '',
         },
       ],
@@ -164,8 +162,13 @@ const CandidateForm: React.FC = () => {
       // Convertir los datos del formulario al formato esperado por el backend
       const formData: CandidateFormData = {
         ...data,
-        cv: data.cv[0] || undefined,
+        cv: data.cv && data.cv.length > 0 ? data.cv[0] : undefined,
       };
+      
+      console.log('Enviando datos del formulario:', {
+        ...formData,
+        cv: formData.cv ? 'Archivo presente' : 'Sin archivo'
+      });
       
       await candidateService.createCandidate(formData);
       
@@ -179,11 +182,19 @@ const CandidateForm: React.FC = () => {
       setTimeout(() => {
         navigate('/');
       }, 2000);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error al crear el candidato:', error);
+      
+      // Extraer el mensaje de error
+      let errorMessage = 'Error al añadir el candidato. Por favor, inténtelo de nuevo.';
+      
+      if (error.response && error.response.data && error.response.data.error) {
+        errorMessage = error.response.data.error.message || errorMessage;
+      }
+      
       setNotification({
         open: true,
-        message: 'Error al añadir el candidato. Por favor, inténtelo de nuevo.',
+        message: errorMessage,
         severity: 'error',
       });
     } finally {

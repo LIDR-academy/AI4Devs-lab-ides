@@ -30,6 +30,7 @@ const ExperienceForm: React.FC = () => {
     if (!experienceFields) return;
 
     experienceFields.forEach((experience: Experience, index: number) => {
+      // Solo validar si ambas fechas están presentes
       if (experience.startDate && experience.endDate) {
         const startDate = new Date(experience.startDate);
         const endDate = new Date(experience.endDate);
@@ -115,9 +116,9 @@ const ExperienceForm: React.FC = () => {
               label="Fecha de finalización"
               type="date"
               InputLabelProps={{ shrink: true }}
-              {...register(`experience.${index}.endDate` as const, { required: 'Este campo es obligatorio' })}
+              {...register(`experience.${index}.endDate` as const)}
               error={!!getFieldError(index, 'endDate')}
-              helperText={getFieldError(index, 'endDate')}
+              helperText={getFieldError(index, 'endDate') || 'Opcional (dejar en blanco para "Actualmente")'}
             />
           </Grid>
           

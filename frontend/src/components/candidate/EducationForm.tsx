@@ -30,6 +30,7 @@ const EducationForm: React.FC = () => {
     if (!educationFields) return;
 
     educationFields.forEach((education: Education, index: number) => {
+      // Solo validar si ambas fechas están presentes
       if (education.startDate && education.endDate) {
         const startDate = new Date(education.startDate);
         const endDate = new Date(education.endDate);
@@ -126,9 +127,9 @@ const EducationForm: React.FC = () => {
               label="Fecha de finalización"
               type="date"
               InputLabelProps={{ shrink: true }}
-              {...register(`education.${index}.endDate` as const, { required: 'Este campo es obligatorio' })}
+              {...register(`education.${index}.endDate` as const)}
               error={!!getFieldError(index, 'endDate')}
-              helperText={getFieldError(index, 'endDate')}
+              helperText={getFieldError(index, 'endDate') || 'Opcional (dejar en blanco para "Actualmente")'}
             />
           </Grid>
           
