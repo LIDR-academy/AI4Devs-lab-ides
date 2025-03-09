@@ -168,14 +168,42 @@ const FormWizard: React.FC = () => {
     setError('');
 
     try {
+      // Create a clean copy of the form data without file if it's null
+      const dataToSubmit = { ...formData };
+
+      // Remove unnecessary fields that might cause issues
+      if (!dataToSubmit.cvFile) {
+        delete dataToSubmit.cvFile;
+      }
+
+      // When updating, we don't need to include id fields in nested objects
+      if (isEditMode) {
+        // Clean up education data
+        if (dataToSubmit.education) {
+          dataToSubmit.education = dataToSubmit.education.map(edu => {
+            // Exclude id and candidateId fields for nested updates
+            const { id, candidateId, ...cleanEdu } = edu as any;
+            return cleanEdu;
+          });
+        }
+
+        // Clean up work experience data
+        if (dataToSubmit.workExperience) {
+          dataToSubmit.workExperience = dataToSubmit.workExperience.map(exp => {
+            const { id, candidateId, ...cleanExp } = exp as any;
+            return cleanExp;
+          });
+        }
+      }
+
       let response;
 
       if (isEditMode && candidateId) {
         // Update existing candidate
-        response = await candidateService.update(parseInt(candidateId), formData);
+        response = await candidateService.update(parseInt(candidateId), dataToSubmit);
       } else {
         // Create new candidate
-        response = await candidateService.create(formData);
+        response = await candidateService.create(dataToSubmit);
       }
 
       if (response.success) {

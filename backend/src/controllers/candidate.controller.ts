@@ -197,43 +197,122 @@ export const getCandidateById = async (req: Request, res: Response) => {
 };
 
 /**
- * Update a candidate
+ * Update a candidate by ID
  * @route PUT /api/candidates/:id
  */
 export const updateCandidate = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    const candidateId = parseInt(id);
-    const updateData = req.body;
+    const id = parseInt(req.params.id);
 
     // Check if candidate exists
-    const existingCandidate = await prisma.candidate.findFirst({
-      where: {
-        id: candidateId,
-        deletedAt: null,
-      },
+    const existingCandidate = await prisma.candidate.findUnique({
+      where: { id },
     });
 
     if (!existingCandidate) {
-      return res.status(404).json(formatError(translate('common.errors.candidateNotFound', req.language)));
+      return res.status(404).json(
+        formatError(translate('candidates.errors.notFound', req.language))
+      );
     }
 
-    // Remove related data from updateData if present
-    // These should be updated via separate endpoints
+    // Parse the data from request body
+    let updateData = req.body;
+
+    // If data is coming from multipart form, it might be in the 'data' field as a string
+    if (typeof updateData.data === 'string') {
+      try {
+        updateData = JSON.parse(updateData.data);
+      } catch (e) {
+        console.error('Error parsing data from form:', e);
+      }
+    }
+
+    // Extract the data to update
     const {
+      firstName,
+      lastName,
+      email,
+      phone,
+      address,
+      linkedinProfile,
+      desiredSalary,
+      isLinkedinCv,
       education,
       workExperience,
       skills,
-      languages,
-      documents,
-      ...candidateData
+      languages
     } = updateData;
 
+    // Convert desiredSalary to string if it's a number
+    const desiredSalaryString = desiredSalary !== undefined && desiredSalary !== null
+      ? String(desiredSalary)
+      : null;
+
+    // Prepare the update data - only include prisma-compatible fields
+    const updatePayload: any = {
+      firstName,
+      lastName,
+      email,
+      phone,
+      address,
+      linkedinProfile,
+      desiredSalary: desiredSalaryString,
+      isLinkedinCv: isLinkedinCv || false,
+    };
+
+    // Handle education if provided
+    if (education && Array.isArray(education)) {
+      updatePayload.education = {
+        deleteMany: {}, // Delete all existing education records
+        create: education.map((edu: any) => ({
+          institution: edu.institution,
+          degree: edu.degree,
+          startDate: new Date(edu.startDate),
+          endDate: new Date(edu.endDate),
+          summary: edu.summary
+        }))
+      };
+    }
+
+    // Handle work experience if provided
+    if (workExperience && Array.isArray(workExperience)) {
+      updatePayload.workExperience = {
+        deleteMany: {}, // Delete all existing work experience records
+        create: workExperience.map((exp: any) => ({
+          company: exp.company,
+          position: exp.position,
+          startDate: new Date(exp.startDate),
+          endDate: new Date(exp.endDate),
+          summary: exp.summary
+        }))
+      };
+    }
+
+    // Handle skills if provided
+    if (skills && Array.isArray(skills)) {
+      updatePayload.skills = {
+        deleteMany: {}, // Delete all existing skills
+        create: skills.map((skill: string) => ({
+          name: skill
+        }))
+      };
+    }
+
+    // Handle languages if provided
+    if (languages && Array.isArray(languages)) {
+      updatePayload.languages = {
+        deleteMany: {}, // Delete all existing languages
+        create: languages.map((language: string) => ({
+          name: language,
+          level: 'Intermediate' // Default level
+        }))
+      };
+    }
+
+    // Update the candidate
     const updatedCandidate = await prisma.candidate.update({
-      where: {
-        id: candidateId,
-      },
-      data: candidateData,
+      where: { id },
+      data: updatePayload,
       include: {
         education: true,
         workExperience: true,
@@ -244,16 +323,18 @@ export const updateCandidate = async (req: Request, res: Response) => {
             id: true,
             fileName: true,
             fileType: true,
-            uploadedAt: true,
-          },
-        },
-      },
+            uploadedAt: true
+          }
+        }
+      }
     });
 
-    return res.status(200).json(formatResponse(updatedCandidate, translate('common.success.candidateUpdated', req.language)));
+    return res.json(formatResponse(updatedCandidate));
   } catch (error) {
     console.error('Error updating candidate:', error);
-    return res.status(500).json(formatError(translate('common.errors.failedToUpdate', req.language)));
+    return res.status(500).json(
+      formatError(translate('candidates.errors.updateFailed', req.language))
+    );
   }
 };
 
