@@ -1,0 +1,18 @@
+{
+  "firstName": {
+    "required": "El nombre es obligatorio"
+  },
+  "lastName": {
+    "required": "El apellido es obligatorio"
+  },
+  "email": {
+    "required": "El correo electrónico es obligatorio",
+    "invalid": "Formato de correo electrónico inválido"
+  },
+  "phone": {
+    "required": "El número de teléfono es obligatorio"
+  },
+  "address": {
+    "required": "La dirección es obligatoria"
+  }
+}

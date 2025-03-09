@@ -1,0 +1,18 @@
+{
+  "firstName": {
+    "required": "First name is required"
+  },
+  "lastName": {
+    "required": "Last name is required"
+  },
+  "email": {
+    "required": "Email is required",
+    "invalid": "Invalid email format"
+  },
+  "phone": {
+    "required": "Phone number is required"
+  },
+  "address": {
+    "required": "Address is required"
+  }
+}
