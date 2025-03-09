@@ -1,26 +1,51 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react"
+import {
+  Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from "react-router-dom"
+import { SearchProvider } from "./contexts/SearchContext"
+import { ToastProvider } from "./contexts/ToastContext"
+import DashboardPage from "./pages/Dashboard"
+import { initializeApp, setupErrorHandlers } from "./utils/appInitializer"
+import { updateConfig } from "./utils/config"
 
-function App() {
+/**
+ * Componente principale dell'applicazione
+ */
+const App: React.FC = () => {
+  // Inizializzazione dell'applicazione
+  useEffect(() => {
+    // Configurare l'applicazione (può essere caricato da localStorage, API, ecc.)
+    updateConfig({
+      maxConnections: 10, // Aumentiamo il limite di connessioni a 10
+      debugMode: process.env.NODE_ENV === "development",
+    })
+
+    // Inizializzare l'applicazione
+    initializeApp()
+
+    // Configurare i gestori di errori globali
+    setupErrorHandlers()
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <SearchProvider>
+      <ToastProvider>
+        <Router>
+          <div className="min-h-screen bg-gray-50 font-sans antialiased">
+            <Routes>
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/dashboard/:status" element={<DashboardPage />} />
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </div>
+        </Router>
+      </ToastProvider>
+    </SearchProvider>
+  )
 }
 
-export default App;
+export default App

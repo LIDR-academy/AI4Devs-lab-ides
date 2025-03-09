@@ -1,0 +1,7 @@
+# Prisma Migrate lockfile v1
+# Read more about conflict resolution here: TODO
+
+
+[[migrations]]
+dependencies = ["20250308180356_update_status_enum"]
+provider = "postgresql" 
