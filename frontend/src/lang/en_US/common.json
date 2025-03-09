@@ -1,0 +1,108 @@
+{
+  "app": {
+    "title": "ATS System"
+  },
+  "nav": {
+    "home": "Home",
+    "candidates": "Candidates",
+    "addCandidate": "Add Candidate"
+  },
+  "candidates": {
+    "title": "Candidates",
+    "addNew": "Add New Candidate",
+    "noCandidates": "No candidates found. Add your first candidate by clicking the button above.",
+    "confirmDelete": "Are you sure you want to delete this candidate?",
+    "notFound": "Candidate not found. The candidate might have been deleted or doesn't exist.",
+    "table": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "actions": "Actions"
+    }
+  },
+  "candidateForm": {
+    "title": "Add Candidate",
+    "titleEdit": "Edit Candidate",
+    "steps": {
+      "personalInfo": "Personal Information",
+      "education": "Education",
+      "experience": "Work Experience",
+      "skills": "Skills & Languages",
+      "documents": "Documents"
+    },
+    "personalInfo": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "phone": "Phone Number",
+      "address": "Address",
+      "linkedinProfile": "LinkedIn Profile",
+      "desiredSalary": "Desired Salary"
+    },
+    "education": {
+      "title": "Education",
+      "addEducation": "Add Education",
+      "institution": "Institution",
+      "degree": "Degree",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "summary": "Summary"
+    },
+    "experience": {
+      "title": "Work Experience",
+      "addExperience": "Add Experience",
+      "company": "Company",
+      "position": "Position",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "summary": "Summary"
+    },
+    "skills": {
+      "title": "Skills & Languages",
+      "skills": "Skills",
+      "addSkill": "Add Skill",
+      "languages": "Languages",
+      "addLanguage": "Add Language"
+    },
+    "documents": {
+      "title": "Documents",
+      "uploadCV": "Upload CV",
+      "isLinkedinCV": "This is a LinkedIn-generated CV",
+      "dragDrop": "Drag and drop your PDF file here, or click to browse",
+      "fileSize": "Max file size: 5MB"
+    },
+    "buttons": {
+      "next": "Next",
+      "previous": "Previous",
+      "submit": "Submit",
+      "cancel": "Cancel"
+    }
+  },
+  "notifications": {
+    "success": {
+      "candidateCreated": "Candidate created successfully",
+      "candidateUpdated": "Candidate updated successfully"
+    },
+    "error": {
+      "somethingWentWrong": "Something went wrong. Please try again.",
+      "invalidForm": "Please correct the errors in the form."
+    }
+  },
+  "common": {
+    "view": "View",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "back": "Back to List"
+  },
+  "candidateDetails": {
+    "noEducation": "No education information available",
+    "noExperience": "No work experience information available",
+    "noSkills": "No skills listed",
+    "noLanguages": "No languages listed",
+    "noDocuments": "No documents uploaded",
+    "uploadedOn": "Uploaded on",
+    "viewDocument": "View"
+  }
+}

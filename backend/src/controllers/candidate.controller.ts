@@ -36,6 +36,11 @@ export const createCandidate = async (req: Request, res: Response) => {
         .json(formatError(translate('common.errors.emailExists', req.language)));
     }
 
+    // Convert desiredSalary to string if it's a number
+    const desiredSalaryString = desiredSalary !== undefined && desiredSalary !== null
+      ? String(desiredSalary)
+      : null;
+
     // Create candidate with related data
     const candidate = await prisma.candidate.create({
       data: {
@@ -45,50 +50,34 @@ export const createCandidate = async (req: Request, res: Response) => {
         phone,
         address,
         linkedinProfile,
-        desiredSalary,
+        desiredSalary: desiredSalaryString,
         isLinkedinCv: isLinkedinCv || false,
         // Add education if provided
         ...(education && education.length > 0
           ? {
               education: {
-                create: education.map(
-                  (edu: {
-                    institution: string;
-                    degree: string;
-                    startDate: string;
-                    endDate?: string;
-                    summary?: string;
-                  }) => ({
-                    institution: edu.institution,
-                    degree: edu.degree,
-                    startDate: new Date(edu.startDate),
-                    endDate: edu.endDate ? new Date(edu.endDate) : null,
-                    summary: edu.summary || null,
-                  })
-                ),
-              },
+                create: education.map((edu: any) => ({
+                  institution: edu.institution,
+                  degree: edu.degree,
+                  startDate: new Date(edu.startDate),
+                  endDate: new Date(edu.endDate),
+                  summary: edu.summary
+                }))
+              }
             }
           : {}),
-        // Add workExperience if provided
+        // Add work experience if provided
         ...(workExperience && workExperience.length > 0
           ? {
               workExperience: {
-                create: workExperience.map(
-                  (exp: {
-                    company: string;
-                    position: string;
-                    startDate: string;
-                    endDate?: string;
-                    summary?: string;
-                  }) => ({
-                    company: exp.company,
-                    position: exp.position,
-                    startDate: new Date(exp.startDate),
-                    endDate: exp.endDate ? new Date(exp.endDate) : null,
-                    summary: exp.summary || null,
-                  })
-                ),
-              },
+                create: workExperience.map((exp: any) => ({
+                  company: exp.company,
+                  position: exp.position,
+                  startDate: new Date(exp.startDate),
+                  endDate: new Date(exp.endDate),
+                  summary: exp.summary
+                }))
+              }
             }
           : {}),
         // Add skills if provided
@@ -96,24 +85,22 @@ export const createCandidate = async (req: Request, res: Response) => {
           ? {
               skills: {
                 create: skills.map((skill: string) => ({
-                  name: skill,
-                })),
-              },
+                  name: skill
+                }))
+              }
             }
           : {}),
         // Add languages if provided
         ...(languages && languages.length > 0
           ? {
               languages: {
-                create: languages.map(
-                  (lang: { name: string; level: string }) => ({
-                    name: lang.name,
-                    level: lang.level,
-                  })
-                ),
-              },
+                create: languages.map((language: string) => ({
+                  name: language,
+                  level: 'Intermediate' // Default level if not provided
+                }))
+              }
             }
-          : {}),
+          : {})
       },
       include: {
         education: true,

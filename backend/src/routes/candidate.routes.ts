@@ -9,6 +9,7 @@ import {
 } from '../controllers/candidate.controller';
 import upload from '../middlewares/upload.middleware';
 import { validateCandidate } from '../middlewares/validation.middleware';
+import { parseFormData } from '../middlewares/parseFormData.middleware';
 
 const router = Router();
 
@@ -19,10 +20,10 @@ router.get('/', getCandidates);
 router.get('/:id', getCandidateById);
 
 // POST /api/candidates - Create a new candidate
-router.post('/', validateCandidate, createCandidate);
+router.post('/', upload.single('file'), parseFormData, validateCandidate, createCandidate);
 
 // PUT /api/candidates/:id - Update a candidate
-router.put('/:id', updateCandidate);
+router.put('/:id', upload.single('file'), parseFormData, updateCandidate);
 
 // DELETE /api/candidates/:id - Delete a candidate
 router.delete('/:id', deleteCandidate);
