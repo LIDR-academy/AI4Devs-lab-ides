@@ -199,7 +199,6 @@ The frontend follows the component design principles and React best practices ou
   - Education (required, textarea with autocompletion)
   - Experience (required, textarea with autocompletion)
   - CV Upload (PDF/DOCX only)
-- **Dynamic Autocompletion System**:
   - Education and Experience fields must offer autocompletion suggestions based on existing data in the system
   - Backend needs to provide API endpoints to retrieve previously stored education/experience values
   - Suggestions should update dynamically as more candidates are added to the database
@@ -222,45 +221,12 @@ The frontend follows the component design principles and React best practices ou
 
 ### Candidate List View
 
-- Display columns:
-  - ID
-  - Full Name
-  - Email
-  - Status (with color indicators matching the specified hex colors)
-  - Created Date
-  - Actions (Edit, Delete, Download CV)
-- Features:
-  - Pagination (10 rows per page)
-  - Filter, order and search functionality (implemented client-side in the frontend)
-  - Sorting options for all columns
-  - Status filtering with visual indicators (PENDING, VALUATED, DISCARDED)
-  - Client-side text search that filters results as the user types
-
 ### Security & Best Practices
 
 The project follows industry-standard best practices:
 
 - Security guidelines are documented in `owasp.md`
-- Development standards are available in:
-  - Backend: `backend/best-practise.md`
-  - Frontend: `frontend/best-practise.md`
-
-## Development Guidelines
-
-Please refer to the following documentation for detailed development standards:
-
-1. **Backend Development**: See `backend/best-practise.md` for TypeScript patterns, API design, testing approach, and more.
-
-2. **Frontend Development**: See `frontend/best-practise.md` for React patterns, component design, state management, and testing standards.
-
-3. **Architecture**: Follow the aggregate-based structure for all new features:
-
-   - Each aggregate should have its own directory in each layer
-   - Maintain consistent naming across layers (e.g., entity.ts, repository.ts)
-   - Use index.ts files to simplify imports
-   - Keep aggregates independent of each other when possible
-
-4. **Security**: Follow OWASP guidelines in `owasp.md` for ensuring application security.
+- Development standards are available on `best-practise.md`
 
 ## Development Tickets
 
@@ -353,14 +319,27 @@ Please refer to the following documentation for detailed development standards:
     - VALUATED: #10b981
     - DISCARDED: #ef4444
 
+- Display columns on the table:
+  - ID
+  - Full Name
+  - Email
+  - Status (with color indicators matching the specified hex colors)
+  - Created Date
+  - Actions (Edit, Delete, Download CV)
+- Features:
+  - Pagination (10 rows per page)
+  - Filter, order and search functionality (implemented client-side in the frontend)
+  - Sorting options for all columns
+  - Status filtering with visual indicators (PENDING, REJECTED, OFFERED, HIRED)
+  - Client-side text search that filters results as the user types
 - Implement proper loading states and error handling
-- Add unit tests for React components
 
 ### Ticket 4: Other small adjustments
 
 - Logs
 - UI
-- Toas error messages
+- Toast error messages
+- Responsive
 - Autocompletion system for Education and Experience
 - React router
 - Reasuble components

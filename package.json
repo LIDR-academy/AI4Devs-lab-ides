@@ -1,8 +1,0 @@
-{
-  "scripts": {
-    "dev": "webpack serve --mode development --open --hot --progress",
-    "start": "webpack serve --mode development --open --hot --progress",
-    "build": "webpack --mode production",
-    "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx --ignore-pattern dist/ --report-unused-disable-directives --max-warnings 0"
-  }
-}
