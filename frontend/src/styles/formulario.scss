@@ -1,0 +1,370 @@
+// Variables
+$color-primario: #3498db;
+$color-secundario: #2ecc71;
+$color-error: #e74c3c;
+$color-texto: #333;
+$color-fondo: #f9f9f9;
+$color-borde: #ddd;
+$sombra: 0 2px 10px rgba(0, 0, 0, 0.1);
+$radio-borde: 4px;
+$espaciado: 16px;
+
+// Estilos generales del formulario
+.formulario-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: $espaciado;
+  background-color: white;
+  border-radius: $radio-borde;
+  box-shadow: $sombra;
+  position: relative;
+}
+
+.formulario-titulo {
+  color: $color-primario;
+  margin-bottom: $espaciado * 1.5;
+  text-align: center;
+  font-size: 1.8rem;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado;
+}
+
+// Grupos de campos
+.campo-grupo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $espaciado;
+  
+  .campo {
+    flex: 1 1 calc(50% - #{$espaciado});
+    min-width: 250px;
+  }
+}
+
+// Campo individual
+.campo {
+  margin-bottom: $espaciado;
+  
+  label {
+    display: block;
+    margin-bottom: $espaciado / 2;
+    font-weight: 500;
+    color: $color-texto;
+  }
+  
+  input, 
+  textarea, 
+  select {
+    width: 100%;
+    padding: $espaciado / 2;
+    border: 1px solid $color-borde;
+    border-radius: $radio-borde;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+    
+    &:focus {
+      outline: none;
+      border-color: $color-primario;
+    }
+    
+    &:disabled {
+      background-color: $color-fondo;
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  }
+  
+  textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+}
+
+// Mensajes de error
+.error-mensaje {
+  color: $color-error;
+  font-size: 0.85rem;
+  margin-top: $espaciado / 4;
+}
+
+// Secciones repetibles (educación, experiencia)
+.seccion-repetible {
+  border: 1px solid $color-borde;
+  border-radius: $radio-borde;
+  padding: $espaciado;
+  margin-bottom: $espaciado;
+  background-color: $color-fondo;
+  
+  .seccion-titulo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $espaciado;
+    
+    h3 {
+      margin: 0;
+      color: $color-primario;
+    }
+  }
+  
+  .item-repetible {
+    border: 1px solid $color-borde;
+    border-radius: $radio-borde;
+    padding: $espaciado;
+    margin-bottom: $espaciado;
+    background-color: white;
+    position: relative;
+    
+    .eliminar-btn {
+      position: absolute;
+      top: $espaciado;
+      right: $espaciado;
+      background: none;
+      border: none;
+      color: $color-error;
+      cursor: pointer;
+      font-size: 1.2rem;
+      
+      &:hover {
+        opacity: 0.8;
+      }
+      
+      &:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+    }
+  }
+  
+  .agregar-btn {
+    background-color: $color-secundario;
+    color: white;
+    border: none;
+    padding: $espaciado / 2 $espaciado;
+    border-radius: $radio-borde;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s;
+    
+    &:hover {
+      background-color: darken($color-secundario, 10%);
+    }
+    
+    &:disabled {
+      background-color: lighten($color-secundario, 20%);
+      cursor: not-allowed;
+    }
+  }
+}
+
+// Botones
+.botones {
+  display: flex;
+  justify-content: flex-end;
+  gap: $espaciado;
+  margin-top: $espaciado;
+  
+  button {
+    padding: $espaciado / 2 $espaciado;
+    border-radius: $radio-borde;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    
+    &.btn-primario {
+      background-color: $color-primario;
+      color: white;
+      border: none;
+      
+      &:hover {
+        background-color: darken($color-primario, 10%);
+      }
+      
+      &:disabled {
+        background-color: lighten($color-primario, 20%);
+        cursor: not-allowed;
+      }
+    }
+    
+    &.btn-secundario {
+      background-color: white;
+      color: $color-texto;
+      border: 1px solid $color-borde;
+      
+      &:hover {
+        background-color: $color-fondo;
+      }
+      
+      &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+// Carga de archivos
+.carga-archivo {
+  border: 2px dashed $color-borde;
+  border-radius: $radio-borde;
+  padding: $espaciado * 2;
+  text-align: center;
+  margin-bottom: $espaciado;
+  transition: border-color 0.3s;
+  
+  &:hover {
+    border-color: $color-primario;
+  }
+  
+  &.disabled {
+    background-color: $color-fondo;
+    opacity: 0.7;
+    cursor: not-allowed;
+    
+    &:hover {
+      border-color: $color-borde;
+    }
+  }
+  
+  .archivo-input {
+    display: none;
+  }
+  
+  .archivo-label {
+    display: block;
+    cursor: pointer;
+    color: $color-primario;
+    font-weight: 500;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  
+  .archivo-info {
+    margin-top: $espaciado;
+    font-size: 0.9rem;
+    color: $color-texto;
+  }
+  
+  .archivo-preview {
+    margin-top: $espaciado;
+    padding: $espaciado / 2;
+    background-color: $color-fondo;
+    border-radius: $radio-borde;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+    .archivo-nombre {
+      font-weight: 500;
+      word-break: break-all;
+    }
+    
+    .eliminar-archivo {
+      background: none;
+      border: none;
+      color: $color-error;
+      cursor: pointer;
+      
+      &:hover {
+        opacity: 0.8;
+      }
+      
+      &:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+// Mensajes de alerta
+.alerta {
+  padding: $espaciado;
+  border-radius: $radio-borde;
+  margin-bottom: $espaciado;
+  
+  &.alerta-exito {
+    background-color: lighten($color-secundario, 45%);
+    color: darken($color-secundario, 20%);
+    border: 1px solid lighten($color-secundario, 30%);
+  }
+  
+  &.alerta-error {
+    background-color: lighten($color-error, 45%);
+    color: darken($color-error, 10%);
+    border: 1px solid lighten($color-error, 30%);
+  }
+}
+
+// Overlay de carga
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  border-radius: $radio-borde;
+  
+  .loading-content {
+    background-color: white;
+    padding: $espaciado * 2;
+    border-radius: $radio-borde;
+    box-shadow: $sombra;
+    text-align: center;
+    
+    .spinner {
+      border: 4px solid rgba($color-primario, 0.1);
+      border-left-color: $color-primario;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto $espaciado;
+    }
+    
+    p {
+      margin: 0;
+      color: $color-texto;
+      font-weight: 500;
+    }
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .campo-grupo {
+    flex-direction: column;
+    
+    .campo {
+      flex: 1 1 100%;
+    }
+  }
+  
+  .botones {
+    flex-direction: column;
+    
+    button {
+      width: 100%;
+    }
+  }
+} 

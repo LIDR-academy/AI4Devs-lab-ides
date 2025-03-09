@@ -1,0 +1,42 @@
+### Crear un nuevo candidato
+POST http://localhost:3010/api/candidatos
+Content-Type: application/json
+
+{
+  "nombre": "Juan",
+  "apellido": "Perez",
+  "email": "juan.perez@email.com",
+  "telefono": "+34912345678",
+  "direccion": "Calle Ficticia 123, Ciudad",
+  "educacion": [
+    {
+      "institucion": "Universidad de Madrid",
+      "titulo": "Licenciado en Psicología",
+      "fecha_inicio": "2015-09-01",
+      "fecha_fin": "2019-06-30"
+    }
+  ],
+  "experiencia_laboral": [
+    {
+      "empresa": "Empresa XYZ",
+      "puesto": "Psicólogo Clínico",
+      "fecha_inicio": "2020-01-01",
+      "fecha_fin": "2023-01-01",
+      "descripcion": "Atención a pacientes, diagnóstico y seguimiento."
+    }
+  ]
+}
+
+### Obtener candidato por ID (reemplazar ID_CANDIDATO con el ID real)
+GET http://localhost:3010/api/candidatos/1
+
+### Subir CV de candidato (usar un cliente como Postman para esta prueba)
+# POST http://localhost:3010/api/candidatos/1/documentos
+# Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+# 
+# ------WebKitFormBoundary7MA4YWxkTrZu0gW
+# Content-Disposition: form-data; name="archivo"; filename="ejemplo_cv.pdf"
+# Content-Type: application/pdf
+# 
+# < ./ejemplo_cv.pdf
+# ------WebKitFormBoundary7MA4YWxkTrZu0gW-- 
