@@ -136,54 +136,11 @@ const ListaCandidatos: React.FC = () => {
     navigate('/candidatos/nuevo');
   };
 
-  // Botón destacado para añadir candidatos
-  const BotonDestacado = () => (
-    <div 
-      style={{
-        backgroundColor: '#d4f5e2',
-        border: '1px solid #a3e4b5',
-        borderRadius: '4px',
-        padding: '24px',
-        marginBottom: '32px',
-        textAlign: 'center',
-        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)'
-      }}
-    >
-      <button 
-        style={{
-          backgroundColor: '#2ecc71',
-          color: 'white',
-          border: 'none',
-          padding: '16px 32px',
-          borderRadius: '4px',
-          fontSize: '1.1rem',
-          fontWeight: 'bold',
-          cursor: 'pointer',
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '8px'
-        }}
-        onClick={irANuevoCandidato}
-        aria-label="Añadir nuevo candidato"
-      >
-        <span style={{ fontSize: '1.4rem' }}>+</span> Añadir Nuevo Candidato
-      </button>
-      <p style={{ 
-        marginTop: '16px',
-        color: '#1d8348',
-        fontSize: '0.9rem'
-      }}>
-        Haz clic para registrar un nuevo candidato en el sistema
-      </p>
-    </div>
-  );
-
   // Renderizar estado de carga
   if (cargando) {
     return (
       <div className="lista-container">
         <h1 className="lista-titulo">Candidatos</h1>
-        <BotonDestacado />
         <div className="cargando">
           <div className="spinner" aria-label="Cargando candidatos"></div>
         </div>
@@ -196,7 +153,6 @@ const ListaCandidatos: React.FC = () => {
     return (
       <div className="lista-container">
         <h1 className="lista-titulo">Candidatos</h1>
-        <BotonDestacado />
         <div className="alerta alerta-error">
           {error}
           {errorDetalle && (
@@ -231,8 +187,6 @@ const ListaCandidatos: React.FC = () => {
     <div className="lista-container">
       <h1 className="lista-titulo">Candidatos</h1>
       
-      <BotonDestacado />
-      
       {/* Barra de acciones */}
       <div className="acciones-bar">
         <div className="busqueda">
@@ -258,13 +212,6 @@ const ListaCandidatos: React.FC = () => {
         <div className="estado-vacio">
           <div className="icono">📋</div>
           <p className="mensaje">No se encontraron candidatos</p>
-          <button 
-            className="agregar-btn" 
-            onClick={irANuevoCandidato}
-            aria-label="Añadir nuevo candidato"
-          >
-            <span className="icono">+</span> Añadir Candidato
-          </button>
         </div>
       ) : (
         <>
