@@ -1,8 +1,5 @@
 # Ignore in all directories
 **/.DS_Store
-# Environment variables
-**/.env
-
 
 # other rules from original file
 
@@ -30,8 +27,7 @@ yarn-error.log*
 .idea
 .vscode
 
-# Backend uploads
-backend/uploads/
+ 
 
 backend/node_modules/
 frontend/node_modules/

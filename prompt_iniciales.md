@@ -46,8 +46,10 @@ model Candidate {
 
 enum Status {
 	PENDING
-	VALUATED
-	DISCARDED
+   REJECTED
+   INTERVIEW
+   OFFERED
+   HIRED
 }
 ```
 
@@ -258,146 +260,107 @@ Please refer to the following documentation for detailed development standards:
    - Use index.ts files to simplify imports
    - Keep aggregates independent of each other when possible
 
-4. **Testing**:
+4. **Security**: Follow OWASP guidelines in `owasp.md` for ensuring application security.
 
-   - Write unit tests for all business logic
-   - Mock external dependencies
-   - Exclude index.ts files from test coverage
-   - Maintain at least 70% code coverage
+## Development Tickets
 
-5. **Security**: Follow OWASP guidelines in `owasp.md` for ensuring application security.
+### Ticket 1: Data Model Implementation
 
-## Implementation Plan
+**Objective**: Ensure the Prisma data model is correctly implemented and migrations are working properly.
 
-### Step 1: Project Setup
+**Tasks**:
 
-1. **Repository & Environment Configuration**
+- Review and finalize the Candidate model:
 
-   - Initialize Git repository
-   - Set up Docker configuration for PostgreSQL
-   - Configure environment variables in .env file to match these database connection details
-   - Create upload folder with the right permissions (chmod 777 for development, more restricted for production)
-   - Validate database connection from both local environment and containerized services
+  ```prisma
+  model Candidate {
+    id         Int      @id @default(autoincrement())
+    firstName  String
+    lastName   String
+    email      String   @unique
+    phone      String?
+    address    String   @db.VarChar(100)
+    education  String   @db.Text
+    experience String   @db.Text
+    cvFilePath String?  // Stores the path to the uploaded CV file
+    status     Status   @default(PENDING)
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+  }
 
-2. **Backend Structure**
+  enum Status {
+    PENDING
+    REJECTED
+    INTERVIEW
+    OFFERED
+    HIRED
+  }
+  ```
 
-   - Create Domain-Driven Design folder structure following `backend/best-practise.md`:
-     - `/domain`: Entities, value objects, repository interfaces
-     - `/application`: Services and use cases
-     - `/infrastructure`: Repository implementations, external services
-     - `/presentation`: Controllers, routes, middleware
-   - Organize each layer by aggregates (e.g., `/domain/candidate`, `/application/candidate`)
-   - Each aggregate follows a consistent structure across all layers
-   - Use index.ts files to simplify imports
-   - Configure TypeScript using best practices
-   - Set up routing with RESTful principles
+- Verify PostgreSQL connection in Docker environment
+- Generate and run Prisma migrations
+- Create seed data for testing
+- Implement proper environment variable handling
 
-3. **Frontend Structure**
-   - Create utility folders following `frontend/CONTRIBUTING.md`:
-     - `/components`: Reusable React components
-     - `/pages`: Page-level components
-     - `/hooks`: Custom React hooks
-     - `/services`: API clients
-     - `/utils`: Helper functions
-     - `/types`: TypeScript definitions
-     - `/context`: State management
-     - `/tests`: Test utilities
+### Ticket 2: Backend Development
 
-### Step 2: Core Backend Implementation
+**Objective**: Complete the backend implementation following Domain-Driven Design principles.
 
-1. **Data Layer**
+**Tasks**:
 
-   - Implement Prisma models
-   - Create repository interfaces and implementations
-   - Ensure separation of concerns between domain and infrastructure
+- Implement remaining API endpoints:
+  - `POST /api/candidates` - Create candidate with file upload
+  - `GET /api/candidates` - List candidates with pagination & sorting
+  - `GET /api/candidates/:id` - Get single candidate
+  - `PUT /api/candidates/:id` - Update candidate
+  - `DELETE /api/candidates/:id` - Delete candidate and CV
+  - `GET /api/candidates/:id/cv` - Download candidate CV
+  - `GET /api/statistics` - Get dashboard statistics
+- Create validation middleware with Zod schemas
+- Implement secure file storage for CVs
+- Add proper error handling and response formatting
+- Ensure the backend follows DDD and Hexagonal Architecture:
+  - `/domain`: Entities, value objects, repository interfaces
+  - `/application`: Services and use cases
+  - `/infrastructure`: Repository implementations, file services
+  - `/presentation`: Controllers, routes, middleware
+- Implement unit tests with Jest focusing on business logic
 
-2. **Business Logic Layer**
+### Ticket 3: Frontend Development
 
-   - Implement services with proper validation
-   - Create file storage service with security features
-   - Establish error handling patterns
+**Objective**: Complete the frontend implementation with React and Tailwind
 
-3. **API Layer**
-   - Create RESTful controllers
-   - Implement middleware for validation
-   - Set up security headers and authentication framework
+**Tasks**:
 
-### Step 3: Frontend Foundation
+- Implement Dashboard view with statistics cards:
+  - Total candidates
+  - Pending candidates
+  - Valuated candidates
+  - Discarded candidates
+- Create Candidate Management pages:
+  - List view with sorting, filtering, and pagination
+  - Add/Edit form with validation
+  - Detail view with actions (download CV, change status)
+- Build modal component for adding candidates
+- Implement search functionality in the header
+- Add client-side filtering and sorting
+- Style the application using the defined color palette:
 
-1. **UI Component Library**
+  - Primary: #0f172a
+  - Secondary: #4f46e5
+  - Status colors:
+    - PENDING: #f59e0b
+    - VALUATED: #10b981
+    - DISCARDED: #ef4444
 
-   - Set up shadcn/ui
-   - Create base layout and theme
-   - Implement responsive design patterns
+- Implement proper loading states and error handling
+- Add unit tests for React components
 
-2. **State Management**
+### Ticket 4: Other small adjustments
 
-   - Configure Context API for global state
-   - Implement data fetching patterns
-   - Create API service interfaces
-
-3. **Form System**
-   - Build reusable form components
-   - Implement client-side validation
-   - Create autocompletion system for Education and Experience fields
-
-### Step 4: Feature Implementation
-
-1. **Dashboard**
-
-   - Implement statistics cards
-   - Create data visualization components
-   - Set up real-time updates
-
-2. **Candidate Management**
-
-   - Build candidate form with validation
-   - Implement list view with sorting and filtering
-   - Create detail view with actions
-
-3. **File Management**
-   - Implement secure file upload
-   - Create file download functionality
-   - Ensure proper validation and error handling
-
-### Step 5: Testing & Refinement
-
-1. **Unit Testing**
-
-   - Test services and repositories
-   - Implement component tests
-   - Ensure test coverage meets standards (80%+)
-
-2. **Integration Testing**
-
-   - Test API endpoints
-   - Verify form submissions
-   - Test file upload/download
-
-3. **UI/UX Refinement**
-   - Implement loading states
-   - Add error handling UI
-   - Polish responsive behavior
-
-### Step 6: Deployment & Documentation
-
-1. **Deployment Pipeline**
-
-   - Configure CI/CD
-   - Set up staging environment
-   - Prepare production deployment
-
-2. **Documentation**
-
-   - Update technical documentation
-   - Create user guides
-   - Document API endpoints
-
-3. **Performance Optimization**
-   - Profile and optimize backend
-   - Implement frontend optimizations
-   - Verify scalability under load
-
-Ecco ti do un PROMPT controlla quello che abbiamo gia' e procedi a far funzionare tutta l'applicazione attualmente abbiamo
-
-BACKJEND e LAYOUT FRONTEND ma potrebbero esserci delle parti mancanti
+- log
+- UI
+- error message
+- autocompletion system for Education and Experience
+- react router
+- reasuble components
