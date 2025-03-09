@@ -3,18 +3,53 @@ import {
   crearCandidato, 
   subirCVCandidato, 
   obtenerCandidatoPorId,
+  obtenerCandidatos,
   upload
 } from '../controllers/candidatoController';
 
 const router = express.Router();
 
-// Endpoint para crear un nuevo candidato
+/**
+ * @swagger
+ * tags:
+ *   name: Candidatos
+ *   description: Operaciones relacionadas con candidatos
+ */
+
+/**
+ * @swagger
+ * /api/candidatos:
+ *   get:
+ *     summary: Obtener todos los candidatos
+ *     tags: [Candidatos]
+ */
+router.get('/', obtenerCandidatos);
+
+/**
+ * @swagger
+ * /api/candidatos:
+ *   post:
+ *     summary: Crear un nuevo candidato
+ *     tags: [Candidatos]
+ */
 router.post('/', crearCandidato);
 
-// Endpoint para subir CV de un candidato
+/**
+ * @swagger
+ * /api/candidatos/{id_candidato}/documentos:
+ *   post:
+ *     summary: Subir CV de un candidato
+ *     tags: [Candidatos]
+ */
 router.post('/:id_candidato/documentos', upload.single('archivo'), subirCVCandidato);
 
-// Endpoint para obtener un candidato por ID
+/**
+ * @swagger
+ * /api/candidatos/{id_candidato}:
+ *   get:
+ *     summary: Obtener candidato por ID
+ *     tags: [Candidatos]
+ */
 router.get('/:id_candidato', obtenerCandidatoPorId);
 
 export default router; 

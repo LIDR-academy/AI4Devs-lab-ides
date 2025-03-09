@@ -293,3 +293,13 @@ Usa **CSS** o **SASS** para estilizar los componentes y asegurarte de que la int
 
 - Todos los formularios deben tener etiquetas `aria` adecuadas para ser accesibles a personas con discapacidades.
 - Asegúrate de que el diseño sea claro y fácil de navegar usando un teclado.
+
+# Correcciones
+
+## Prompt 1
+Vamos a iterar para ir añadiendo algunas cuestiones:
+- En la pantalla de inicio, no aparece un botón para añadir candidatos que enlace con el formulario. Añádelo.
+- Documenta el API para tenerlo disponible una manera fácil de ver su información. Utiliza la herramienta más utilizada en el mercado o la que creas que es la mejor.
+
+## Prompt 2
+Vamos a implementar un endpoint que devuelva los candidatos de la base de datos y a mostrarlo en la pantalla de candidatos ya que ahora se muestra el 404 y debe ser debido a que no existe el endpoint

@@ -23,6 +23,52 @@ $espaciado: 16px;
   font-size: 1.8rem;
 }
 
+// Botón destacado para añadir candidatos
+.boton-destacado-container {
+  background-color: lighten($color-secundario, 45%);
+  border: 1px solid lighten($color-secundario, 30%);
+  border-radius: $radio-borde;
+  padding: $espaciado * 1.5;
+  margin-bottom: $espaciado * 2;
+  text-align: center;
+  box-shadow: $sombra;
+  
+  .boton-destacado {
+    background-color: $color-secundario;
+    color: white;
+    border: none;
+    padding: $espaciado $espaciado * 2;
+    border-radius: $radio-borde;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: $espaciado / 2;
+    
+    &:hover {
+      background-color: darken($color-secundario, 10%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+    
+    .icono {
+      font-size: 1.4rem;
+    }
+  }
+  
+  .boton-descripcion {
+    margin-top: $espaciado;
+    color: darken($color-secundario, 20%);
+    font-size: 0.9rem;
+  }
+}
+
 // Barra de acciones
 .acciones-bar {
   display: flex;
@@ -246,12 +292,26 @@ $espaciado: 16px;
 
 // Responsive
 @media (max-width: 768px) {
+  .boton-destacado-container {
+    padding: $espaciado;
+    
+    .boton-destacado {
+      width: 100%;
+      padding: $espaciado;
+    }
+  }
+  
   .acciones-bar {
     flex-direction: column;
     gap: $espaciado;
     
     .busqueda {
       max-width: 100%;
+    }
+    
+    .agregar-btn {
+      width: 100%;
+      justify-content: center;
     }
   }
   

@@ -3,17 +3,48 @@ import { Candidato } from '../types/candidato';
 
 const API_URL = 'http://localhost:3010/api';
 
-// Crear una instancia de axios con la URL base
+// Crear una instancia de axios con la URL base y configuración mejorada
 const api = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  // Añadir timeout para evitar esperas infinitas
+  timeout: 10000,
+  // Permitir credenciales para CORS
+  withCredentials: true
 });
+
+// Interceptor para manejar errores de manera global
+api.interceptors.response.use(
+  response => response,
+  error => {
+    console.error('Error en la solicitud API:', error.message);
+    if (error.response) {
+      console.error('Respuesta del servidor:', error.response.data);
+    }
+    return Promise.reject(error);
+  }
+);
+
+// Verificar que el backend está funcionando
+export const verificarConexion = async (): Promise<boolean> => {
+  try {
+    const response = await api.get('/health');
+    console.log('Conexión con el backend establecida:', response.data);
+    return true;
+  } catch (error) {
+    console.error('Error al conectar con el backend:', error);
+    return false;
+  }
+};
 
 // Servicio para obtener todos los candidatos
 export const obtenerCandidatos = async (): Promise<Candidato[]> => {
   try {
+    // Primero verificamos la conexión
+    await verificarConexion();
+    
     const response = await api.get('/candidatos');
     return response.data;
   } catch (error) {
@@ -54,6 +85,7 @@ export const subirCV = async (id: number, archivo: File): Promise<{ message: str
       headers: {
         'Content-Type': 'multipart/form-data',
       },
+      withCredentials: true
     });
 
     return response.data;
