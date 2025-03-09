@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { useSearch } from "../../contexts/SearchContext"
 import { StatusIconSelect } from "../statusIcon/StatusIcon"
 
@@ -37,6 +38,9 @@ const Header: React.FC<HeaderProps> = ({ onAddCandidate }) => {
   // Use search context
   const { searchTerm, setSearchTerm, statusFilter, setStatusFilter } =
     useSearch()
+
+  // Import useNavigate from react-router-dom
+  const navigate = useNavigate()
 
   // Standard gap between elements
   const standardGap = "16px"
@@ -175,6 +179,15 @@ const Header: React.FC<HeaderProps> = ({ onAddCandidate }) => {
 
   const handleStatusChange = (value: string) => {
     setStatusFilter(value)
+
+    // Aggiungi redirect alla pagina corretta in base allo stato selezionato
+    if (value === "ALL") {
+      navigate("/dashboard")
+    } else {
+      // Converti il valore in lowercase per il formato URL
+      const statusParam = value.toLowerCase()
+      navigate(`/dashboard/${statusParam}`)
+    }
   }
 
   const handleAddClick = () => {
