@@ -13,8 +13,89 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Authentication and User Management
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id            Int       @id @default(autoincrement())
+  email         String    @unique
+  password      String    // Will store hashed password
+  firstName     String
+  lastName      String
+  role          UserRole  @default(RECRUITER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  candidates    Candidate[]
+}
+
+enum UserRole {
+  ADMIN
+  RECRUITER
+}
+
+// Candidate Information
+model Candidate {
+  id            Int       @id @default(autoincrement())
+  firstName     String    @db.VarChar(100)
+  lastName      String    @db.VarChar(100)
+  email         String    @unique @db.VarChar(255)
+  phoneNumber   String    @db.VarChar(50)
+  address       String    @db.Text
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  createdBy     User      @relation(fields: [userId], references: [id])
+  userId        Int
+  education     Education[]
+  experience    Experience[]
+  documents     Document[]
+  status        CandidateStatus @default(ACTIVE)
+}
+
+// Educational Background
+model Education {
+  id            Int       @id @default(autoincrement())
+  institution   String    @db.VarChar(255)
+  degree        String    @db.VarChar(255)
+  fieldOfStudy  String    @db.VarChar(255)
+  startDate     DateTime
+  endDate       DateTime?
+  isOngoing     Boolean   @default(false)
+  candidate     Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateId   Int
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// Work Experience
+model Experience {
+  id            Int       @id @default(autoincrement())
+  company       String    @db.VarChar(255)
+  position      String    @db.VarChar(255)
+  location      String    @db.VarChar(255)
+  startDate     DateTime
+  endDate       DateTime?
+  isCurrentJob  Boolean   @default(false)
+  description   String    @db.Text
+  candidate     Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateId   Int
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// Document Management
+model Document {
+  id            Int       @id @default(autoincrement())
+  filename      String
+  originalName  String
+  path          String
+  mimeType      String
+  size          Int
+  candidate     Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateId   Int
+  uploadedAt    DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+enum CandidateStatus {
+  ACTIVE
+  INACTIVE
+  ARCHIVED
 }
