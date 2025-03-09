@@ -5,8 +5,6 @@ const prisma = new PrismaClient();
 
 async function main() {
   // Clear existing data
-  await prisma.workExperience.deleteMany({});
-  await prisma.education.deleteMany({});
   await prisma.candidate.deleteMany({});
 
   // Create candidates with education and work experience
@@ -18,44 +16,10 @@ async function main() {
       phone: '+1 555-123-4567',
       address: '123 Main St, Anytown, USA',
       resumeUrl: '/resumes/john_doe_resume.pdf',
-      education: {
-        create: [
-          {
-            institution: 'Harvard University',
-            degree: 'Bachelor of Science',
-            fieldOfStudy: 'Computer Science',
-            startDate: new Date('2014-09-01'),
-            endDate: new Date('2018-05-30'),
-          },
-          {
-            institution: 'MIT',
-            degree: 'Master of Science',
-            fieldOfStudy: 'Artificial Intelligence',
-            startDate: new Date('2018-09-01'),
-            endDate: new Date('2020-05-30'),
-          },
-        ],
-      },
-      experience: {
-        create: [
-          {
-            company: 'Google',
-            position: 'Software Engineer',
-            description:
-              'Developed and maintained cloud infrastructure services.',
-            startDate: new Date('2020-06-15'),
-            endDate: null, // Currently working
-          },
-          {
-            company: 'Amazon',
-            position: 'Intern',
-            description:
-              'Worked on the AWS Lambda team to improve performance.',
-            startDate: new Date('2019-05-01'),
-            endDate: new Date('2019-08-31'),
-          },
-        ],
-      },
+      education:
+        'Bachelor of Science in Computer Science, Harvard University (2014-2018); Master of Science in Artificial Intelligence, MIT (2018-2020)',
+      experience:
+        'Software Engineer at Google (2020-Present), Developed and maintained cloud infrastructure services; Intern at Amazon (May 2019 - Aug 2019), Worked on the AWS Lambda team to improve performance',
     },
   });
 
@@ -67,36 +31,10 @@ async function main() {
       phone: '+1 555-987-6543',
       address: '456 Oak St, Othertown, USA',
       resumeUrl: '/resumes/jane_smith_resume.pdf',
-      education: {
-        create: [
-          {
-            institution: 'Stanford University',
-            degree: 'Bachelor of Arts',
-            fieldOfStudy: 'Business Administration',
-            startDate: new Date('2015-09-01'),
-            endDate: new Date('2019-06-15'),
-          },
-        ],
-      },
-      experience: {
-        create: [
-          {
-            company: 'Microsoft',
-            position: 'Product Manager',
-            description: 'Led the development of new features for Office 365.',
-            startDate: new Date('2019-07-10'),
-            endDate: new Date('2022-12-31'),
-          },
-          {
-            company: 'Apple',
-            position: 'Marketing Specialist',
-            description:
-              'Developed marketing strategies for iPhone product line.',
-            startDate: new Date('2023-01-15'),
-            endDate: null, // Currently working
-          },
-        ],
-      },
+      education:
+        'Bachelor of Arts in Business Administration, Stanford University (2015-2019)',
+      experience:
+        'Marketing Specialist at Apple (2023-Present), Developed marketing strategies for iPhone product line; Product Manager at Microsoft (2019-2022), Led the development of new features for Office 365',
     },
   });
 

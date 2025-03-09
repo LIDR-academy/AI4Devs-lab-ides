@@ -1,26 +1,40 @@
-import { Request, Response, NextFunction } from 'express';
 import express from 'express';
-import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
+import candidateRoutes from './routes/candidateRoutes';
+import { errorHandler } from './middleware/errorMiddleware';
+import { swaggerUi, specs, swaggerOptions } from './config/swagger';
+import path from 'path';
+import prisma from './prisma'; // Importamos prisma desde el nuevo módulo
 
 dotenv.config();
-const prisma = new PrismaClient();
-
 export const app = express();
-export default prisma;
+const port = process.env.PORT || 3010;
 
-const port = 3010;
+// Middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
+// Rutas
+app.use('/api/candidates', candidateRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, swaggerOptions));
 
 app.get('/', (req, res) => {
-  res.send('Hola LTI!');
+  res.send('Candidate Management API');
 });
 
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
-  res.type('text/plain'); 
-  res.status(500).send('Something broke!');
+app.use(errorHandler);
+app.use((req, res) => {
+  res.status(404).json({ success: false, error: 'Route not found' });
 });
 
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
-});
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`Server is running at http://localhost:${port}`);
+    console.log(
+      `API Documentation available at http://localhost:${port}/api-docs`,
+    );
+  });
+}
+
+export default prisma;
