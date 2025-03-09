@@ -1,46 +1,94 @@
-# Getting Started with Create React App
+# Frontend - Sistema de Seguimiento de Talento LTI
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Este directorio contiene el código del frontend para el Sistema de Seguimiento de Talento LTI, desarrollado con React y TypeScript.
 
-## Available Scripts
+## Estructura del Proyecto
 
-In the project directory, you can run:
+```
+frontend/
+├── public/             # Archivos estáticos
+├── src/                # Código fuente
+│   ├── components/     # Componentes React reutilizables
+│   │   ├── candidate/  # Componentes específicos para candidatos
+│   │   └── ...         # Otros componentes
+│   ├── pages/          # Páginas principales de la aplicación
+│   ├── services/       # Servicios para comunicación con el backend
+│   ├── types/          # Definiciones de tipos TypeScript
+│   ├── utils/          # Utilidades y funciones auxiliares
+│   ├── App.tsx         # Componente principal de la aplicación
+│   └── index.tsx       # Punto de entrada
+├── package.json        # Dependencias y scripts
+└── tsconfig.json       # Configuración de TypeScript
+```
 
-### `npm start`
+## Características Principales
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Formulario de Candidatos
+- Formulario completo para añadir candidatos con validación en tiempo real
+- Soporte para múltiples entradas de educación y experiencia laboral
+- Fechas opcionales para educación y experiencia en curso
+- Carga de CV en formato PDF o DOCX
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Validación de Datos
+- Validación en tiempo real de todos los campos
+- Validación específica para formatos de correo electrónico y teléfono
+- Validación de fechas para asegurar coherencia temporal
+- Mensajes de error claros y específicos
 
-### `npm test`
+### Seguridad
+- Protección de datos sensibles mediante enmascaramiento
+- Transmisión segura de datos al backend
+- Manejo seguro de archivos adjuntos
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Interfaz de Usuario
+- Diseño responsivo adaptable a diferentes dispositivos
+- Interfaz intuitiva y fácil de usar
+- Mensajes de confirmación y error claros
+- Navegación sencilla entre secciones
 
-### `npm run build`
+## Tecnologías Utilizadas
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **React**: Biblioteca para construir interfaces de usuario
+- **TypeScript**: Superset tipado de JavaScript
+- **React Hook Form**: Gestión de formularios con validación
+- **Zod**: Validación de esquemas
+- **Material-UI**: Componentes de interfaz de usuario
+- **Axios**: Cliente HTTP para comunicación con el backend
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Últimas Actualizaciones
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **Fechas opcionales**: Implementación de fechas de fin opcionales para educación y experiencia en curso
+- **Protección de datos**: Enmascaramiento de datos sensibles como teléfono, dirección y correo electrónico
+- **Mejora en validaciones**: Validación en tiempo real más robusta para todos los campos
+- **Mejora en UX**: Mensajes más claros y específicos para guiar al usuario
+- **Optimización**: Mejoras en el rendimiento y la estructura del código
 
-### `npm run eject`
+## Instalación y Ejecución
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+1. Instala las dependencias:
+```sh
+npm install
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+2. Inicia el servidor de desarrollo:
+```sh
+npm start
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+3. Para construir la versión de producción:
+```sh
+npm run build
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Pruebas
 
-## Learn More
+Para ejecutar las pruebas:
+```sh
+npm test
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Notas para Desarrolladores
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Asegúrate de que el backend esté en ejecución antes de probar funcionalidades que requieran comunicación con el servidor.
+- Para el desarrollo local, el frontend se comunica con el backend en `http://localhost:3010/api`.
+- Las validaciones de formularios están definidas en los esquemas Zod correspondientes.
