@@ -9,7 +9,7 @@ const educationSchema = z.object({
   degree: z.string().min(1, 'El título es obligatorio'),
   fieldOfStudy: z.string().min(1, 'El campo de estudio es obligatorio'),
   startDate: z.string().min(1, 'La fecha de inicio es obligatoria'),
-  endDate: z.string().min(1, 'La fecha de finalización es obligatoria'),
+  endDate: z.string().optional(),
   description: z.string().optional(),
 }).refine(data => {
   if (!data.startDate || !data.endDate) return true;
@@ -24,7 +24,7 @@ const experienceSchema = z.object({
   company: z.string().min(1, 'La empresa es obligatoria'),
   position: z.string().min(1, 'El puesto es obligatorio'),
   startDate: z.string().min(1, 'La fecha de inicio es obligatoria'),
-  endDate: z.string().min(1, 'La fecha de finalización es obligatoria'),
+  endDate: z.string().optional(),
   description: z.string().optional(),
 }).refine(data => {
   if (!data.startDate || !data.endDate) return true;

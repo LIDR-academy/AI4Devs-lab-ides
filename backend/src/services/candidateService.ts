@@ -2,6 +2,21 @@ import prisma from '../index';
 import { Candidate, CandidateCreateInput } from '../types/candidate';
 import { createError } from '../middlewares/errorHandler';
 
+// Función para procesar los datos de educación y experiencia
+const processArrayData = (data: any[]) => {
+  return data.map(item => {
+    // Asegurarse de que los campos opcionales estén definidos correctamente
+    const processedItem = { ...item };
+    
+    // Si endDate está vacío o no está definido, establecerlo como null
+    if (!processedItem.endDate || processedItem.endDate.trim() === '') {
+      processedItem.endDate = null;
+    }
+    
+    return processedItem;
+  });
+};
+
 export const candidateService = {
   // Crear un nuevo candidato
   async createCandidate(data: CandidateCreateInput): Promise<Candidate> {
@@ -15,6 +30,10 @@ export const candidateService = {
         throw createError('Ya existe un candidato con este correo electrónico', 400);
       }
       
+      // Procesar los datos de educación y experiencia para manejar fechas opcionales
+      const processedEducation = processArrayData(data.education);
+      const processedExperience = processArrayData(data.experience);
+      
       // Preparar los datos para guardar en la base de datos
       const candidateData = {
         firstName: data.firstName,
@@ -22,8 +41,8 @@ export const candidateService = {
         email: data.email,
         phone: data.phone,
         address: data.address,
-        education: JSON.stringify(data.education),
-        experience: JSON.stringify(data.experience),
+        education: JSON.stringify(processedEducation),
+        experience: JSON.stringify(processedExperience),
         cvPath: data.cv ? data.cv.path : null
       };
       

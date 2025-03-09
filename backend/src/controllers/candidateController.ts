@@ -4,6 +4,22 @@ import { candidateService } from '../services/candidateService';
 import { CandidateCreateInput } from '../types/candidate';
 import { createError } from '../middlewares/errorHandler';
 
+// Función para validar y procesar los datos JSON
+const parseAndValidateJSON = (jsonString: string, fieldName: string) => {
+  try {
+    const parsed = JSON.parse(jsonString);
+    
+    if (!Array.isArray(parsed)) {
+      throw new Error(`El campo ${fieldName} debe ser un array`);
+    }
+    
+    return parsed;
+  } catch (error) {
+    console.error(`Error al parsear JSON para ${fieldName}:`, error);
+    throw createError(`Los campos ${fieldName} deben ser JSON válidos`, 400);
+  }
+};
+
 export const candidateController = {
   // Crear un nuevo candidato
   createCandidate: asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -19,11 +35,26 @@ export const candidateController = {
       // Validar que education y experience sean JSON válidos
       let education, experience;
       try {
-        education = JSON.parse(req.body.education);
-        experience = JSON.parse(req.body.experience);
+        education = parseAndValidateJSON(req.body.education, 'education');
+        experience = parseAndValidateJSON(req.body.experience, 'experience');
+        
+        // Validar que cada elemento tenga los campos requeridos
+        education.forEach((edu: any, index: number) => {
+          if (!edu.institution || !edu.degree || !edu.fieldOfStudy || !edu.startDate) {
+            throw new Error(`Faltan campos obligatorios en education[${index}]`);
+          }
+        });
+        
+        experience.forEach((exp: any, index: number) => {
+          if (!exp.company || !exp.position || !exp.startDate) {
+            throw new Error(`Faltan campos obligatorios en experience[${index}]`);
+          }
+        });
       } catch (error) {
-        console.error('Error al parsear JSON:', error);
-        throw createError('Los campos education y experience deben ser JSON válidos', 400);
+        if (error instanceof Error) {
+          throw createError(error.message, 400);
+        }
+        throw createError('Error al procesar los datos', 400);
       }
       
       // Preparar los datos del candidato
