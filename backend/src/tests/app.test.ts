@@ -1,11 +1,24 @@
 import request from 'supertest';
-import { app } from '../index';
-import { Request, Response, NextFunction } from 'express'; // Import the necessary types
+import { createServer } from '../server';
+import { AppDataSource } from '../infrastructure/database/config/database';
 
 describe('GET /', () => {
-    it('responds with Hello World!', async () => {
-        const response = await request(app).get('/');
-        expect(response.statusCode).toBe(200);
-        expect(response.text).toBe('Hello World!');
-    });
+  beforeAll(async () => {
+    if (!AppDataSource.isInitialized) {
+      await AppDataSource.initialize();
+    }
+  });
+
+  afterAll(async () => {
+    if (AppDataSource.isInitialized) {
+      await AppDataSource.destroy();
+    }
+  });
+
+  it('responds with Hola LTI!', async () => {
+    const app = await createServer();
+    const response = await request(app).get('/');
+    expect(response.statusCode).toBe(200);
+    expect(response.text).toBe('Hola LTI!');
+  });
 });
