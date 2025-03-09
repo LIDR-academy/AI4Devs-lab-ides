@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database for testing
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: test_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=test
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/test_db
+      - PORT=3011
+      - JWT_SECRET=test_secret_key
+      - SKIP_INTEGRATION_TESTS=false
+      - API_URL=http://localhost:3011
+    ports:
+      - "3011:3011"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: >
+      sh -c "
+        echo '=== Starting Integration Test Environment ===' &&
+        echo 'Waiting for PostgreSQL to be ready...' &&
+        until nc -z db 5432; do sleep 1; done &&
+        echo 'PostgreSQL is ready!' &&
+        echo 'Creating database schema...' &&
+        npx prisma db push --accept-data-loss &&
+        echo 'Generating Prisma client...' &&
+        npx prisma generate &&
+        echo 'Starting the server in the background...' &&
+        PORT=3011 npm run start &
+        PID=$! &&
+        echo 'Server started with PID:' $PID &&
+        echo 'Waiting for server to start...' &&
+        sleep 10 &&
+        echo 'Running integration tests...' &&
+        API_URL=http://127.0.0.1:3011 SKIP_INTEGRATION_TESTS=false npm run test:integration || true &&
+        echo 'Stopping server...' &&
+        echo 'Killing process' $PID &&
+        kill $PID || true
+      "
+
+volumes:
+  postgres_test_data:

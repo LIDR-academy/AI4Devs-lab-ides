@@ -48,11 +48,11 @@ npm install
 ```
 cd backend
 npm run build
-````
+```
 4. Inicia el servidor backend:
 ```
 cd backend
-npm run dev 
+npm run dev
 ```
 
 5. En una nueva ventana de terminal, construye el servidor frontend:
@@ -93,3 +93,35 @@ Para detener el contenedor Docker, ejecuta el siguiente comando:
 ```
 docker-compose down
 ```
+
+## Testing Framework
+
+The backend application includes a comprehensive testing framework:
+
+### Unit Tests
+- Tests for utility functions (response formatting, i18n)
+- Tests for middleware (language middleware)
+- Tests for controllers with mocked database interactions
+
+### Integration Tests
+- Tests for API endpoints using supertest
+- Tests for database connectivity
+- Docker Compose setup for test environment
+
+### Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run unit tests only
+npm run test:unit
+
+# Run integration tests
+npm run test:integration
+
+# Run tests with coverage report
+npm run test:coverage
+```
+
+See [Backend Testing Guide](backend/TESTING.md) for more details on the testing approach.

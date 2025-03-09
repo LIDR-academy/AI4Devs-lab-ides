@@ -1,0 +1,22 @@
+{
+  "welcome": "Bienvenido a la API de LTI",
+  "errors": {
+    "validation": "Validación fallida",
+    "candidateNotFound": "Candidato no encontrado",
+    "emailExists": "Ya existe un candidato con este correo electrónico",
+    "failedToCreate": "Error al crear el candidato",
+    "failedToUpdate": "Error al actualizar el candidato",
+    "failedToDelete": "Error al eliminar el candidato",
+    "failedToUpload": "Error al subir el documento",
+    "noFileUploaded": "No se ha subido ningún archivo",
+    "onlyPdfAccepted": "Solo se aceptan archivos PDF",
+    "somethingWentWrong": "Algo salió mal"
+  },
+  "success": {
+    "operationSuccessful": "Operación exitosa",
+    "candidateCreated": "Candidato creado exitosamente",
+    "candidateUpdated": "Candidato actualizado exitosamente",
+    "candidateDeleted": "Candidato eliminado exitosamente",
+    "documentUploaded": "Documento subido exitosamente"
+  }
+}

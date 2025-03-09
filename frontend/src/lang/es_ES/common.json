@@ -1,0 +1,108 @@
+{
+  "app": {
+    "title": "Sistema ATS"
+  },
+  "nav": {
+    "home": "Inicio",
+    "candidates": "Candidatos",
+    "addCandidate": "Añadir Candidato"
+  },
+  "candidates": {
+    "title": "Candidatos",
+    "addNew": "Añadir Nuevo Candidato",
+    "noCandidates": "No se encontraron candidatos. Añade tu primer candidato haciendo clic en el botón de arriba.",
+    "confirmDelete": "¿Estás seguro de que quieres eliminar este candidato?",
+    "notFound": "Candidato no encontrado. El candidato puede haber sido eliminado o no existe.",
+    "table": {
+      "name": "Nombre",
+      "email": "Correo",
+      "phone": "Teléfono",
+      "actions": "Acciones"
+    }
+  },
+  "candidateForm": {
+    "title": "Añadir Candidato",
+    "titleEdit": "Editar Candidato",
+    "steps": {
+      "personalInfo": "Información Personal",
+      "education": "Educación",
+      "experience": "Experiencia Laboral",
+      "skills": "Habilidades e Idiomas",
+      "documents": "Documentos"
+    },
+    "personalInfo": {
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "email": "Correo Electrónico",
+      "phone": "Número de Teléfono",
+      "address": "Dirección",
+      "linkedinProfile": "Perfil de LinkedIn",
+      "desiredSalary": "Salario Deseado"
+    },
+    "education": {
+      "title": "Educación",
+      "addEducation": "Añadir Educación",
+      "institution": "Institución",
+      "degree": "Título",
+      "startDate": "Fecha de Inicio",
+      "endDate": "Fecha de Finalización",
+      "summary": "Resumen"
+    },
+    "experience": {
+      "title": "Experiencia Laboral",
+      "addExperience": "Añadir Experiencia",
+      "company": "Empresa",
+      "position": "Cargo",
+      "startDate": "Fecha de Inicio",
+      "endDate": "Fecha de Finalización",
+      "summary": "Resumen"
+    },
+    "skills": {
+      "title": "Habilidades e Idiomas",
+      "skills": "Habilidades",
+      "addSkill": "Añadir Habilidad",
+      "languages": "Idiomas",
+      "addLanguage": "Añadir Idioma"
+    },
+    "documents": {
+      "title": "Documentos",
+      "uploadCV": "Subir CV",
+      "isLinkedinCV": "Este CV es generado por LinkedIn",
+      "dragDrop": "Arrastra y suelta tu archivo PDF aquí, o haz clic para explorar",
+      "fileSize": "Tamaño máximo: 5MB"
+    },
+    "buttons": {
+      "next": "Siguiente",
+      "previous": "Anterior",
+      "submit": "Enviar",
+      "cancel": "Cancelar"
+    }
+  },
+  "notifications": {
+    "success": {
+      "candidateCreated": "Candidato creado exitosamente",
+      "candidateUpdated": "Candidato actualizado exitosamente"
+    },
+    "error": {
+      "somethingWentWrong": "Algo salió mal. Por favor, inténtalo de nuevo.",
+      "invalidForm": "Por favor, corrige los errores en el formulario."
+    }
+  },
+  "common": {
+    "view": "Ver",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "back": "Volver a la Lista"
+  },
+  "candidateDetails": {
+    "noEducation": "No hay información de educación disponible",
+    "noExperience": "No hay información de experiencia laboral disponible",
+    "noSkills": "No hay habilidades listadas",
+    "noLanguages": "No hay idiomas listados",
+    "noDocuments": "No hay documentos subidos",
+    "uploadedOn": "Subido el",
+    "viewDocument": "Ver"
+  }
+}
