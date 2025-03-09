@@ -10,6 +10,8 @@ import {
   Candidate,
   createCandidate,
   createCandidateWithFile,
+  getEducationSuggestions,
+  getExperienceSuggestions,
   updateCandidate,
   updateCandidateWithFile,
 } from "../../services/api"
@@ -62,6 +64,19 @@ const CandidateForm = ({
   // Toast notifications
   const { showToast, showErrorToast } = useToast()
 
+  // Autocomplete suggestions
+  const [educationSuggestions, setEducationSuggestions] = useState<string[]>([])
+  const [experienceSuggestions, setExperienceSuggestions] = useState<string[]>(
+    []
+  )
+  const [showEducationSuggestions, setShowEducationSuggestions] =
+    useState<boolean>(false)
+  const [showExperienceSuggestions, setShowExperienceSuggestions] =
+    useState<boolean>(false)
+
+  const educationRef = useRef<HTMLTextAreaElement>(null)
+  const experienceRef = useRef<HTMLTextAreaElement>(null)
+
   // Load candidate data when editing
   useEffect(() => {
     if (candidate) {
@@ -69,8 +84,8 @@ const CandidateForm = ({
       // Ensure arrays are initialized
       if (!candidateData.education) candidateData.education = []
       if (!candidateData.experience) candidateData.experience = []
-      if (candidate.cvPath) {
-        setFileName(candidate.cvPath.split("/").pop() || "Current CV")
+      if (candidate.cvFilePath) {
+        setFileName(candidate.cvFilePath.split("/").pop() || "Current CV")
       }
 
       setFormData(candidateData)
@@ -78,6 +93,24 @@ const CandidateForm = ({
       setFormData({ ...INITIAL_FORM_STATE })
     }
   }, [candidate])
+
+  // Load autocomplete suggestions
+  useEffect(() => {
+    const loadSuggestions = async () => {
+      try {
+        const [educationData, experienceData] = await Promise.all([
+          getEducationSuggestions(),
+          getExperienceSuggestions(),
+        ])
+        setEducationSuggestions(educationData)
+        setExperienceSuggestions(experienceData)
+      } catch (error) {
+        console.error("Error loading suggestions:", error)
+      }
+    }
+
+    loadSuggestions()
+  }, [])
 
   // Handle form field changes
   const handleChange = (
@@ -244,6 +277,59 @@ const CandidateForm = ({
     }
   }
 
+  // Handle suggestion selection for education
+  const handleSelectEducationSuggestion = (suggestion: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      education: suggestion as any,
+    }))
+    setShowEducationSuggestions(false)
+  }
+
+  // Handle suggestion selection for experience
+  const handleSelectExperienceSuggestion = (suggestion: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      experience: suggestion as any,
+    }))
+    setShowExperienceSuggestions(false)
+  }
+
+  // Filter suggestions based on input
+  const getFilteredEducationSuggestions = () => {
+    const educationValue =
+      typeof formData.education === "string"
+        ? formData.education
+        : Array.isArray(formData.education)
+          ? formData.education
+              .map((e) => (typeof e === "string" ? e : ""))
+              .join(" ")
+          : ""
+
+    if (!educationValue) return educationSuggestions
+
+    return educationSuggestions.filter((suggestion) =>
+      suggestion.toLowerCase().includes(educationValue.toLowerCase())
+    )
+  }
+
+  const getFilteredExperienceSuggestions = () => {
+    const experienceValue =
+      typeof formData.experience === "string"
+        ? formData.experience
+        : Array.isArray(formData.experience)
+          ? formData.experience
+              .map((e) => (typeof e === "string" ? e : ""))
+              .join(" ")
+          : ""
+
+    if (!experienceValue) return experienceSuggestions
+
+    return experienceSuggestions.filter((suggestion) =>
+      suggestion.toLowerCase().includes(experienceValue.toLowerCase())
+    )
+  }
+
   // Form styles
   const formStyle: React.CSSProperties = {
     display: "grid",
@@ -324,6 +410,26 @@ const CandidateForm = ({
   const browseButtonStyle: React.CSSProperties = {
     ...secondaryButtonStyle,
     whiteSpace: "nowrap",
+  }
+
+  const suggestionListStyle: React.CSSProperties = {
+    position: "absolute",
+    zIndex: 10,
+    backgroundColor: "white",
+    width: "100%",
+    maxHeight: "200px",
+    overflowY: "auto",
+    border: "1px solid #d1d5db",
+    borderRadius: "0.375rem",
+    marginTop: "2px",
+    boxShadow:
+      "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+  }
+
+  const suggestionItemStyle: React.CSSProperties = {
+    padding: "8px 12px",
+    cursor: "pointer",
+    fontSize: "0.875rem",
   }
 
   return (
@@ -450,11 +556,23 @@ const CandidateForm = ({
           <label style={labelStyle} htmlFor="status">
             Status
           </label>
-          <StatusIconSelect
-            value={formData.status || "PENDING"}
-            onChange={(value) => setFormData({ ...formData, status: value })}
-            includeAllOption={false}
-          />
+          {candidate ? (
+            <StatusIconSelect
+              value={formData.status || "PENDING"}
+              onChange={(value) => setFormData({ ...formData, status: value })}
+              includeAllOption={false}
+            />
+          ) : (
+            <div
+              style={{
+                ...inputStyle,
+                backgroundColor: "#f3f4f6",
+                color: "#6b7280",
+              }}
+            >
+              PENDING (default for new candidates)
+            </div>
+          )}
         </div>
 
         <div style={inputGroupStyle}>
@@ -503,11 +621,18 @@ const CandidateForm = ({
           )}
         </div>
 
-        <div style={{ ...inputGroupStyle, ...fullWidthStyle }}>
+        <div
+          style={{
+            ...inputGroupStyle,
+            ...fullWidthStyle,
+            position: "relative",
+          }}
+        >
           <label style={labelStyle} htmlFor="education">
             Education*
           </label>
           <textarea
+            ref={educationRef}
             id="education"
             name="education"
             value={
@@ -522,6 +647,11 @@ const CandidateForm = ({
                 : formData.education || ""
             }
             onChange={handleChange}
+            onFocus={() => setShowEducationSuggestions(true)}
+            onBlur={() => {
+              // Delay closing suggestions to allow for clicks
+              setTimeout(() => setShowEducationSuggestions(false), 200)
+            }}
             style={{
               ...inputStyle,
               minHeight: "100px",
@@ -543,13 +673,48 @@ const CandidateForm = ({
           >
             Enter education details: degree, institution, dates
           </div>
+
+          {/* Education Suggestions */}
+          {showEducationSuggestions &&
+            getFilteredEducationSuggestions().length > 0 && (
+              <div style={suggestionListStyle} className="suggestions-list">
+                {getFilteredEducationSuggestions().map((suggestion, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      ...suggestionItemStyle,
+                      backgroundColor: index % 2 === 0 ? "#f9fafb" : "white",
+                    }}
+                    className="suggestion-item"
+                    onClick={() => handleSelectEducationSuggestion(suggestion)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        handleSelectEducationSuggestion(suggestion)
+                      }
+                    }}
+                    tabIndex={0}
+                    role="option"
+                    aria-selected="false"
+                  >
+                    {suggestion}
+                  </div>
+                ))}
+              </div>
+            )}
         </div>
 
-        <div style={{ ...inputGroupStyle, ...fullWidthStyle }}>
+        <div
+          style={{
+            ...inputGroupStyle,
+            ...fullWidthStyle,
+            position: "relative",
+          }}
+        >
           <label style={labelStyle} htmlFor="experience">
             Experience*
           </label>
           <textarea
+            ref={experienceRef}
             id="experience"
             name="experience"
             value={
@@ -564,6 +729,11 @@ const CandidateForm = ({
                 : formData.experience || ""
             }
             onChange={handleChange}
+            onFocus={() => setShowExperienceSuggestions(true)}
+            onBlur={() => {
+              // Delay closing suggestions to allow for clicks
+              setTimeout(() => setShowExperienceSuggestions(false), 200)
+            }}
             style={{
               ...inputStyle,
               minHeight: "100px",
@@ -585,6 +755,34 @@ const CandidateForm = ({
           >
             Enter work experience: position, company, dates, description
           </div>
+
+          {/* Experience Suggestions */}
+          {showExperienceSuggestions &&
+            getFilteredExperienceSuggestions().length > 0 && (
+              <div style={suggestionListStyle} className="suggestions-list">
+                {getFilteredExperienceSuggestions().map((suggestion, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      ...suggestionItemStyle,
+                      backgroundColor: index % 2 === 0 ? "#f9fafb" : "white",
+                    }}
+                    className="suggestion-item"
+                    onClick={() => handleSelectExperienceSuggestion(suggestion)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        handleSelectExperienceSuggestion(suggestion)
+                      }
+                    }}
+                    tabIndex={0}
+                    role="option"
+                    aria-selected="false"
+                  >
+                    {suggestion}
+                  </div>
+                ))}
+              </div>
+            )}
         </div>
 
         {/* Form Actions */}
@@ -598,15 +796,6 @@ const CandidateForm = ({
           }}
           className="form-actions"
         >
-          <button
-            type="button"
-            onClick={onCancel}
-            style={secondaryButtonStyle}
-            disabled={loading}
-            className="secondary-button"
-          >
-            Cancel
-          </button>
           <button
             type="submit"
             style={primaryButtonStyle}

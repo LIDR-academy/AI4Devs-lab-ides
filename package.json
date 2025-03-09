@@ -1,42 +1,8 @@
 {
-  "name": "candidate-management-system",
-  "version": "1.0.0",
-  "description": "LTI - Recruiting Talent Tracking System",
-  "private": true,
-  "workspaces": [
-    "frontend",
-    "backend"
-  ],
   "scripts": {
-    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
-    "start:backend": "cd backend && npm run start",
-    "start:frontend": "cd frontend && npm run start",
-    "dev:backend": "cd backend && npm run dev",
-    "dev:frontend": "cd frontend && npm run start",
-    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "build:backend": "cd backend && npm run build",
-    "build:frontend": "cd frontend && npm run build",
-    "build": "cd frontend && npm run build",
-    "test:backend": "cd backend && npm run test",
-    "test:frontend": "cd frontend && npm run test",
-    "test": "concurrently \"cd backend && npm run test\" \"cd frontend && npm run test\"",
-    "prisma:generate": "cd backend && npm run prisma:generate",
-    "prisma:seed": "cd backend && npm run prisma:seed",
-    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install"
-  },
-  "keywords": [
-    "recruitment",
-    "candidates",
-    "nodejs",
-    "react",
-    "typescript"
-  ],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/react": "^19.0.10",
-    "@types/react-dom": "^19.0.4",
-    "concurrently": "^8.2.2",
-    "typescript": "^5.8.2"
+    "dev": "webpack serve --mode development --open --hot --progress",
+    "start": "webpack serve --mode development --open --hot --progress",
+    "build": "webpack --mode production",
+    "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx --ignore-pattern dist/ --report-unused-disable-directives --max-warnings 0"
   }
 }

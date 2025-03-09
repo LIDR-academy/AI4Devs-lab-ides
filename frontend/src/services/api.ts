@@ -18,7 +18,7 @@ export interface Candidate {
   status?: string
   evaluation?: number
   cv?: File | null
-  cvPath?: string
+  cvFilePath?: string
   education?: Education[]
   experience?: Experience[]
   createdAt?: string
@@ -125,12 +125,12 @@ const handleResponse = async (response: Response): Promise<any> => {
  */
 const withErrorHandling = async <T>(apiCall: () => Promise<T>): Promise<T> => {
   try {
-    // Utilizziamo il connection manager per limitare le connessioni e implementare i retry
+    // Using connection manager to limit connections and implement retries
     return await executeWithRetryAndConnectionLimit(apiCall, {
-      // Configurazione personalizzata dei retry per questo API call
-      maxRetries: 5, // Aumentiamo il numero di tentativi
-      baseDelay: 500, // Iniziamo con un ritardo leggermente più lungo
-      useJitter: true, // Usiamo jitter per evitare thundering herd
+      // Custom retry configuration for API calls
+      maxRetries: 5, // Increased number of attempts
+      baseDelay: 500, // Start with a slightly longer delay
+      useJitter: true, // Use jitter to prevent thundering herd
     })
   } catch (error) {
     if (error instanceof AppError) {
@@ -357,6 +357,14 @@ export const createCandidateWithFile = async (
 ): Promise<Candidate> => {
   return withErrorHandling(async () => {
     try {
+      // Ensure the file field name is correctly set as 'cvFile' as expected by the backend
+      // If 'cv' exists, we need to get it and append it with the correct name
+      if (formData.has("cv")) {
+        const cvFile = formData.get("cv")
+        formData.delete("cv")
+        formData.append("cvFile", cvFile as File)
+      }
+
       const response = await fetch(`${API_BASE_URL}/candidates`, {
         method: "POST",
         body: formData,
@@ -404,6 +412,13 @@ export const updateCandidateWithFile = async (
   formData: FormData
 ): Promise<Candidate> => {
   return withErrorHandling(async () => {
+    // Ensure the file field name is correctly set as 'cvFile' as expected by the backend
+    if (formData.has("cv")) {
+      const cvFile = formData.get("cv")
+      formData.delete("cv")
+      formData.append("cvFile", cvFile as File)
+    }
+
     const response = await fetch(`${API_BASE_URL}/candidates/${id}`, {
       method: "PUT",
       body: formData,

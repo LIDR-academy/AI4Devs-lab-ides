@@ -191,38 +191,46 @@ const CandidateList = forwardRef<
     }
   }, [candidates])
 
-  // Filtrar candidatos basados en término de búsqueda y estado
+  // Filtrar candidatos basados en términos de búsqueda y filtros de estado
   const filteredCandidates = candidates.filter((candidate) => {
-    // Filtro per termine di ricerca (case insensitive)
-    const searchMatch =
-      !searchTerm ||
-      candidate.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      candidate.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      candidate.email?.toLowerCase().includes(searchTerm.toLowerCase())
+    if (!searchTerm) {
+      // Si no hay término de búsqueda, solo filtramos por estado
+      return (
+        !contextStatusFilter ||
+        contextStatusFilter === "ALL" ||
+        candidate.status === contextStatusFilter
+      )
+    }
 
-    // Filtro per status
+    // Crear un valor de búsqueda normalizado
+    const searchLower = searchTerm.toLowerCase()
+
+    // Buscar solo en campos de texto seguros
+    const nameMatch =
+      candidate.firstName?.toLowerCase().includes(searchLower) ||
+      candidate.lastName?.toLowerCase().includes(searchLower) ||
+      `${candidate.firstName} ${candidate.lastName}`
+        .toLowerCase()
+        .includes(searchLower)
+
+    const emailMatch = candidate.email?.toLowerCase().includes(searchLower)
+
+    const phoneMatch = candidate.phone
+      ? candidate.phone.includes(searchTerm)
+      : false
+
+    // Comprobar si hay coincidencia en algún campo
+    const searchMatch = nameMatch || emailMatch || phoneMatch
+
+    // Filtrar por estado
     const statusMatch =
       !contextStatusFilter ||
       contextStatusFilter === "ALL" ||
       candidate.status === contextStatusFilter
 
-    // Log filtro per debugging with more details
-    if (!searchMatch) {
-      console.log(
-        `Candidate ${candidate.firstName} ${candidate.lastName} filtered out by search term: "${searchTerm}"`
-      )
-    }
-    if (!statusMatch) {
-      console.log(
-        `Candidate ${candidate.firstName} ${candidate.lastName} filtered out by status (candidate status: "${candidate.status}", filter: "${contextStatusFilter}")`
-      )
-    }
-
     return searchMatch && statusMatch
   })
 
-  // Log dei risultati del filtraggio
-  console.log("Filtered candidates length:", filteredCandidates?.length)
   console.log("Filtered candidates:", filteredCandidates)
 
   // Iniciar proceso de eliminación (mostrar diálogo de confirmación)
@@ -378,36 +386,64 @@ const CandidateList = forwardRef<
       },
     },
     {
-      header: "Status",
+      header: "",
       accessorKey: "status",
-      showOnMobile: false,
+      showOnMobile: true,
       cell: ({ row }: { row: any }) => {
-        // Controllo di sicurezza
-        if (!row?.original) {
-          return <div>N/A</div>
-        }
+        const candidate = row.original
+        const status = candidate.status || "PENDING"
 
-        const status = row.original.status || "PENDING"
-        // Mapeo de estado a color
-        const colorMap: Record<string, string> = {
-          PENDING: "#f59e0b",
-          REJECTED: "#ef4444",
-          INTERVIEW: "#fb923c",
-          OFFERED: "#3b82f6",
-          HIRED: "#22c55e",
+        // Determine el color basado en el estado
+        let statusClass = ""
+        switch (status) {
+          case "PENDING":
+            statusClass = "status-pending"
+            break
+          case "REJECTED":
+            statusClass = "status-rejected"
+            break
+          case "INTERVIEW":
+            statusClass = "status-interview"
+            break
+          case "OFFERED":
+            statusClass = "status-offered"
+            break
+          case "HIRED":
+            statusClass = "status-hired"
+            break
+          default:
+            statusClass = "status-pending"
         }
-        const statusClass = `status-${status.toLowerCase()}`
 
         return (
-          <div className={`status-indicator ${statusClass}`}>
-            <div className="status-dot"></div>
+          <div
+            className={`status-indicator ${statusClass}`}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              height: "28px", // Altura fija para el indicador de estado
+              padding: "0 10px",
+              borderRadius: "14px", // La mitad de la altura para bordes redondeados
+              maxWidth: "fit-content",
+            }}
+          >
+            <div
+              className="status-dot"
+              style={{
+                marginRight: "6px",
+                width: "8px",
+                height: "8px",
+                borderRadius: "50%",
+                backgroundColor: "currentColor",
+              }}
+            ></div>
             {status}
           </div>
         )
       },
     },
     {
-      header: "Actions",
+      header: "",
       accessorKey: "actions",
       showOnMobile: true,
       cell: ({ row }: { row: any }) => {
@@ -474,9 +510,9 @@ const CandidateList = forwardRef<
 
             {/* Download CV button - always visible */}
             <button
-              className={`action-button ${!candidate.cvPath || !candidate.id ? "action-button-disabled" : ""}`}
+              className={`action-button ${!candidate.cvFilePath || !candidate.id ? "action-button-disabled" : ""}`}
               onClick={() => {
-                if (candidate.cvPath && candidate.id) {
+                if (candidate.cvFilePath && candidate.id) {
                   handleDownload(
                     candidate.id,
                     `${candidate.firstName}_${candidate.lastName}`
@@ -490,23 +526,11 @@ const CandidateList = forwardRef<
               }}
               onMouseEnter={() => setActiveTooltip(`download-${candidate.id}`)}
               onMouseLeave={() => setActiveTooltip(null)}
-              title={candidate.cvPath ? "Download CV" : "No CV available"}
-              style={{
-                marginRight: "8px",
-                background: candidate.cvPath
-                  ? "rgba(34, 197, 94, 0.1)"
-                  : "rgba(229, 231, 235, 0.5)",
-                color: candidate.cvPath ? "#22c55e" : "#9ca3af",
-                borderRadius: "4px",
-                padding: "5px 8px",
-                border: candidate.cvPath
-                  ? "1px solid rgba(34, 197, 94, 0.3)"
-                  : "1px solid rgba(229, 231, 235, 0.8)",
-              }}
+              title={candidate.cvFilePath ? "Download CV" : "No CV available"}
             >
               {activeTooltip === `download-${candidate.id}` && (
                 <div className="tooltip">
-                  {candidate.cvPath ? "Download CV" : "No CV available"}
+                  {candidate.cvFilePath ? "Download CV" : "No CV available"}
                 </div>
               )}
               <svg
@@ -515,17 +539,15 @@ const CandidateList = forwardRef<
                 height="16"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke={candidate.cvPath ? "#22c55e" : "#9ca3af"}
+                stroke={candidate.cvFilePath ? "#22c55e" : "#9ca3af"}
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                style={{ marginRight: candidate.cvPath ? "4px" : "0" }}
               >
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="7 10 12 15 17 10"></polyline>
                 <line x1="12" y1="15" x2="12" y2="3"></line>
               </svg>
-              {candidate.cvPath && <span>CV</span>}
             </button>
 
             {/* Delete button */}
@@ -645,7 +667,7 @@ const CandidateList = forwardRef<
           </div>
 
           {/* CV Download */}
-          {selectedCandidate.cvPath && selectedCandidate.id && (
+          {selectedCandidate.cvFilePath && selectedCandidate.id && (
             <button
               className="download-button"
               onClick={() =>

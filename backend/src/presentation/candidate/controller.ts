@@ -153,31 +153,40 @@ export class CandidateController {
     }
   };
 
+  /**
+   * Get statistics about candidates
+   */
   getStatistics = async (req: Request, res: Response): Promise<void> => {
     try {
       const statistics = await this.candidateService.getStatistics();
-      res.json(statistics);
-    } catch (error) {
-      console.error('Error getting statistics:', error);
+      res.status(200).json(statistics);
+    } catch (error: any) {
+      console.error('Error retrieving statistics:', error);
       res.status(500).json({ error: 'Failed to retrieve statistics' });
     }
   };
 
+  /**
+   * Get education suggestions based on existing candidates
+   */
   getEducationSuggestions = async (
     req: Request,
     res: Response,
   ): Promise<void> => {
     try {
       const suggestions = await this.candidateService.getEducationSuggestions();
-      res.json(suggestions);
-    } catch (error) {
-      console.error('Error getting education suggestions:', error);
+      res.status(200).json(suggestions);
+    } catch (error: any) {
+      console.error('Error retrieving education suggestions:', error);
       res
         .status(500)
         .json({ error: 'Failed to retrieve education suggestions' });
     }
   };
 
+  /**
+   * Get experience suggestions based on existing candidates
+   */
   getExperienceSuggestions = async (
     req: Request,
     res: Response,
@@ -185,9 +194,9 @@ export class CandidateController {
     try {
       const suggestions =
         await this.candidateService.getExperienceSuggestions();
-      res.json(suggestions);
-    } catch (error) {
-      console.error('Error getting experience suggestions:', error);
+      res.status(200).json(suggestions);
+    } catch (error: any) {
+      console.error('Error retrieving experience suggestions:', error);
       res
         .status(500)
         .json({ error: 'Failed to retrieve experience suggestions' });

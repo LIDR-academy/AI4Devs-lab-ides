@@ -106,12 +106,36 @@ export class CandidateService {
     return this.candidateRepository.getStatistics();
   }
 
+  /**
+   * Get education suggestions from existing candidates
+   */
   async getEducationSuggestions(): Promise<string[]> {
-    return this.candidateRepository.findEducationValues();
+    // Get unique education values from candidates
+    const candidates = await this.candidateRepository.findAll();
+
+    // Extract education values and remove duplicates
+    const educationValues = candidates
+      .map((candidate) => candidate.education)
+      .filter((education): education is string => !!education);
+
+    // Return unique values using Array.from instead of spread operator
+    return Array.from(new Set(educationValues));
   }
 
+  /**
+   * Get experience suggestions from existing candidates
+   */
   async getExperienceSuggestions(): Promise<string[]> {
-    return this.candidateRepository.findExperienceValues();
+    // Get unique experience values from candidates
+    const candidates = await this.candidateRepository.findAll();
+
+    // Extract experience values and remove duplicates
+    const experienceValues = candidates
+      .map((candidate) => candidate.experience)
+      .filter((experience): experience is string => !!experience);
+
+    // Return unique values using Array.from instead of spread operator
+    return Array.from(new Set(experienceValues));
   }
 
   getCvFilePath(filename: string): string {

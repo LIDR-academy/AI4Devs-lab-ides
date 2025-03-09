@@ -30,25 +30,20 @@ dotenv.config();
 export const app = express();
 const port = process.env.PORT || 3010;
 
-// ===== PRIORITÀ ASSOLUTA: CONFIGURAZIONE CORS MANUALE =====
-// Questo middleware verrà eseguito prima di qualsiasi altro middleware e invierà le intestazioni CORS per tutte le richieste
+// ===== HIGHEST PRIORITY: MANUAL CORS CONFIGURATION =====
+// This middleware will run before any other middleware and will send CORS headers for all requests
 app.use((req, res, next) => {
-  // Consenti le richieste da tutte le origini in modalità sviluppo
+  // Allow all origins for development, restrict for production
   res.header('Access-Control-Allow-Origin', '*');
-
-  // Intestazioni consentite
+  // Allow these headers in requests
   res.header(
     'Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept, Authorization',
   );
-
-  // Metodi consentiti
+  // Allow these methods
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 
-  // Supporto per credenziali
-  res.header('Access-Control-Allow-Credentials', 'true');
-
-  // Gestisci le richieste preflight OPTIONS
+  // Handle OPTIONS requests (preflight requests)
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -59,26 +54,20 @@ app.use((req, res, next) => {
 // Initialize Prisma client
 export const prisma = new PrismaClient();
 
-// Ensure upload directories exist
+// Ensure upload directory exists
 const uploadDir = path.join(__dirname, '../uploads');
-const tempDir = path.join(__dirname, '../temp');
 
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-if (!fs.existsSync(tempDir)) {
-  fs.mkdirSync(tempDir, { recursive: true });
-}
-
-// ===== CONFIGURAZIONE CORS MEDIANTE LIBRERIA =====
-// Questa può rimanere, ma il middleware manuale sopra ha la precedenza
+// ===== CORS CONFIGURATION USING LIBRARY =====
+// This can remain, but the manual middleware above takes precedence
 app.use(
   cors({
-    origin: '*', // Consente richieste da qualsiasi origine
+    origin: '*', // Allow requests from any origin
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
   }),
 );
 

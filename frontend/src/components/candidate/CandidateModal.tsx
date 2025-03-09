@@ -85,6 +85,9 @@ const CandidateModal: React.FC<CandidateModalProps> = ({
       // Close the modal after a short delay to ensure all updates are processed
       setTimeout(() => {
         onClose()
+
+        // Recargar la página después de cerrar el modal
+        window.location.reload()
       }, 100)
     } catch (error) {
       console.error("Error during candidate change:", error)
