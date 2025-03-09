@@ -4,7 +4,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const webpack = require("webpack")
 
 module.exports = {
-  entry: "./src/index.jsx",
+  entry: "./src/index.tsx",
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "bundle.[contenthash].js",
@@ -14,7 +14,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(js|jsx|ts|tsx)$/,
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
@@ -27,6 +27,7 @@ module.exports = {
                   runtime: "automatic",
                 },
               ],
+              "@babel/preset-typescript",
             ],
           },
         },
@@ -42,7 +43,7 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: [".js", ".jsx", ".json"],
+    extensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
     alias: {
       "@": path.resolve(__dirname, "src"),
       components: path.resolve(__dirname, "src/components"),
@@ -82,7 +83,7 @@ module.exports = {
     static: {
       directory: path.join(__dirname, "public"),
     },
-    port: 3001,
+    port: 3002,
     historyApiFallback: true,
     proxy: [
       {

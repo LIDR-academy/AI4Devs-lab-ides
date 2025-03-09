@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
 import * as api from "../services/api"
-import { Candidate } from "../types"
+import { Candidate } from "../services/api"
 
 interface UseCandidatesResult {
   candidates: Candidate[]
@@ -20,8 +20,29 @@ const useCandidates = (): UseCandidatesResult => {
     setError(null)
 
     try {
+      console.log("useCandidates: Fetching candidates from API...")
       const data = await api.getCandidates()
-      setCandidates(data)
+      console.log("useCandidates: API response received:", data)
+
+      // Check if data is an array
+      if (!Array.isArray(data)) {
+        console.error("useCandidates: API did not return an array:", data)
+        setCandidates([])
+        setError("API did not return an array of candidates")
+      } else {
+        console.log(
+          "useCandidates: Setting candidates array with length:",
+          data.length
+        )
+        // Ensure all candidates have the required fields
+        const validatedCandidates = data.map((candidate) => ({
+          ...candidate,
+          // Ensure status is a string and has a default value if missing
+          status: candidate.status || "PENDING",
+        })) as Candidate[]
+        console.log("useCandidates: Validated candidates:", validatedCandidates)
+        setCandidates(validatedCandidates)
+      }
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Error al cargar candidatos"

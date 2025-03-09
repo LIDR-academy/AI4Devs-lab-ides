@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { NextFunction, Request, Response } from 'express';
 import fs from 'fs';
@@ -29,6 +30,32 @@ dotenv.config();
 export const app = express();
 const port = process.env.PORT || 3010;
 
+// ===== PRIORITÀ ASSOLUTA: CONFIGURAZIONE CORS MANUALE =====
+// Questo middleware verrà eseguito prima di qualsiasi altro middleware e invierà le intestazioni CORS per tutte le richieste
+app.use((req, res, next) => {
+  // Consenti le richieste da tutte le origini in modalità sviluppo
+  res.header('Access-Control-Allow-Origin', '*');
+
+  // Intestazioni consentite
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+  );
+
+  // Metodi consentiti
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+
+  // Supporto per credenziali
+  res.header('Access-Control-Allow-Credentials', 'true');
+
+  // Gestisci le richieste preflight OPTIONS
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  next();
+});
+
 // Initialize Prisma client
 export const prisma = new PrismaClient();
 
@@ -43,6 +70,17 @@ if (!fs.existsSync(uploadDir)) {
 if (!fs.existsSync(tempDir)) {
   fs.mkdirSync(tempDir, { recursive: true });
 }
+
+// ===== CONFIGURAZIONE CORS MEDIANTE LIBRERIA =====
+// Questa può rimanere, ma il middleware manuale sopra ha la precedenza
+app.use(
+  cors({
+    origin: '*', // Consente richieste da qualsiasi origine
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+  }),
+);
 
 // Configure middleware
 configureMiddleware(app);
@@ -80,6 +118,7 @@ app.get('/', (req, res) => {
 if (process.env.NODE_ENV !== 'test') {
   app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
+    console.log('CORS is manually enabled for all origins');
   });
 }
 

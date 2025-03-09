@@ -1,0 +1,117 @@
+.candidate-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.candidate-modal-hidden {
+  display: none;
+}
+
+.candidate-modal-content {
+  width: 90%;
+  max-width: 1000px;
+  max-height: 90vh;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+}
+
+.candidate-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.candidate-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  max-height: calc(90vh - 70px); /* Sottrai l'altezza dell'header */
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #6b7280;
+  line-height: 1;
+}
+
+.add-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 0.875rem;
+  margin: 1rem;
+}
+
+.add-button svg {
+  margin-right: 0.5rem;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  background-color: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 0.875rem;
+  margin: 1rem;
+}
+
+.back-button svg {
+  margin-right: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .candidate-modal-content {
+    width: 95%;
+    max-width: none;
+    max-height: 95vh;
+  }
+
+  .candidate-modal-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .close-button {
+    font-size: 1.25rem;
+  }
+}
