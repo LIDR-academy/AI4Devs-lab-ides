@@ -29,6 +29,7 @@ model Candidato {
   educacion         String?  @db.Text
   experiencia_laboral String? @db.Text
   cv                Bytes
+  mimeType          String   @db.VarChar(100) @default("application/pdf")
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 

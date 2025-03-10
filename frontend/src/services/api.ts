@@ -186,6 +186,11 @@ export const candidatoService = {
         asegurarString(item).toLowerCase().includes(asegurarString(query).toLowerCase())
       )
       .map(item => asegurarString(item));
+  },
+
+  // Obtener la URL del CV de un candidato
+  getCvUrl: (id: string): string => {
+    return `${API_URL}/candidatos/${id}/cv`;
   }
 };
 

@@ -119,7 +119,7 @@ const PaginaCandidato: React.FC = () => {
               variant="outline-primary"
               size="sm"
               onClick={() => {
-                window.open(`/api/candidatos/${selectedCandidato.id}/cv`, '_blank');
+                window.open(candidatoService.getCvUrl(selectedCandidato.id), '_blank');
               }}
             >
               Ver CV

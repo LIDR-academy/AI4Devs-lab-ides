@@ -30,6 +30,7 @@ export const crearCandidato = async (req: Request, res: Response) => {
     }
 
     const cv = req.file.buffer;
+    const mimeType = req.file.mimetype;
 
     const candidato = await prisma.candidato.create({
       data: {
@@ -40,7 +41,8 @@ export const crearCandidato = async (req: Request, res: Response) => {
         direccion,
         educacion,
         experiencia_laboral,
-        cv
+        cv,
+        mimeType
       }
     });
 
@@ -150,7 +152,8 @@ export const obtenerCV = async (req: Request, res: Response) => {
       select: {
         nombre: true,
         apellido: true,
-        cv: true
+        cv: true,
+        mimeType: true
       }
     });
 
@@ -161,8 +164,17 @@ export const obtenerCV = async (req: Request, res: Response) => {
       });
     }
 
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="${candidato.nombre}_${candidato.apellido}_CV.pdf"`);
+    // Determinar la extensión de archivo basada en el tipo MIME
+    let extension = 'pdf'; // Por defecto
+    if (candidato.mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+      extension = 'docx';
+    } else if (candidato.mimeType === 'application/msword') {
+      extension = 'doc';
+    }
+
+    // Establecer el tipo de contenido correcto
+    res.setHeader('Content-Type', candidato.mimeType);
+    res.setHeader('Content-Disposition', `attachment; filename="${candidato.nombre}_${candidato.apellido}_CV.${extension}"`);
     
     return res.send(candidato.cv);
   } catch (error) {
@@ -214,6 +226,7 @@ export const actualizarCandidato = async (req: Request, res: Response) => {
     // Si hay un nuevo CV, actualizarlo
     if (req.file) {
       datosActualizacion.cv = req.file.buffer;
+      datosActualizacion.mimeType = req.file.mimetype;
     }
 
     const candidatoActualizado = await prisma.candidato.update({
