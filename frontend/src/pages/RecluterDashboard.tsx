@@ -25,6 +25,8 @@ const RecluterDashboard: React.FC = () => {
         cv: ''
     });
 
+    const [successMessage, setSuccessMessage] = useState('');
+
     const validateEmail = (email: string) => {
         const re = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
         return re.test(String(email).toLowerCase());
@@ -118,6 +120,17 @@ const RecluterDashboard: React.FC = () => {
         if (valid) {
             // Aquí puedes manejar el envío del formulario
             console.log('Formulario enviado', formData);
+            setSuccessMessage('El candidato ha sido añadido exitosamente al sistema.');
+            setFormData({
+                nombre: '',
+                apellido: '',
+                email: '',
+                telefono: '',
+                direccion: '',
+                educacion: '',
+                experiencia: '',
+                cv: null
+            });
         }
     };
 
@@ -125,6 +138,7 @@ const RecluterDashboard: React.FC = () => {
         <div className="container mt-4">
             <h1 className="mb-4">Recluter Dashboard</h1>
             <button className="btn btn-primary" onClick={handleAddCandidateClick}>Agregar Candidato</button>
+            {successMessage && <div className="alert alert-success mt-4">{successMessage}</div>}
             {showForm && (
                 <form className="mt-4" onSubmit={handleSubmit}>
                     <div className="form-group">
