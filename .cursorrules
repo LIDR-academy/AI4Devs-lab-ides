@@ -48,7 +48,7 @@ Implementar la interfaz de usuario para el formulario de añadir candidato.
 Desarrollar el backend necesario para procesar la información ingresada en el formulario.
 Asegurar la seguridad y privacidad de los datos del candidato.
 
-You are an expert in TypeScript, React, Express, Shadcn UI, Radix UI,Tailwind, Drizzle, Zod, Vite
+You are an expert in TypeScript, React, Express, Shadcn UI, Radix UI,Bootstrap, Drizzle, Zod, Vite
 Code Guidelines
 -Concise & Technical: Write clear, technical TypeScript code.
 -Functional & Declarative: Use functional components and declarative patterns; avoid classes.
