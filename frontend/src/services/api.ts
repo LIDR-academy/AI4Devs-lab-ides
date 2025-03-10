@@ -10,6 +10,12 @@ const api = axios.create({
   }
 });
 
+// Asegurar que siempre tenemos un string válido
+const asegurarString = (valor: any): string => {
+  if (valor === null || valor === undefined) return '';
+  return String(valor);
+};
+
 export const candidatoService = {
   // Obtener todos los candidatos
   getCandidatos: async (): Promise<ApiResponse<Candidato[]>> => {
@@ -86,22 +92,65 @@ export const candidatoService = {
 
   // Obtener datos para autocompletado
   getAutocompleteSuggestions: async (field: string, query: string): Promise<string[]> => {
-    // Esta función simula obtener sugerencias para autocompletado.
-    // En un caso real, obtendríamos estos datos del backend.
+    // Esta función simula obtener sugerencias para autocompletado desde el backend.
+    // En un caso real, obtendríamos estos datos mediante una petición API.
     
-    // Datos de ejemplo para educación
+    // Simulamos un pequeño delay para que parezca una petición real
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    // Datos de ejemplo para nivel educativo
     const educacionSuggestions = [
+      // Niveles educativos generales
+      'Educación Básica',
+      'Educación Media',
+      'Educación Media Incompleta',
+      'Educación Superior',
+      'Educación Superior Incompleta',
+      'Técnico Profesional',
+      'Técnico Profesional Incompleto',
+      'Licenciatura',
+      'Licenciatura Incompleta',
+      'Magíster',
+      'Magíster Incompleto',
+      'Doctorado',
+      'Doctorado Incompleto',
+      'Postdoctorado',
+      'Sin estudios formales',
+      
+      // Títulos específicos (para complementar)
       'Licenciatura en Informática',
       'Ingeniería de Software',
       'Maestría en Ciencias de la Computación',
       'Doctorado en Inteligencia Artificial',
       'Técnico en Desarrollo Web',
       'Licenciatura en Administración de Empresas',
-      'Ingeniería Industrial'
+      'Ingeniería Industrial',
+      'Ingeniería Civil',
+      'Contador Auditor',
+      'Arquitectura',
+      'Medicina',
+      'Enfermería',
+      'Psicología',
+      'Derecho',
+      'Pedagogía'
     ];
     
     // Datos de ejemplo para experiencia laboral
     const experienciaSuggestions = [
+      // Años de experiencia
+      'Sin experiencia',
+      'Menos de 1 año',
+      '1-2 años',
+      '2-3 años',
+      '3-4 años',
+      '4-5 años',
+      '5-6 años',
+      '6+ años',
+      '10+ años',
+      '15+ años',
+      '20+ años',
+      
+      // Roles específicos (para complementar)
       'Desarrollador Frontend',
       'Desarrollador Backend',
       'Ingeniero DevOps',
@@ -109,7 +158,17 @@ export const candidatoService = {
       'Especialista en UX/UI',
       'Project Manager',
       'QA Engineer',
-      'Full Stack Developer'
+      'Full Stack Developer',
+      'Analista de Sistemas',
+      'Arquitecto de Software',
+      'Administrador de Base de Datos',
+      'Gerente de Tecnología',
+      'Director de Informática',
+      'Gerente General',
+      'CEO',
+      'CTO',
+      'COO',
+      'CFO'
     ];
     
     // Determinar qué sugerencias devolver según el campo
@@ -121,10 +180,12 @@ export const candidatoService = {
       suggestions = experienciaSuggestions;
     }
     
-    // Filtrar sugerencias basadas en la consulta
-    return suggestions.filter(item => 
-      item.toLowerCase().includes(query.toLowerCase())
-    );
+    // Filtrar sugerencias basadas en la consulta y asegurar que son strings
+    return suggestions
+      .filter(item => 
+        asegurarString(item).toLowerCase().includes(asegurarString(query).toLowerCase())
+      )
+      .map(item => asegurarString(item));
   }
 };
 

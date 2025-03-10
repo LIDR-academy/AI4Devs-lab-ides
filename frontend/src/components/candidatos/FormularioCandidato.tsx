@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import Select from 'react-select';
 import { candidatoSchema } from '../../utils/validations';
 import { candidatoService } from '../../services/api';
 import { CandidatoFormData } from '../../types/candidato';
@@ -12,7 +11,8 @@ import {
   Row, 
   Col, 
   Card,
-  Alert 
+  Alert,
+  FormControl
 } from 'react-bootstrap';
 
 interface FormularioCandidatoProps {
@@ -20,11 +20,6 @@ interface FormularioCandidatoProps {
   onSubmitSuccess: () => void;
   onCancel: () => void;
 }
-
-type Option = {
-  value: string;
-  label: string;
-};
 
 const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
   candidatoId,
@@ -36,8 +31,12 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   
   // Para autocompletado
-  const [educacionOptions, setEducacionOptions] = useState<Option[]>([]);
-  const [experienciaOptions, setExperienciaOptions] = useState<Option[]>([]);
+  const [educacionSugerencias, setEducacionSugerencias] = useState<string[]>([]);
+  const [experienciaSugerencias, setExperienciaSugerencias] = useState<string[]>([]);
+  const [mostrarListaEducacion, setMostrarListaEducacion] = useState(false);
+  const [mostrarListaExperiencia, setMostrarListaExperiencia] = useState(false);
+  const [inputEducacion, setInputEducacion] = useState('');
+  const [inputExperiencia, setInputExperiencia] = useState('');
 
   const {
     register,
@@ -45,6 +44,7 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
     formState: { errors },
     control,
     setValue,
+    watch,
     reset
   } = useForm<CandidatoFormData>({
     resolver: zodResolver(candidatoSchema),
@@ -59,6 +59,9 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
       cv: undefined
     }
   });
+
+  const educacionValue = watch('educacion');
+  const experienciaValue = watch('experiencia_laboral');
 
   // Cargar datos del candidato en caso de edición
   useEffect(() => {
@@ -77,7 +80,10 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
             setValue('direccion', candidato.direccion || '');
             setValue('educacion', candidato.educacion || '');
             setValue('experiencia_laboral', candidato.experiencia_laboral || '');
-            // No es posible cargar el CV ya existente en el input file
+            
+            // Actualizar los valores de los inputs
+            setInputEducacion(candidato.educacion || '');
+            setInputExperiencia(candidato.experiencia_laboral || '');
           }
         } catch (error) {
           console.error('Error al cargar candidato', error);
@@ -89,47 +95,96 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
     fetchCandidato();
   }, [candidatoId, setValue]);
 
-  // Función para cargar sugerencias de autocompletado de educación
-  const fetchEducacionSuggestions = async (inputValue: string) => {
-    try {
-      const suggestions = await candidatoService.getAutocompleteSuggestions('educacion', inputValue);
-      return suggestions.map(item => ({ value: item, label: item }));
-    } catch (error) {
-      console.error('Error al obtener sugerencias de educación', error);
-      return [];
-    }
+  // Actualizar sugerencias de educación cuando cambia el input
+  useEffect(() => {
+    const buscarSugerenciasEducacion = async () => {
+      if (inputEducacion.length >= 2) {
+        try {
+          const sugerencias = await candidatoService.getAutocompleteSuggestions('educacion', inputEducacion);
+          setEducacionSugerencias(sugerencias);
+        } catch (error) {
+          console.error('Error al buscar sugerencias de educación:', error);
+        }
+      } else if (inputEducacion.length === 0) {
+        try {
+          // Cargar sugerencias iniciales
+          const sugerenciasIniciales = await candidatoService.getAutocompleteSuggestions('educacion', '');
+          setEducacionSugerencias(sugerenciasIniciales.slice(0, 5));
+        } catch (error) {
+          console.error('Error al cargar sugerencias iniciales de educación:', error);
+        }
+      }
+    };
+
+    buscarSugerenciasEducacion();
+  }, [inputEducacion]);
+
+  // Actualizar sugerencias de experiencia cuando cambia el input
+  useEffect(() => {
+    const buscarSugerenciasExperiencia = async () => {
+      if (inputExperiencia.length >= 2) {
+        try {
+          const sugerencias = await candidatoService.getAutocompleteSuggestions('experiencia_laboral', inputExperiencia);
+          setExperienciaSugerencias(sugerencias);
+        } catch (error) {
+          console.error('Error al buscar sugerencias de experiencia:', error);
+        }
+      } else if (inputExperiencia.length === 0) {
+        try {
+          // Cargar sugerencias iniciales
+          const sugerenciasIniciales = await candidatoService.getAutocompleteSuggestions('experiencia_laboral', '');
+          setExperienciaSugerencias(sugerenciasIniciales.slice(0, 5));
+        } catch (error) {
+          console.error('Error al cargar sugerencias iniciales de experiencia:', error);
+        }
+      }
+    };
+
+    buscarSugerenciasExperiencia();
+  }, [inputExperiencia]);
+
+  // Manejar selección de sugerencia de educación
+  const seleccionarEducacion = (sugerencia: string) => {
+    setValue('educacion', sugerencia);
+    setInputEducacion(sugerencia);
+    setMostrarListaEducacion(false);
   };
 
-  // Función para cargar sugerencias de autocompletado de experiencia
-  const fetchExperienciaSuggestions = async (inputValue: string) => {
-    try {
-      const suggestions = await candidatoService.getAutocompleteSuggestions('experiencia_laboral', inputValue);
-      return suggestions.map(item => ({ value: item, label: item }));
-    } catch (error) {
-      console.error('Error al obtener sugerencias de experiencia', error);
-      return [];
-    }
+  // Manejar selección de sugerencia de experiencia
+  const seleccionarExperiencia = (sugerencia: string) => {
+    setValue('experiencia_laboral', sugerencia);
+    setInputExperiencia(sugerencia);
+    setMostrarListaExperiencia(false);
   };
 
-  // Manejar cambio en input de educación para autocompletado
-  const handleEducacionInputChange = async (inputValue: string) => {
-    if (inputValue.length > 2) {
-      const options = await fetchEducacionSuggestions(inputValue);
-      setEducacionOptions(options);
-    } else {
-      setEducacionOptions([]);
-    }
+  // Limpiar campo de educación
+  const limpiarEducacion = () => {
+    setValue('educacion', '');
+    setInputEducacion('');
   };
 
-  // Manejar cambio en input de experiencia para autocompletado
-  const handleExperienciaInputChange = async (inputValue: string) => {
-    if (inputValue.length > 2) {
-      const options = await fetchExperienciaSuggestions(inputValue);
-      setExperienciaOptions(options);
-    } else {
-      setExperienciaOptions([]);
-    }
+  // Limpiar campo de experiencia
+  const limpiarExperiencia = () => {
+    setValue('experiencia_laboral', '');
+    setInputExperiencia('');
   };
+
+  // Cargar sugerencias iniciales al montar el componente
+  useEffect(() => {
+    const cargarSugerenciasIniciales = async () => {
+      try {
+        const sugerenciasEducacion = await candidatoService.getAutocompleteSuggestions('educacion', '');
+        setEducacionSugerencias(sugerenciasEducacion.slice(0, 5));
+        
+        const sugerenciasExperiencia = await candidatoService.getAutocompleteSuggestions('experiencia_laboral', '');
+        setExperienciaSugerencias(sugerenciasExperiencia.slice(0, 5));
+      } catch (error) {
+        console.error('Error al cargar sugerencias iniciales:', error);
+      }
+    };
+    
+    cargarSugerenciasIniciales();
+  }, []);
 
   // Enviar formulario
   const onSubmit = async (data: CandidatoFormData) => {
@@ -166,6 +221,8 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
       } else {
         setSuccessMessage(response.mensaje || 'Operación realizada con éxito');
         reset();
+        setInputEducacion('');
+        setInputExperiencia('');
         setTimeout(() => {
           onSubmitSuccess();
         }, 2000);
@@ -288,28 +345,56 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
             </Form.Group>
             
             <Row className="mb-3">
-              {/* Educación con autocompletado */}
+              {/* Educación con autocompletado personalizado */}
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Educación</Form.Label>
-                  <Controller
-                    name="educacion"
-                    control={control}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        options={educacionOptions}
-                        onInputChange={handleEducacionInputChange}
-                        onChange={(option) => field.onChange(option ? option.value : '')}
-                        value={field.value ? { value: field.value, label: field.value } : null}
-                        placeholder="Seleccione o escriba su nivel educativo"
-                        isClearable
-                        isSearchable
-                        className="basic-single"
-                        classNamePrefix="select"
-                      />
+                  <div className="position-relative">
+                    <Form.Control
+                      type="text"
+                      placeholder="Seleccione o escriba su nivel educativo"
+                      value={inputEducacion}
+                      isInvalid={!!errors.educacion}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setInputEducacion(value);
+                        setValue('educacion', value);
+                        setMostrarListaEducacion(true);
+                      }}
+                      onFocus={() => setMostrarListaEducacion(true)}
+                      onBlur={() => {
+                        // Retrasar para permitir la selección de opciones
+                        setTimeout(() => setMostrarListaEducacion(false), 200);
+                      }}
+                    />
+                    {inputEducacion && (
+                      <Button 
+                        variant="link" 
+                        className="position-absolute end-0 top-50 translate-middle-y p-2"
+                        onClick={limpiarEducacion}
+                        style={{ zIndex: 5 }}
+                      >
+                        ×
+                      </Button>
                     )}
-                  />
+                    {mostrarListaEducacion && educacionSugerencias.length > 0 && (
+                      <div className="position-absolute w-100 mt-1 border rounded bg-white shadow-sm" style={{ zIndex: 1000 }}>
+                        {educacionSugerencias.map((sugerencia, index) => (
+                          <div 
+                            key={index} 
+                            className="px-3 py-2 cursor-pointer hover-bg-light"
+                            onClick={() => seleccionarEducacion(sugerencia)}
+                            style={{ cursor: 'pointer' }}
+                            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#f0f0f0')}
+                            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = 'white')}
+                          >
+                            {sugerencia}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <input type="hidden" {...register('educacion')} />
+                  </div>
                   {errors.educacion && (
                     <div className="text-danger mt-1 small">
                       {errors.educacion.message}
@@ -318,28 +403,56 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
                 </Form.Group>
               </Col>
               
-              {/* Experiencia Laboral con autocompletado */}
+              {/* Experiencia Laboral con autocompletado personalizado */}
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Experiencia Laboral</Form.Label>
-                  <Controller
-                    name="experiencia_laboral"
-                    control={control}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        options={experienciaOptions}
-                        onInputChange={handleExperienciaInputChange}
-                        onChange={(option) => field.onChange(option ? option.value : '')}
-                        value={field.value ? { value: field.value, label: field.value } : null}
-                        placeholder="Seleccione o escriba su experiencia laboral"
-                        isClearable
-                        isSearchable
-                        className="basic-single"
-                        classNamePrefix="select"
-                      />
+                  <div className="position-relative">
+                    <Form.Control
+                      type="text"
+                      placeholder="Seleccione o escriba su experiencia laboral"
+                      value={inputExperiencia}
+                      isInvalid={!!errors.experiencia_laboral}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setInputExperiencia(value);
+                        setValue('experiencia_laboral', value);
+                        setMostrarListaExperiencia(true);
+                      }}
+                      onFocus={() => setMostrarListaExperiencia(true)}
+                      onBlur={() => {
+                        // Retrasar para permitir la selección de opciones
+                        setTimeout(() => setMostrarListaExperiencia(false), 200);
+                      }}
+                    />
+                    {inputExperiencia && (
+                      <Button 
+                        variant="link" 
+                        className="position-absolute end-0 top-50 translate-middle-y p-2"
+                        onClick={limpiarExperiencia}
+                        style={{ zIndex: 5 }}
+                      >
+                        ×
+                      </Button>
                     )}
-                  />
+                    {mostrarListaExperiencia && experienciaSugerencias.length > 0 && (
+                      <div className="position-absolute w-100 mt-1 border rounded bg-white shadow-sm" style={{ zIndex: 1000 }}>
+                        {experienciaSugerencias.map((sugerencia, index) => (
+                          <div 
+                            key={index} 
+                            className="px-3 py-2 cursor-pointer hover-bg-light"
+                            onClick={() => seleccionarExperiencia(sugerencia)}
+                            style={{ cursor: 'pointer' }}
+                            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#f0f0f0')}
+                            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = 'white')}
+                          >
+                            {sugerencia}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <input type="hidden" {...register('experiencia_laboral')} />
+                  </div>
                   {errors.experiencia_laboral && (
                     <div className="text-danger mt-1 small">
                       {errors.experiencia_laboral.message}
