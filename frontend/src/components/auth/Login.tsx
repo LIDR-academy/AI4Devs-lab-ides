@@ -52,13 +52,9 @@ const Login: React.FC = () => {
     e.preventDefault();
     console.log('Login button clicked');
     try {
-      const formData = new FormData();
-      formData.append('email', email);
-      formData.append('password', password);
-      const response = await axios.post<AuthResponse>('http://localhost:3010/login', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      const response = await axios.post<AuthResponse>('http://localhost:3010/login', {
+        email,
+        password
       });
       dispatch(login(response.data.token));
       console.log('Dispatching login with token:', response.data.token);

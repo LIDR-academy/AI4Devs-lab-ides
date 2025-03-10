@@ -7,6 +7,9 @@ import { body, validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import cors from 'cors';
+import path from 'path';
+import fs from 'fs';
+import { Server } from './infrastructure/config/Server';
 
 dotenv.config();
 const prisma = new PrismaClient();
@@ -15,9 +18,42 @@ export const app = express();
 export default prisma;
 
 const port = 3010;
+const server = new Server(port);
+server.start();
 
 // Configuración de Multer para la carga de archivos
-const upload = multer({ dest: 'uploads/' });
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    // Generar un nombre único para el archivo
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const fileExtension = file.originalname.split('.').pop();
+    cb(null, `${uniqueSuffix}.${fileExtension}`);
+  }
+});
+
+// Filtro para validar tipos de archivo
+const fileFilter = (req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+  // Permitir solo ciertos tipos de archivo
+  const allowedMimeTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+  
+  if (allowedMimeTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Invalid file type. Only PDF, DOC, and DOCX files are allowed.'));
+  }
+};
+
+// Configuración de Multer con límites
+const upload = multer({ 
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB
+  }
+});
 
 // Extender el tipo Request para incluir la propiedad 'file' y 'user'
 declare global {
@@ -60,6 +96,21 @@ const authenticateJWT = (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
+// Middleware para manejar errores de Multer
+const handleMulterError = (err: any, req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof multer.MulterError) {
+    // Error de Multer
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ message: 'File too large. Maximum size is 5MB.' });
+    }
+    return res.status(400).json({ message: `Upload error: ${err.message}` });
+  } else if (err) {
+    // Otro tipo de error
+    return res.status(400).json({ message: err.message });
+  }
+  next();
+};
+
 // Ruta para registrar un nuevo usuario
 app.post('/register', [
   body('email').isEmail().withMessage('Email is invalid'),
@@ -93,26 +144,60 @@ app.post('/login', [
   body('email').isEmail().withMessage('Email is invalid'),
   body('password').notEmpty().withMessage('Password is required')
 ], async (req: Request, res: Response) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  const { email, password } = req.body;
   try {
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (user && await bcrypt.compare(password, user.password)) {
-      const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
-      res.json({ token });
-    } else {
-      res.status(401).json({ message: 'Invalid email or password' });
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
-  } catch (error) {
-    res.status(500).json({ message: 'Error logging in' });
+    
+    console.log('Login request body:', req.body);
+    
+    const { email, password } = req.body;
+    
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
+    
+    console.log('Login attempt for email:', email);
+    
+    const user = await prisma.user.findUnique({ where: { email } });
+    
+    if (!user) {
+      return res.status(401).json({ message: 'User not found' });
+    }
+    
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Invalid password' });
+    }
+    
+    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
+    res.json({ token });
+  } catch (error: any) {
+    console.error('Error during login:', error);
+    
+    // Verificar si es un error de conexión a la base de datos
+    if (error.message && error.message.includes("Can't reach database server")) {
+      return res.status(503).json({ 
+        message: 'Database connection error', 
+        details: 'The database server is not running. Please start the database server and try again.' 
+      });
+    }
+    
+    res.status(500).json({ message: 'Error logging in', error: error.message });
   }
 });
 
 // Ruta para añadir un candidato
-app.post('/candidates', authenticateJWT, upload.single('cv'), [
+app.post('/candidates', authenticateJWT, (req: Request, res: Response, next: NextFunction) => {
+  upload.single('cv')(req, res, (err) => {
+    if (err) {
+      return handleMulterError(err, req, res, next);
+    }
+    next();
+  });
+}, [
   body('firstName').notEmpty().withMessage('First name is required'),
   body('lastName').notEmpty().withMessage('Last name is required'),
   body('email').isEmail().withMessage('Email is invalid'),
@@ -127,7 +212,7 @@ app.post('/candidates', authenticateJWT, upload.single('cv'), [
   }
 
   const { firstName, lastName, email, phone, address, education, experience } = req.body;
-  const cvFilePath = req.file?.path || '';
+  const cvFilePath = req.file ? req.file.filename : '';
 
   try {
     const candidate = await prisma.candidate.create({
@@ -139,13 +224,66 @@ app.post('/candidates', authenticateJWT, upload.single('cv'), [
         address,
         education,
         experience,
-        cvFilePath
+        cvFilePath: cvFilePath // Guardar solo el nombre del archivo
       }
     });
-    res.status(201).json(candidate);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error adding candidate');
+    res.status(201).json({
+      ...candidate,
+      cvUrl: cvFilePath ? `/cv/${cvFilePath}` : null // Incluir URL para descargar el CV
+    });
+  } catch (error: any) {
+    console.error('Error adding candidate:', error);
+    
+    // Verificar si es un error de conexión a la base de datos
+    if (error.message && error.message.includes("Can't reach database server")) {
+      return res.status(503).json({ 
+        message: 'Database connection error', 
+        details: 'The database server is not running. Please start the database server and try again.' 
+      });
+    }
+    
+    // Verificar si es un error de restricción única
+    if (error.code === 'P2002') {
+      return res.status(409).json({ message: 'A candidate with this email already exists.' });
+    }
+    
+    res.status(500).json({ message: 'Error adding candidate', error: error.message });
+  }
+});
+
+// Ruta para obtener todos los candidatos
+app.get('/candidates', authenticateJWT, async (req: Request, res: Response) => {
+  try {
+    const candidates = await prisma.candidate.findMany();
+    res.json(candidates);
+  } catch (error: any) {
+    console.error('Error fetching candidates:', error);
+    
+    // Verificar si es un error de conexión a la base de datos
+    if (error.message && error.message.includes("Can't reach database server")) {
+      return res.status(503).json({ 
+        message: 'Database connection error', 
+        details: 'The database server is not running. Please start the database server and try again.' 
+      });
+    }
+    
+    res.status(500).json({ message: 'Error fetching candidates', error: error.message });
+  }
+});
+
+// Ruta para descargar un currículum
+app.get('/cv/:filename', authenticateJWT, (req: Request, res: Response) => {
+  const filename = req.params.filename;
+  const filePath = path.join(__dirname, '../uploads', filename);
+  
+  console.log('Requested file:', filename);
+  console.log('File path:', filePath);
+  
+  // Verificar si el archivo existe
+  if (fs.existsSync(filePath)) {
+    res.download(filePath);
+  } else {
+    res.status(404).json({ message: 'File not found' });
   }
 });
 
@@ -153,8 +291,4 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
   res.type('text/plain'); 
   res.status(500).send('Something broke!');
-});
-
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
 });
