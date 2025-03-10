@@ -18,3 +18,87 @@ model User {
   email String  @unique
   name  String?
 }
+
+// Modelo para candidatos
+model Candidate {
+  id                Int               @id @default(autoincrement())
+  firstName         String
+  lastName          String
+  email             String            @unique
+  phone             String?
+  address           String?
+  city              String?
+  state             String?
+  country           String?
+  postalCode        String?
+  summary           String?           @db.Text
+  cvFilePath        String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  education         Education[]
+  workExperience    WorkExperience[]
+  skills            CandidateSkill[]
+  status            CandidateStatus   @default(NEW)
+}
+
+// Modelo para educación
+model Education {
+  id              Int       @id @default(autoincrement())
+  institution     String
+  degree          String
+  fieldOfStudy    String?
+  startDate       DateTime
+  endDate         DateTime?
+  description     String?   @db.Text
+  candidate       Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateId     Int
+}
+
+// Modelo para experiencia laboral
+model WorkExperience {
+  id              Int       @id @default(autoincrement())
+  company         String
+  position        String
+  location        String?
+  startDate       DateTime
+  endDate         DateTime?
+  description     String?   @db.Text
+  candidate       Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateId     Int
+}
+
+// Modelo para habilidades
+model Skill {
+  id              Int               @id @default(autoincrement())
+  name            String            @unique
+  candidates      CandidateSkill[]
+}
+
+// Tabla de relación entre candidatos y habilidades
+model CandidateSkill {
+  candidate       Candidate         @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateId     Int
+  skill           Skill             @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  skillId         Int
+  proficiencyLevel ProficiencyLevel @default(INTERMEDIATE)
+
+  @@id([candidateId, skillId])
+}
+
+// Enumeración para el nivel de competencia en habilidades
+enum ProficiencyLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+// Enumeración para el estado del candidato
+enum CandidateStatus {
+  NEW
+  REVIEWING
+  INTERVIEWED
+  OFFERED
+  HIRED
+  REJECTED
+}

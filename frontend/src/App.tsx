@@ -1,24 +1,22 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import AddCandidateButton from './components/candidates/AddCandidateButton';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1>Sistema de Seguimiento de Talento (LTI)</h1>
+        <div className="header-actions">
+          <AddCandidateButton />
+        </div>
       </header>
+      <main className="App-main">
+        <div className="dashboard">
+          <h2>Dashboard de Candidatos</h2>
+          <p>Bienvenido al Sistema de Seguimiento de Talento. Utiliza el botón "Añadir Candidato" para comenzar a registrar nuevos talentos.</p>
+        </div>
+      </main>
     </div>
   );
 }
