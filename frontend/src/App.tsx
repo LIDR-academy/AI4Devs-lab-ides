@@ -1,25 +1,27 @@
 import React from 'react';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Dashboard from './pages/Dashboard';
+import AddCandidate from './pages/AddCandidate';
+import CandidateSummary from './components/candidates/CandidateSummary';
+import { ROUTES } from './routes';
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <header className="App-header">
+          <h1>Sistema de Seguimiento de Candidatos</h1>
+        </header>
+        <main className="App-main">
+          <Routes>
+            <Route path={ROUTES.HOME} element={<Dashboard />} />
+            <Route path={ROUTES.ADD_CANDIDATE} element={<AddCandidate />} />
+            <Route path={ROUTES.CANDIDATE_SUMMARY} element={<CandidateSummary />} />
+          </Routes>
+        </main>
+      </div>
+    </Router>
   );
 }
 

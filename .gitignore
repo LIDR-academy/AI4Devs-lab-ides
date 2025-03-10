@@ -5,6 +5,14 @@
 **/node_modules
 **/prompts_master.md
 
+# Uploads directory
+**/uploads
+**/uploads/*
+
+# Prisma
+**/prisma/migrations
+**/prisma/migrations/*
+
 # other dependencies
 /.pnp
 .pnp.js
