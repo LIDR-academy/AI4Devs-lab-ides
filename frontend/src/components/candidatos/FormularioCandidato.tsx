@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Select from 'react-select';
 import { candidatoSchema } from '../../utils/validations';
 import { candidatoService } from '../../services/api';
-import { Candidato, CandidatoFormData } from '../../types/candidato';
+import { CandidatoFormData } from '../../types/candidato';
 
 interface FormularioCandidatoProps {
   candidatoId?: string;
@@ -170,117 +170,117 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-3xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">
+    <div className="bg-white p-6 rounded-lg shadow-md" style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>
         {candidatoId ? 'Editar Candidato' : 'Añadir Nuevo Candidato'}
       </h2>
       
       {errorMessage && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-          <span className="block sm:inline">{errorMessage}</span>
+        <div className="error-alert">
+          <span>{errorMessage}</span>
         </div>
       )}
       
       {successMessage && (
-        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-          <span className="block sm:inline">{successMessage}</span>
+        <div className="success-message">
+          <span>{successMessage}</span>
         </div>
       )}
       
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)}>
         {/* Sección de información personal */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-2">
           {/* Nombre */}
-          <div>
-            <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-1">
+          <div className="form-group">
+            <label htmlFor="nombre">
               Nombre *
             </label>
             <input
               id="nombre"
               type="text"
-              className={`w-full p-2 border rounded-md ${errors.nombre ? 'border-red-500' : 'border-gray-300'}`}
+              className={errors.nombre ? 'border-red-500' : ''}
               placeholder="Nombre del candidato"
               {...register('nombre')}
             />
             {errors.nombre && (
-              <p className="mt-1 text-sm text-red-600">{errors.nombre.message}</p>
+              <p className="error-message">{errors.nombre.message}</p>
             )}
           </div>
           
           {/* Apellido */}
-          <div>
-            <label htmlFor="apellido" className="block text-sm font-medium text-gray-700 mb-1">
+          <div className="form-group">
+            <label htmlFor="apellido">
               Apellido *
             </label>
             <input
               id="apellido"
               type="text"
-              className={`w-full p-2 border rounded-md ${errors.apellido ? 'border-red-500' : 'border-gray-300'}`}
+              className={errors.apellido ? 'border-red-500' : ''}
               placeholder="Apellido del candidato"
               {...register('apellido')}
             />
             {errors.apellido && (
-              <p className="mt-1 text-sm text-red-600">{errors.apellido.message}</p>
+              <p className="error-message">{errors.apellido.message}</p>
             )}
           </div>
           
           {/* Email */}
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+          <div className="form-group">
+            <label htmlFor="email">
               Correo Electrónico *
             </label>
             <input
               id="email"
               type="email"
-              className={`w-full p-2 border rounded-md ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
+              className={errors.email ? 'border-red-500' : ''}
               placeholder="ejemplo@correo.com"
               {...register('email')}
             />
             {errors.email && (
-              <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+              <p className="error-message">{errors.email.message}</p>
             )}
           </div>
           
           {/* Teléfono */}
-          <div>
-            <label htmlFor="telefono" className="block text-sm font-medium text-gray-700 mb-1">
+          <div className="form-group">
+            <label htmlFor="telefono">
               Teléfono *
             </label>
             <input
               id="telefono"
               type="text"
-              className={`w-full p-2 border rounded-md ${errors.telefono ? 'border-red-500' : 'border-gray-300'}`}
+              className={errors.telefono ? 'border-red-500' : ''}
               placeholder="+1234567890"
               {...register('telefono')}
             />
             {errors.telefono && (
-              <p className="mt-1 text-sm text-red-600">{errors.telefono.message}</p>
+              <p className="error-message">{errors.telefono.message}</p>
             )}
           </div>
         </div>
         
         {/* Dirección */}
-        <div>
-          <label htmlFor="direccion" className="block text-sm font-medium text-gray-700 mb-1">
+        <div className="form-group">
+          <label htmlFor="direccion">
             Dirección
           </label>
           <input
             id="direccion"
             type="text"
-            className={`w-full p-2 border rounded-md ${errors.direccion ? 'border-red-500' : 'border-gray-300'}`}
+            className={errors.direccion ? 'border-red-500' : ''}
             placeholder="Dirección del candidato"
             {...register('direccion')}
           />
           {errors.direccion && (
-            <p className="mt-1 text-sm text-red-600">{errors.direccion.message}</p>
+            <p className="error-message">{errors.direccion.message}</p>
           )}
         </div>
         
         {/* Sección de educación y experiencia */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-2">
           {/* Educación con autocompletado */}
-          <div>
-            <label htmlFor="educacion" className="block text-sm font-medium text-gray-700 mb-1">
+          <div className="form-group">
+            <label htmlFor="educacion">
               Educación
             </label>
             <Controller
@@ -302,13 +302,13 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
               )}
             />
             {errors.educacion && (
-              <p className="mt-1 text-sm text-red-600">{errors.educacion.message}</p>
+              <p className="error-message">{errors.educacion.message}</p>
             )}
           </div>
           
           {/* Experiencia Laboral con autocompletado */}
-          <div>
-            <label htmlFor="experiencia_laboral" className="block text-sm font-medium text-gray-700 mb-1">
+          <div className="form-group">
+            <label htmlFor="experiencia_laboral">
               Experiencia Laboral
             </label>
             <Controller
@@ -330,46 +330,43 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
               )}
             />
             {errors.experiencia_laboral && (
-              <p className="mt-1 text-sm text-red-600">{errors.experiencia_laboral.message}</p>
+              <p className="error-message">{errors.experiencia_laboral.message}</p>
             )}
           </div>
         </div>
         
         {/* CV Carga de archivo */}
-        <div>
-          <label htmlFor="cv" className="block text-sm font-medium text-gray-700 mb-1">
+        <div className="form-group">
+          <label htmlFor="cv">
             {candidatoId ? 'CV (opcional para actualización)' : 'CV *'}
           </label>
           <input
             id="cv"
             type="file"
+            className={errors.cv ? 'border-red-500' : ''}
             accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            className={`w-full p-2 border rounded-md ${errors.cv ? 'border-red-500' : 'border-gray-300'}`}
             {...register('cv')}
           />
-          <p className="mt-1 text-xs text-gray-500">
+          <p style={{ fontSize: '0.75rem', color: '#6B7280', marginTop: '0.25rem' }}>
             Formatos aceptados: PDF, DOC, DOCX. Tamaño máximo: 5MB
           </p>
           {errors.cv && (
-            <p className="mt-1 text-sm text-red-600">{errors.cv.message}</p>
+            <p className="error-message">{errors.cv.message}</p>
           )}
         </div>
         
         {/* Botones de acción */}
-        <div className="flex justify-end space-x-4 pt-4">
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1.5rem' }}>
           <button
             type="button"
             onClick={onCancel}
-            className="py-2 px-4 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors ${
-              isSubmitting ? 'opacity-70 cursor-not-allowed' : ''
-            }`}
+            style={isSubmitting ? { opacity: 0.7, cursor: 'not-allowed' } : {}}
           >
             {isSubmitting ? 'Enviando...' : candidatoId ? 'Actualizar' : 'Guardar'}
           </button>

@@ -20,17 +20,25 @@ const PaginaCandidato: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">Gestión de Candidatos</h1>
+    <div className="container">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#1f2937' }}>Gestión de Candidatos</h1>
         {!showForm && (
           <button
             onClick={handleAddClick}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center"
+            type="button"
+            style={{ 
+              backgroundColor: '#3b82f6', 
+              color: 'white', 
+              display: 'flex', 
+              alignItems: 'center', 
+              padding: '0.5rem 1rem',
+              borderRadius: '0.375rem'
+            }}
           >
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
-              className="h-5 w-5 mr-2" 
+              style={{ width: '1.25rem', height: '1.25rem', marginRight: '0.5rem' }}
               viewBox="0 0 20 20" 
               fill="currentColor"
             >
@@ -49,7 +57,7 @@ const PaginaCandidato: React.FC = () => {
         />
       ) : (
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <p className="text-gray-600">
+          <p style={{ color: '#4b5563' }}>
             Aquí se mostrará la lista de candidatos.
             <br />
             Haga clic en "Añadir Candidato" para agregar un nuevo candidato al sistema.

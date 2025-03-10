@@ -16,7 +16,7 @@ export const candidatoSchema = z.object({
   telefono: z.string()
     .min(8, 'El teléfono debe tener al menos 8 dígitos')
     .max(20, 'El teléfono no puede tener más de 20 caracteres')
-    .regex(/^\+?[0-9\s\-\(\)]{8,20}$/, 'Formato de teléfono inválido'),
+    .regex(/^\+?[0-9\s\-()]{8,20}$/, 'Formato de teléfono inválido'),
   
   direccion: z.string().optional(),
   
