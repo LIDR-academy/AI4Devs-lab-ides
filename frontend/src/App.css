@@ -1,3 +1,135 @@
+/* Estilos generales */
+body {
+  background-color: #f8f9fa;
+  color: #495057;
+}
+
+.App {
+  min-height: 100vh;
+}
+
+/* Colores pasteles para la aplicación */
+:root {
+  --primary-color: #6a8caf;
+  --secondary-color: #a4c5c6;
+  --success-color: #9ed2be;
+  --info-color: #b5c0d0;
+  --warning-color: #f8d0b0;
+  --danger-color: #f7c8c9;
+  --light-color: #f8f9fa;
+  --dark-color: #495057;
+}
+
+/* Sobreescribir colores de Bootstrap */
+.bg-primary {
+  background-color: var(--primary-color) !important;
+}
+
+.bg-secondary {
+  background-color: var(--secondary-color) !important;
+}
+
+.bg-success {
+  background-color: var(--success-color) !important;
+}
+
+.bg-info {
+  background-color: var(--info-color) !important;
+}
+
+.bg-warning {
+  background-color: var(--warning-color) !important;
+}
+
+.bg-danger {
+  background-color: var(--danger-color) !important;
+}
+
+.text-primary {
+  color: var(--primary-color) !important;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: #5a7a9d;
+  border-color: #5a7a9d;
+}
+
+.btn-info {
+  background-color: var(--info-color);
+  border-color: var(--info-color);
+  color: #495057;
+}
+
+.btn-info:hover {
+  background-color: #a5b0c0;
+  border-color: #a5b0c0;
+  color: #343a40;
+}
+
+.btn-warning {
+  background-color: var(--warning-color);
+  border-color: var(--warning-color);
+  color: #495057;
+}
+
+.btn-warning:hover {
+  background-color: #e8c0a0;
+  border-color: #e8c0a0;
+  color: #343a40;
+}
+
+.btn-danger {
+  background-color: var(--danger-color);
+  border-color: var(--danger-color);
+  color: #495057;
+}
+
+.btn-danger:hover {
+  background-color: #e7b8b9;
+  border-color: #e7b8b9;
+  color: #343a40;
+}
+
+/* Estilos para las tarjetas */
+.card {
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+  border-top-left-radius: 10px !important;
+  border-top-right-radius: 10px !important;
+}
+
+/* Estilos para formularios */
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(106, 140, 175, 0.25);
+}
+
+/* Estilos para tablas */
+.table {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.table thead th {
+  background-color: #f0f2f5;
+  border-bottom: none;
+}
+
+/* Estilos para botones de acción */
+.btn-sm {
+  border-radius: 20px;
+  padding: 0.25rem 0.75rem;
+}
+
 .App {
   text-align: center;
 }
