@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import FormularioCandidato from './FormularioCandidato';
+import { Container, Button, Card } from 'react-bootstrap';
 
 const PaginaCandidato: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
@@ -20,32 +21,28 @@ const PaginaCandidato: React.FC = () => {
   };
 
   return (
-    <div className="container">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#1f2937' }}>Gestión de Candidatos</h1>
+    <Container className="py-4">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1 className="h3">Gestión de Candidatos</h1>
         {!showForm && (
-          <button
+          <Button 
+            variant="primary" 
             onClick={handleAddClick}
-            type="button"
-            style={{ 
-              backgroundColor: '#3b82f6', 
-              color: 'white', 
-              display: 'flex', 
-              alignItems: 'center', 
-              padding: '0.5rem 1rem',
-              borderRadius: '0.375rem'
-            }}
+            className="d-flex align-items-center"
           >
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
-              style={{ width: '1.25rem', height: '1.25rem', marginRight: '0.5rem' }}
-              viewBox="0 0 20 20" 
-              fill="currentColor"
+              width="16" 
+              height="16" 
+              fill="currentColor" 
+              className="bi bi-plus-circle me-2" 
+              viewBox="0 0 16 16"
             >
-              <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
             </svg>
             Añadir Candidato
-          </button>
+          </Button>
         )}
       </div>
 
@@ -56,15 +53,17 @@ const PaginaCandidato: React.FC = () => {
           onCancel={handleCancel}
         />
       ) : (
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <p style={{ color: '#4b5563' }}>
-            Aquí se mostrará la lista de candidatos.
-            <br />
-            Haga clic en "Añadir Candidato" para agregar un nuevo candidato al sistema.
-          </p>
-        </div>
+        <Card className="shadow-sm">
+          <Card.Body className="text-muted p-4">
+            <p>
+              Aquí se mostrará la lista de candidatos.
+              <br />
+              Haga clic en "Añadir Candidato" para agregar un nuevo candidato al sistema.
+            </p>
+          </Card.Body>
+        </Card>
       )}
-    </div>
+    </Container>
   );
 };
 

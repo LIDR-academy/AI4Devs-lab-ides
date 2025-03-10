@@ -5,6 +5,15 @@ import Select from 'react-select';
 import { candidatoSchema } from '../../utils/validations';
 import { candidatoService } from '../../services/api';
 import { CandidatoFormData } from '../../types/candidato';
+import { 
+  Form, 
+  Button, 
+  Container, 
+  Row, 
+  Col, 
+  Card,
+  Alert 
+} from 'react-bootstrap';
 
 interface FormularioCandidatoProps {
   candidatoId?: string;
@@ -170,209 +179,218 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md" style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>
-        {candidatoId ? 'Editar Candidato' : 'Añadir Nuevo Candidato'}
-      </h2>
-      
-      {errorMessage && (
-        <div className="error-alert">
-          <span>{errorMessage}</span>
-        </div>
-      )}
-      
-      {successMessage && (
-        <div className="success-message">
-          <span>{successMessage}</span>
-        </div>
-      )}
-      
-      <form onSubmit={handleSubmit(onSubmit)}>
-        {/* Sección de información personal */}
-        <div className="grid grid-cols-2">
-          {/* Nombre */}
-          <div className="form-group">
-            <label htmlFor="nombre">
-              Nombre *
-            </label>
-            <input
-              id="nombre"
-              type="text"
-              className={errors.nombre ? 'border-red-500' : ''}
-              placeholder="Nombre del candidato"
-              {...register('nombre')}
-            />
-            {errors.nombre && (
-              <p className="error-message">{errors.nombre.message}</p>
-            )}
-          </div>
+    <Container className="my-4">
+      <Card className="shadow">
+        <Card.Body>
+          <Card.Title className="mb-4">
+            {candidatoId ? 'Editar Candidato' : 'Añadir Nuevo Candidato'}
+          </Card.Title>
           
-          {/* Apellido */}
-          <div className="form-group">
-            <label htmlFor="apellido">
-              Apellido *
-            </label>
-            <input
-              id="apellido"
-              type="text"
-              className={errors.apellido ? 'border-red-500' : ''}
-              placeholder="Apellido del candidato"
-              {...register('apellido')}
-            />
-            {errors.apellido && (
-              <p className="error-message">{errors.apellido.message}</p>
-            )}
-          </div>
-          
-          {/* Email */}
-          <div className="form-group">
-            <label htmlFor="email">
-              Correo Electrónico *
-            </label>
-            <input
-              id="email"
-              type="email"
-              className={errors.email ? 'border-red-500' : ''}
-              placeholder="ejemplo@correo.com"
-              {...register('email')}
-            />
-            {errors.email && (
-              <p className="error-message">{errors.email.message}</p>
-            )}
-          </div>
-          
-          {/* Teléfono */}
-          <div className="form-group">
-            <label htmlFor="telefono">
-              Teléfono *
-            </label>
-            <input
-              id="telefono"
-              type="text"
-              className={errors.telefono ? 'border-red-500' : ''}
-              placeholder="+1234567890"
-              {...register('telefono')}
-            />
-            {errors.telefono && (
-              <p className="error-message">{errors.telefono.message}</p>
-            )}
-          </div>
-        </div>
-        
-        {/* Dirección */}
-        <div className="form-group">
-          <label htmlFor="direccion">
-            Dirección
-          </label>
-          <input
-            id="direccion"
-            type="text"
-            className={errors.direccion ? 'border-red-500' : ''}
-            placeholder="Dirección del candidato"
-            {...register('direccion')}
-          />
-          {errors.direccion && (
-            <p className="error-message">{errors.direccion.message}</p>
+          {errorMessage && (
+            <Alert variant="danger">{errorMessage}</Alert>
           )}
-        </div>
-        
-        {/* Sección de educación y experiencia */}
-        <div className="grid grid-cols-2">
-          {/* Educación con autocompletado */}
-          <div className="form-group">
-            <label htmlFor="educacion">
-              Educación
-            </label>
-            <Controller
-              name="educacion"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  options={educacionOptions}
-                  onInputChange={handleEducacionInputChange}
-                  onChange={(option) => field.onChange(option ? option.value : '')}
-                  value={field.value ? { value: field.value, label: field.value } : null}
-                  placeholder="Seleccione o escriba su nivel educativo"
-                  isClearable
-                  isSearchable
-                  className="basic-single"
-                  classNamePrefix="select"
-                />
-              )}
-            />
-            {errors.educacion && (
-              <p className="error-message">{errors.educacion.message}</p>
-            )}
-          </div>
           
-          {/* Experiencia Laboral con autocompletado */}
-          <div className="form-group">
-            <label htmlFor="experiencia_laboral">
-              Experiencia Laboral
-            </label>
-            <Controller
-              name="experiencia_laboral"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  options={experienciaOptions}
-                  onInputChange={handleExperienciaInputChange}
-                  onChange={(option) => field.onChange(option ? option.value : '')}
-                  value={field.value ? { value: field.value, label: field.value } : null}
-                  placeholder="Seleccione o escriba su experiencia laboral"
-                  isClearable
-                  isSearchable
-                  className="basic-single"
-                  classNamePrefix="select"
-                />
-              )}
-            />
-            {errors.experiencia_laboral && (
-              <p className="error-message">{errors.experiencia_laboral.message}</p>
-            )}
-          </div>
-        </div>
-        
-        {/* CV Carga de archivo */}
-        <div className="form-group">
-          <label htmlFor="cv">
-            {candidatoId ? 'CV (opcional para actualización)' : 'CV *'}
-          </label>
-          <input
-            id="cv"
-            type="file"
-            className={errors.cv ? 'border-red-500' : ''}
-            accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            {...register('cv')}
-          />
-          <p style={{ fontSize: '0.75rem', color: '#6B7280', marginTop: '0.25rem' }}>
-            Formatos aceptados: PDF, DOC, DOCX. Tamaño máximo: 5MB
-          </p>
-          {errors.cv && (
-            <p className="error-message">{errors.cv.message}</p>
+          {successMessage && (
+            <Alert variant="success">{successMessage}</Alert>
           )}
-        </div>
-        
-        {/* Botones de acción */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1.5rem' }}>
-          <button
-            type="button"
-            onClick={onCancel}
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            style={isSubmitting ? { opacity: 0.7, cursor: 'not-allowed' } : {}}
-          >
-            {isSubmitting ? 'Enviando...' : candidatoId ? 'Actualizar' : 'Guardar'}
-          </button>
-        </div>
-      </form>
-    </div>
+          
+          <Form onSubmit={handleSubmit(onSubmit)}>
+            <Row className="mb-3">
+              {/* Nombre */}
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Nombre *</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Nombre del candidato"
+                    isInvalid={!!errors.nombre}
+                    {...register('nombre')}
+                  />
+                  {errors.nombre && (
+                    <Form.Control.Feedback type="invalid">
+                      {errors.nombre.message}
+                    </Form.Control.Feedback>
+                  )}
+                </Form.Group>
+              </Col>
+              
+              {/* Apellido */}
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Apellido *</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Apellido del candidato"
+                    isInvalid={!!errors.apellido}
+                    {...register('apellido')}
+                  />
+                  {errors.apellido && (
+                    <Form.Control.Feedback type="invalid">
+                      {errors.apellido.message}
+                    </Form.Control.Feedback>
+                  )}
+                </Form.Group>
+              </Col>
+            </Row>
+            
+            <Row className="mb-3">
+              {/* Email */}
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Correo Electrónico *</Form.Label>
+                  <Form.Control
+                    type="email"
+                    placeholder="ejemplo@correo.com"
+                    isInvalid={!!errors.email}
+                    {...register('email')}
+                  />
+                  {errors.email && (
+                    <Form.Control.Feedback type="invalid">
+                      {errors.email.message}
+                    </Form.Control.Feedback>
+                  )}
+                </Form.Group>
+              </Col>
+              
+              {/* Teléfono */}
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Teléfono *</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="+1234567890"
+                    isInvalid={!!errors.telefono}
+                    {...register('telefono')}
+                  />
+                  {errors.telefono && (
+                    <Form.Control.Feedback type="invalid">
+                      {errors.telefono.message}
+                    </Form.Control.Feedback>
+                  )}
+                </Form.Group>
+              </Col>
+            </Row>
+            
+            {/* Dirección */}
+            <Form.Group className="mb-3">
+              <Form.Label>Dirección</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Dirección del candidato"
+                isInvalid={!!errors.direccion}
+                {...register('direccion')}
+              />
+              {errors.direccion && (
+                <Form.Control.Feedback type="invalid">
+                  {errors.direccion.message}
+                </Form.Control.Feedback>
+              )}
+            </Form.Group>
+            
+            <Row className="mb-3">
+              {/* Educación con autocompletado */}
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Educación</Form.Label>
+                  <Controller
+                    name="educacion"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        options={educacionOptions}
+                        onInputChange={handleEducacionInputChange}
+                        onChange={(option) => field.onChange(option ? option.value : '')}
+                        value={field.value ? { value: field.value, label: field.value } : null}
+                        placeholder="Seleccione o escriba su nivel educativo"
+                        isClearable
+                        isSearchable
+                        className="basic-single"
+                        classNamePrefix="select"
+                      />
+                    )}
+                  />
+                  {errors.educacion && (
+                    <div className="text-danger mt-1 small">
+                      {errors.educacion.message}
+                    </div>
+                  )}
+                </Form.Group>
+              </Col>
+              
+              {/* Experiencia Laboral con autocompletado */}
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Experiencia Laboral</Form.Label>
+                  <Controller
+                    name="experiencia_laboral"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        options={experienciaOptions}
+                        onInputChange={handleExperienciaInputChange}
+                        onChange={(option) => field.onChange(option ? option.value : '')}
+                        value={field.value ? { value: field.value, label: field.value } : null}
+                        placeholder="Seleccione o escriba su experiencia laboral"
+                        isClearable
+                        isSearchable
+                        className="basic-single"
+                        classNamePrefix="select"
+                      />
+                    )}
+                  />
+                  {errors.experiencia_laboral && (
+                    <div className="text-danger mt-1 small">
+                      {errors.experiencia_laboral.message}
+                    </div>
+                  )}
+                </Form.Group>
+              </Col>
+            </Row>
+            
+            {/* CV Carga de archivo */}
+            <Form.Group className="mb-4">
+              <Form.Label>
+                {candidatoId ? 'CV (opcional para actualización)' : 'CV *'}
+              </Form.Label>
+              <Form.Control
+                type="file"
+                isInvalid={!!errors.cv}
+                accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                {...register('cv')}
+              />
+              <Form.Text className="text-muted">
+                Formatos aceptados: PDF, DOC, DOCX. Tamaño máximo: 5MB
+              </Form.Text>
+              {errors.cv && (
+                <Form.Control.Feedback type="invalid">
+                  {errors.cv.message}
+                </Form.Control.Feedback>
+              )}
+            </Form.Group>
+            
+            {/* Botones de acción */}
+            <div className="d-flex justify-content-end gap-2">
+              <Button
+                variant="light"
+                type="button"
+                onClick={onCancel}
+              >
+                Cancelar
+              </Button>
+              <Button
+                variant="primary"
+                type="submit"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Enviando...' : candidatoId ? 'Actualizar' : 'Guardar'}
+              </Button>
+            </div>
+          </Form>
+        </Card.Body>
+      </Card>
+    </Container>
   );
 };
 

@@ -140,3 +140,29 @@ button[type="button"]:hover {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* Estilos adicionales personalizados */
+.select__control {
+  min-height: 38px;
+  border-color: #ced4da;
+  border-radius: 0.25rem;
+}
+
+.select__control:hover {
+  border-color: #a1a9b3;
+}
+
+.select__control--is-focused {
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  border-color: #86b7fe !important;
+}
+
+.select__menu {
+  z-index: 9999;
+}
+
+/* Aumentar z-index para que los mensajes de error aparezcan sobre otros elementos */
+.invalid-feedback {
+  display: block;
+  z-index: 5;
+}
