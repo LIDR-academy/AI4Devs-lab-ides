@@ -1,0 +1,426 @@
+[2025-03-10 01:46:17] INFO: API: POST /api/auth/register {
+  "service": "candidates-api",
+  "method": "POST",
+  "url": "/api/auth/register",
+  "statusCode": 201,
+  "responseTime": "112ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:46:35] INFO: AUTH: LOGIN_SUCCESS {
+  "service": "candidates-api",
+  "user": "egarmorales21@me.com",
+  "success": true,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:46:35] INFO: API: POST /api/auth/login {
+  "service": "candidates-api",
+  "method": "POST",
+  "url": "/api/auth/login",
+  "statusCode": 200,
+  "responseTime": "68ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:46:35] INFO: API: GET /api/candidates {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates",
+  "statusCode": 200,
+  "responseTime": "11ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:46:47] INFO: API: GET /api/candidates {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates",
+  "statusCode": 304,
+  "responseTime": "4ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:46:47] INFO: API: GET /api/candidates {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates",
+  "statusCode": 304,
+  "responseTime": "29ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:46:51] INFO: API: POST /api/auth/logout {
+  "service": "candidates-api",
+  "method": "POST",
+  "url": "/api/auth/logout",
+  "statusCode": 200,
+  "responseTime": "18ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:47:05] INFO: AUTH: LOGIN_FAILED {
+  "service": "candidates-api",
+  "user": "emorales@capi.lat",
+  "success": false,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:47:05] INFO: API: POST /api/auth/login {
+  "service": "candidates-api",
+  "method": "POST",
+  "url": "/api/auth/login",
+  "statusCode": 401,
+  "responseTime": "7ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:47:32] INFO: AUTH: LOGIN_SUCCESS {
+  "service": "candidates-api",
+  "user": "egarmorales21@me.com",
+  "success": true,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:47:32] INFO: API: POST /api/auth/login {
+  "service": "candidates-api",
+  "method": "POST",
+  "url": "/api/auth/login",
+  "statusCode": 200,
+  "responseTime": "61ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:47:32] INFO: API: GET /api/candidates {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates",
+  "statusCode": 304,
+  "responseTime": "5ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:47:32] INFO: API: GET /api/candidates {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates",
+  "statusCode": 304,
+  "responseTime": "6ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:47:35] INFO: API: GET /api/candidates/1 {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates/1",
+  "statusCode": 200,
+  "responseTime": "7ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:49:53] INFO: API: GET /api/candidates {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates",
+  "statusCode": 304,
+  "responseTime": "20ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:50:11] INFO: API: GET /api/candidates/1 {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates/1",
+  "statusCode": 200,
+  "responseTime": "4ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:50:25] INFO: API: GET /api/candidates {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates",
+  "statusCode": 304,
+  "responseTime": "10ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:50:37] INFO: API: GET /api/candidates/1 {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates/1",
+  "statusCode": 304,
+  "responseTime": "5ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:51:52] INFO: API: GET /api/candidates {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates",
+  "statusCode": 304,
+  "responseTime": "51ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:51:54] INFO: API: GET /api/candidates/1 {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates/1",
+  "statusCode": 304,
+  "responseTime": "6ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:52:26] INFO: API: PUT /api/candidates/1 {
+  "service": "candidates-api",
+  "method": "PUT",
+  "url": "/api/candidates/1",
+  "statusCode": 200,
+  "responseTime": "26ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:52:26] INFO: API: GET /api/candidates {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates",
+  "statusCode": 200,
+  "responseTime": "9ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:52:26] INFO: API: GET /api/candidates {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates",
+  "statusCode": 200,
+  "responseTime": "53ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:52:53] INFO: API: GET /api/candidates/1 {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates/1",
+  "statusCode": 200,
+  "responseTime": "31ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:53:10] INFO: API: GET /api/candidates {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates",
+  "statusCode": 304,
+  "responseTime": "11ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:53:21] INFO: API: GET /api/candidates/1 {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates/1",
+  "statusCode": 304,
+  "responseTime": "5ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 01:57:33] INFO: API: GET /uploads/273cc2ae-0687-4629-85f2-32f0ef74d4f6.pdf {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/uploads/273cc2ae-0687-4629-85f2-32f0ef74d4f6.pdf",
+  "statusCode": 200,
+  "responseTime": "6ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 02:01:12] INFO: API: GET /api/candidates/1 {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates/1",
+  "statusCode": 304,
+  "responseTime": "50ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 02:01:37] INFO: API: GET /api/candidates {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates",
+  "statusCode": 304,
+  "responseTime": "10ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 02:01:39] INFO: API: GET /api/candidates {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates",
+  "statusCode": 304,
+  "responseTime": "5ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 02:01:39] INFO: API: GET /api/candidates {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates",
+  "statusCode": 304,
+  "responseTime": "24ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 02:01:41] INFO: API: GET /api/candidates/1 {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates/1",
+  "statusCode": 304,
+  "responseTime": "7ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 02:01:42] INFO: API: GET /uploads/273cc2ae-0687-4629-85f2-32f0ef74d4f6.pdf {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/uploads/273cc2ae-0687-4629-85f2-32f0ef74d4f6.pdf",
+  "statusCode": 304,
+  "responseTime": "1ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 02:01:49] INFO: API: GET /api/candidates/1 {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates/1",
+  "statusCode": 304,
+  "responseTime": "8ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 02:01:52] INFO: API: GET /api/candidates/1 {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates/1",
+  "statusCode": 200,
+  "responseTime": "5ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 02:01:53] INFO: API: GET /api/candidates/1 {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates/1",
+  "statusCode": 304,
+  "responseTime": "3ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 02:01:55] INFO: API: GET /api/candidates/1 {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates/1",
+  "statusCode": 304,
+  "responseTime": "5ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 02:02:02] INFO: API: GET /uploads/273cc2ae-0687-4629-85f2-32f0ef74d4f6.pdf {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/uploads/273cc2ae-0687-4629-85f2-32f0ef74d4f6.pdf",
+  "statusCode": 304,
+  "responseTime": "2ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 02:02:07] INFO: API: GET /api/candidates {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates",
+  "statusCode": 304,
+  "responseTime": "3ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 02:02:10] INFO: API: GET /api/candidates/1 {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates/1",
+  "statusCode": 304,
+  "responseTime": "5ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 02:02:10] INFO: API: GET /api/candidates/1 {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates/1",
+  "statusCode": 304,
+  "responseTime": "6ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 02:02:23] INFO: API: GET /api/candidates {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates",
+  "statusCode": 304,
+  "responseTime": "4ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 02:02:23] INFO: API: GET /api/candidates {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates",
+  "statusCode": 304,
+  "responseTime": "5ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 02:02:28] INFO: API: GET /api/candidates {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates",
+  "statusCode": 304,
+  "responseTime": "6ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 02:02:28] INFO: API: GET /api/candidates {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates",
+  "statusCode": 304,
+  "responseTime": "5ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 02:02:30] INFO: API: GET /api/candidates/1 {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates/1",
+  "statusCode": 304,
+  "responseTime": "3ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 02:02:30] INFO: API: GET /api/candidates/1 {
+  "service": "candidates-api",
+  "method": "GET",
+  "url": "/api/candidates/1",
+  "statusCode": 304,
+  "responseTime": "3ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
+[2025-03-10 02:02:43] INFO: API: POST /api/auth/logout {
+  "service": "candidates-api",
+  "method": "POST",
+  "url": "/api/auth/logout",
+  "statusCode": 401,
+  "responseTime": "8ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+}
