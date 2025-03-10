@@ -3,3 +3,13 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
+
+// Mock SVG and other static files
+module.exports = {
+  process() {
+    return 'module.exports = {};';
+  },
+  getCacheKey() {
+    return 'svgTransform';
+  },
+};

@@ -13,8 +13,69 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+model Candidate {
+  id        String    @id @default(uuid()) @db.Uuid
+  firstName String    @map("first_name") @db.VarChar(50)
+  lastName  String    @map("last_name") @db.VarChar(50)
+  email     String    @unique @db.VarChar(100)
+  phone     String    @db.VarChar(20)
+  address   String?   @db.Text
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  // Relaciones
+  education       Education[]
+  workExperience  WorkExperience[]
+  document        Document?
+
+  @@map("candidates")
+}
+
+model Education {
+  id          String    @id @default(uuid()) @db.Uuid
+  candidateId String    @map("candidate_id") @db.Uuid
+  title       String    @db.VarChar(100)
+  institution String    @db.VarChar(100)
+  startDate   DateTime  @map("start_date") @db.Date
+  endDate     DateTime  @map("end_date") @db.Date
+  description String?   @db.Text
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  // Relación
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@map("education")
+}
+
+model WorkExperience {
+  id              String    @id @default(uuid()) @db.Uuid
+  candidateId     String    @map("candidate_id") @db.Uuid
+  company         String    @db.VarChar(100)
+  position        String    @db.VarChar(100)
+  startDate       DateTime  @map("start_date") @db.Date
+  endDate         DateTime  @map("end_date") @db.Date
+  responsibilities String?  @db.Text
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // Relación
+  candidate       Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@map("work_experience")
+}
+
+model Document {
+  id          String    @id @default(uuid()) @db.Uuid
+  candidateId String    @unique @map("candidate_id") @db.Uuid
+  fileName    String    @map("file_name") @db.VarChar(255)
+  fileType    String    @map("file_type") @db.VarChar(10)
+  fileSize    Int       @map("file_size")
+  filePath    String    @unique @map("file_path") @db.VarChar(255)
+  uploadedAt  DateTime  @default(now()) @map("uploaded_at")
+
+  // Relación
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@map("documents")
 }
