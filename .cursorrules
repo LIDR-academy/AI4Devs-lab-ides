@@ -17,6 +17,10 @@ Debo desarrollar la funcionalidad de **Añadir Candidato al Sistema**. Esto incl
 
 # IMPORTANTE    
 - Si necesitas informacion para algunas tareas especificas pidela.
+- Cualquier comando de prisma debe ejecutarse en la posicion AI4Devs-lab-ides\backend
+- Cualquier comando de frontend debe ejecutarse en la posicion AI4Devs-lab-ides\frontend
+- Cualquier comando de backend debe ejecutarse en la posicion AI4Devs-lab-ides\backend
+
 Esta es la historia de usuario que hay que trabajar:
 
 Añadir Candidato al Sistema
