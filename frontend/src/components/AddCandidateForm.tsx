@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import { ToastContainer, toast } from 'react-toastify';
@@ -28,6 +28,19 @@ const AddCandidateForm: React.FC = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+
+  useEffect(() => {
+    const matchMedia = window.matchMedia('(prefers-color-scheme: dark)');
+    setIsDarkMode(matchMedia.matches);
+
+    const handleChange = (e: MediaQueryListEvent) => {
+      setIsDarkMode(e.matches);
+    };
+
+    matchMedia.addEventListener('change', handleChange);
+    return () => matchMedia.removeEventListener('change', handleChange);
+  }, []);
 
   const onDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -205,6 +218,7 @@ const AddCandidateForm: React.FC = () => {
             <PhoneInput
               country={'es'} // Establecer el prefijo por defecto a España
               value={phoneNumber}
+              placeholder="+34 910 000 000"
               onChange={(phone) => {
                 setPhoneNumber(phone);
                 const parsedPhone = parsePhoneNumberFromString(phone, 'ES');
@@ -222,8 +236,8 @@ const AddCandidateForm: React.FC = () => {
                 borderRadius: '0.375rem',
                 borderColor: errors.phone_number ? '#f87171' : '#d1d5db',
                 padding: '0.5rem 0.5rem 0.5rem 3.5rem', // Ajustar padding para separar los números del prefijo
-                backgroundColor: '#374151',
-                color: '#d1d5db',
+                backgroundColor: isDarkMode ? '#374151' : '#ffffff',
+                color: isDarkMode ? '#d1d5db' : '#000000',
                 boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
                 outline: 'none',
                 transition: 'border-color 0.3s, box-shadow 0.3s',
@@ -233,22 +247,22 @@ const AddCandidateForm: React.FC = () => {
                 width: '100%',
                 borderRadius: '0.375rem',
                 borderColor: errors.phone_number ? '#f87171' : '#d1d5db',
-                backgroundColor: '#374151',
-                color: '#d1d5db',
+                backgroundColor: isDarkMode ? '#374151' : '#ffffff',
+                color: isDarkMode ? '#d1d5db' : '#000000',
                 boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
                 outline: 'none',
                 transition: 'border-color 0.3s, box-shadow 0.3s',
               }}
               buttonStyle={{
-                backgroundColor: '#374151',
-                borderColor: '#374151',
-                color: '#d1d5db',
+                backgroundColor: isDarkMode ? '#374151' : '#ffffff',
+                borderColor: isDarkMode ? '#374151' : '#d1d5db',
+                color: isDarkMode ? '#d1d5db' : '#000000',
                 border: 'none'
               }}
               dropdownStyle={{
-                backgroundColor: '#374151',
-                borderColor: '#374151',
-                color: '#d1d5db',
+                backgroundColor: isDarkMode ? '#374151' : '#ffffff',
+                borderColor: isDarkMode ? '#374151' : '#d1d5db',
+                color: isDarkMode ? '#d1d5db' : '#000000',
               }}
             />
             {errors.phone_number && (
