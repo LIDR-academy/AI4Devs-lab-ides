@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import candidatoRoutes from './routes/candidatoRoutes';
+import userRoutes from './routes/userRoutes';
 
 dotenv.config();
 const prisma = new PrismaClient();
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 
 // Rutas de la API
 app.use('/api/candidatos', candidatoRoutes);
+app.use('/api/user', userRoutes);
 
 // Middleware de manejo de errores
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
