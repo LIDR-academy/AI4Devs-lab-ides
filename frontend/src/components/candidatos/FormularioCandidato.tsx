@@ -12,8 +12,10 @@ import {
   Col, 
   Card,
   Alert,
-  FormControl
+  FormControl,
+  Spinner
 } from 'react-bootstrap';
+import { useNotification } from '../../context/NotificationContext';
 
 interface FormularioCandidatoProps {
   candidatoId?: string;
@@ -27,6 +29,7 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
   onCancel
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFetchingData, setIsFetchingData] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   
@@ -37,6 +40,10 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
   const [mostrarListaExperiencia, setMostrarListaExperiencia] = useState(false);
   const [inputEducacion, setInputEducacion] = useState('');
   const [inputExperiencia, setInputExperiencia] = useState('');
+  const [loadingSugerencias, setLoadingSugerencias] = useState(false);
+
+  // Hook para notificaciones
+  const { notifySuccess, notifyError, notifyInfo } = useNotification();
 
   const {
     register,
@@ -45,7 +52,8 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
     control,
     setValue,
     watch,
-    reset
+    reset,
+    trigger
   } = useForm<CandidatoFormData>({
     resolver: zodResolver(candidatoSchema),
     defaultValues: {
@@ -57,7 +65,8 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
       educacion: '',
       experiencia_laboral: '',
       cv: undefined
-    }
+    },
+    mode: 'onChange' // Validar al cambiar campos
   });
 
   const educacionValue = watch('educacion');
@@ -67,6 +76,7 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
   useEffect(() => {
     const fetchCandidato = async () => {
       if (candidatoId) {
+        setIsFetchingData(true);
         try {
           const response = await candidatoService.getCandidatoById(candidatoId);
           
@@ -88,30 +98,39 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
         } catch (error) {
           console.error('Error al cargar candidato', error);
           setErrorMessage('Error al cargar los datos del candidato');
+          notifyError('No se pudieron cargar los datos del candidato');
+        } finally {
+          setIsFetchingData(false);
         }
       }
     };
 
     fetchCandidato();
-  }, [candidatoId, setValue]);
+  }, [candidatoId, setValue, notifyError]);
 
   // Actualizar sugerencias de educación cuando cambia el input
   useEffect(() => {
     const buscarSugerenciasEducacion = async () => {
       if (inputEducacion.length >= 2) {
+        setLoadingSugerencias(true);
         try {
           const sugerencias = await candidatoService.getAutocompleteSuggestions('educacion', inputEducacion);
           setEducacionSugerencias(sugerencias);
         } catch (error) {
           console.error('Error al buscar sugerencias de educación:', error);
+        } finally {
+          setLoadingSugerencias(false);
         }
       } else if (inputEducacion.length === 0) {
+        setLoadingSugerencias(true);
         try {
           // Cargar sugerencias iniciales
           const sugerenciasIniciales = await candidatoService.getAutocompleteSuggestions('educacion', '');
           setEducacionSugerencias(sugerenciasIniciales.slice(0, 5));
         } catch (error) {
           console.error('Error al cargar sugerencias iniciales de educación:', error);
+        } finally {
+          setLoadingSugerencias(false);
         }
       }
     };
@@ -123,19 +142,25 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
   useEffect(() => {
     const buscarSugerenciasExperiencia = async () => {
       if (inputExperiencia.length >= 2) {
+        setLoadingSugerencias(true);
         try {
           const sugerencias = await candidatoService.getAutocompleteSuggestions('experiencia_laboral', inputExperiencia);
           setExperienciaSugerencias(sugerencias);
         } catch (error) {
           console.error('Error al buscar sugerencias de experiencia:', error);
+        } finally {
+          setLoadingSugerencias(false);
         }
       } else if (inputExperiencia.length === 0) {
+        setLoadingSugerencias(true);
         try {
           // Cargar sugerencias iniciales
           const sugerenciasIniciales = await candidatoService.getAutocompleteSuggestions('experiencia_laboral', '');
           setExperienciaSugerencias(sugerenciasIniciales.slice(0, 5));
         } catch (error) {
           console.error('Error al cargar sugerencias iniciales de experiencia:', error);
+        } finally {
+          setLoadingSugerencias(false);
         }
       }
     };
@@ -148,6 +173,7 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
     setValue('educacion', sugerencia);
     setInputEducacion(sugerencia);
     setMostrarListaEducacion(false);
+    trigger('educacion'); // Validar el campo
   };
 
   // Manejar selección de sugerencia de experiencia
@@ -155,23 +181,27 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
     setValue('experiencia_laboral', sugerencia);
     setInputExperiencia(sugerencia);
     setMostrarListaExperiencia(false);
+    trigger('experiencia_laboral'); // Validar el campo
   };
 
   // Limpiar campo de educación
   const limpiarEducacion = () => {
     setValue('educacion', '');
     setInputEducacion('');
+    trigger('educacion'); // Validar el campo
   };
 
   // Limpiar campo de experiencia
   const limpiarExperiencia = () => {
     setValue('experiencia_laboral', '');
     setInputExperiencia('');
+    trigger('experiencia_laboral'); // Validar el campo
   };
 
   // Cargar sugerencias iniciales al montar el componente
   useEffect(() => {
     const cargarSugerenciasIniciales = async () => {
+      setLoadingSugerencias(true);
       try {
         const sugerenciasEducacion = await candidatoService.getAutocompleteSuggestions('educacion', '');
         setEducacionSugerencias(sugerenciasEducacion.slice(0, 5));
@@ -180,6 +210,8 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
         setExperienciaSugerencias(sugerenciasExperiencia.slice(0, 5));
       } catch (error) {
         console.error('Error al cargar sugerencias iniciales:', error);
+      } finally {
+        setLoadingSugerencias(false);
       }
     };
     
@@ -190,6 +222,14 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
   const onSubmit = async (data: CandidatoFormData) => {
     setIsSubmitting(true);
     setErrorMessage(null);
+    
+    // Verificar que el CV esté presente para nuevos candidatos
+    if (!candidatoId && (!data.cv || data.cv.length === 0)) {
+      setErrorMessage('Debe subir un CV para continuar');
+      notifyError('El CV es obligatorio para nuevos candidatos');
+      setIsSubmitting(false);
+      return;
+    }
     
     try {
       // Crear un objeto FormData para enviar archivos
@@ -218,18 +258,21 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
       
       if (response.error) {
         setErrorMessage(response.mensaje || 'Error al procesar la solicitud');
+        notifyError(response.mensaje || 'Error al procesar la solicitud');
       } else {
         setSuccessMessage(response.mensaje || 'Operación realizada con éxito');
+        notifySuccess(response.mensaje || 'Operación realizada con éxito');
         reset();
         setInputEducacion('');
         setInputExperiencia('');
         setTimeout(() => {
           onSubmitSuccess();
-        }, 2000);
+        }, 1500);
       }
     } catch (error) {
       console.error('Error al enviar formulario', error);
       setErrorMessage('Error al procesar la solicitud. Intente de nuevo más tarde.');
+      notifyError('Error al procesar la solicitud. Intente de nuevo más tarde.');
     } finally {
       setIsSubmitting(false);
     }
@@ -239,8 +282,14 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
     <Container className="my-4">
       <Card className="shadow">
         <Card.Body>
-          <Card.Title className="mb-4">
-            {candidatoId ? 'Editar Candidato' : 'Añadir Nuevo Candidato'}
+          <Card.Title className="mb-4 d-flex justify-content-between align-items-center">
+            <span>{candidatoId ? 'Editar Candidato' : 'Añadir Nuevo Candidato'}</span>
+            {isFetchingData && (
+              <div className="d-flex align-items-center">
+                <Spinner animation="border" size="sm" className="me-2" />
+                <span className="small text-muted">Cargando datos...</span>
+              </div>
+            )}
           </Card.Title>
           
           {errorMessage && (
@@ -251,16 +300,19 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
             <Alert variant="success">{successMessage}</Alert>
           )}
           
-          <Form onSubmit={handleSubmit(onSubmit)}>
+          <Form onSubmit={handleSubmit(onSubmit)} noValidate>
             <Row className="mb-3">
               {/* Nombre */}
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Nombre *</Form.Label>
+                  <Form.Label>
+                    Nombre <span className="text-danger">*</span>
+                  </Form.Label>
                   <Form.Control
                     type="text"
                     placeholder="Nombre del candidato"
                     isInvalid={!!errors.nombre}
+                    disabled={isFetchingData || isSubmitting}
                     {...register('nombre')}
                   />
                   {errors.nombre && (
@@ -274,11 +326,14 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
               {/* Apellido */}
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Apellido *</Form.Label>
+                  <Form.Label>
+                    Apellido <span className="text-danger">*</span>
+                  </Form.Label>
                   <Form.Control
                     type="text"
                     placeholder="Apellido del candidato"
                     isInvalid={!!errors.apellido}
+                    disabled={isFetchingData || isSubmitting}
                     {...register('apellido')}
                   />
                   {errors.apellido && (
@@ -294,11 +349,14 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
               {/* Email */}
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Correo Electrónico *</Form.Label>
+                  <Form.Label>
+                    Correo Electrónico <span className="text-danger">*</span>
+                  </Form.Label>
                   <Form.Control
                     type="email"
                     placeholder="ejemplo@correo.com"
                     isInvalid={!!errors.email}
+                    disabled={isFetchingData || isSubmitting}
                     {...register('email')}
                   />
                   {errors.email && (
@@ -312,11 +370,14 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
               {/* Teléfono */}
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Teléfono *</Form.Label>
+                  <Form.Label>
+                    Teléfono <span className="text-danger">*</span>
+                  </Form.Label>
                   <Form.Control
-                    type="text"
-                    placeholder="+1234567890"
+                    type="tel"
+                    placeholder="+1 234 567 8900"
                     isInvalid={!!errors.telefono}
+                    disabled={isFetchingData || isSubmitting}
                     {...register('telefono')}
                   />
                   {errors.telefono && (
@@ -333,8 +394,9 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
               <Form.Label>Dirección</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Dirección del candidato"
+                placeholder="Dirección del candidato (opcional)"
                 isInvalid={!!errors.direccion}
+                disabled={isFetchingData || isSubmitting}
                 {...register('direccion')}
               />
               {errors.direccion && (
@@ -345,136 +407,133 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
             </Form.Group>
             
             <Row className="mb-3">
-              {/* Educación con autocompletado personalizado */}
+              {/* Educación */}
               <Col md={6}>
-                <Form.Group className="mb-3">
+                <Form.Group className="mb-3 position-relative">
                   <Form.Label>Educación</Form.Label>
-                  <div className="position-relative">
+                  <div className="input-group">
                     <Form.Control
                       type="text"
-                      placeholder="Seleccione o escriba su nivel educativo"
-                      value={inputEducacion}
+                      placeholder="Nivel educativo (opcional)"
                       isInvalid={!!errors.educacion}
+                      disabled={isFetchingData || isSubmitting || loadingSugerencias}
+                      value={inputEducacion}
                       onChange={(e) => {
-                        const value = e.target.value;
-                        setInputEducacion(value);
-                        setValue('educacion', value);
-                        setMostrarListaEducacion(true);
+                        setInputEducacion(e.target.value);
+                        setValue('educacion', e.target.value);
+                        trigger('educacion');
                       }}
                       onFocus={() => setMostrarListaEducacion(true)}
-                      onBlur={() => {
-                        // Retrasar para permitir la selección de opciones
-                        setTimeout(() => setMostrarListaEducacion(false), 200);
-                      }}
                     />
                     {inputEducacion && (
                       <Button 
-                        variant="link" 
-                        className="position-absolute end-0 top-50 translate-middle-y p-2"
+                        variant="outline-secondary"
                         onClick={limpiarEducacion}
-                        style={{ zIndex: 5 }}
+                        disabled={isFetchingData || isSubmitting}
                       >
                         ×
                       </Button>
                     )}
-                    {mostrarListaEducacion && educacionSugerencias.length > 0 && (
-                      <div className="position-absolute w-100 mt-1 border rounded bg-white shadow-sm" style={{ zIndex: 1000 }}>
-                        {educacionSugerencias.map((sugerencia, index) => (
-                          <div 
-                            key={index} 
-                            className="px-3 py-2 cursor-pointer hover-bg-light"
-                            onClick={() => seleccionarEducacion(sugerencia)}
-                            style={{ cursor: 'pointer' }}
-                            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#f0f0f0')}
-                            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = 'white')}
-                          >
-                            {sugerencia}
-                          </div>
-                        ))}
+                    {loadingSugerencias && (
+                      <div className="position-absolute top-0 end-0 mt-2 me-4">
+                        <Spinner animation="border" size="sm" />
                       </div>
                     )}
-                    <input type="hidden" {...register('educacion')} />
                   </div>
                   {errors.educacion && (
-                    <div className="text-danger mt-1 small">
+                    <div className="invalid-feedback d-block">
                       {errors.educacion.message}
+                    </div>
+                  )}
+                  {mostrarListaEducacion && educacionSugerencias.length > 0 && (
+                    <div className="sugerencias-dropdown">
+                      <ul className="list-group shadow-sm">
+                        {educacionSugerencias.map((sugerencia, index) => (
+                          <li 
+                            key={index} 
+                            className="list-group-item list-group-item-action"
+                            onClick={() => seleccionarEducacion(sugerencia)}
+                          >
+                            {sugerencia}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   )}
                 </Form.Group>
               </Col>
               
-              {/* Experiencia Laboral con autocompletado personalizado */}
+              {/* Experiencia Laboral */}
               <Col md={6}>
-                <Form.Group className="mb-3">
+                <Form.Group className="mb-3 position-relative">
                   <Form.Label>Experiencia Laboral</Form.Label>
-                  <div className="position-relative">
+                  <div className="input-group">
                     <Form.Control
                       type="text"
-                      placeholder="Seleccione o escriba su experiencia laboral"
-                      value={inputExperiencia}
+                      placeholder="Experiencia laboral (opcional)"
                       isInvalid={!!errors.experiencia_laboral}
+                      disabled={isFetchingData || isSubmitting || loadingSugerencias}
+                      value={inputExperiencia}
                       onChange={(e) => {
-                        const value = e.target.value;
-                        setInputExperiencia(value);
-                        setValue('experiencia_laboral', value);
-                        setMostrarListaExperiencia(true);
+                        setInputExperiencia(e.target.value);
+                        setValue('experiencia_laboral', e.target.value);
+                        trigger('experiencia_laboral');
                       }}
                       onFocus={() => setMostrarListaExperiencia(true)}
-                      onBlur={() => {
-                        // Retrasar para permitir la selección de opciones
-                        setTimeout(() => setMostrarListaExperiencia(false), 200);
-                      }}
                     />
                     {inputExperiencia && (
                       <Button 
-                        variant="link" 
-                        className="position-absolute end-0 top-50 translate-middle-y p-2"
+                        variant="outline-secondary"
                         onClick={limpiarExperiencia}
-                        style={{ zIndex: 5 }}
+                        disabled={isFetchingData || isSubmitting}
                       >
                         ×
                       </Button>
                     )}
-                    {mostrarListaExperiencia && experienciaSugerencias.length > 0 && (
-                      <div className="position-absolute w-100 mt-1 border rounded bg-white shadow-sm" style={{ zIndex: 1000 }}>
-                        {experienciaSugerencias.map((sugerencia, index) => (
-                          <div 
-                            key={index} 
-                            className="px-3 py-2 cursor-pointer hover-bg-light"
-                            onClick={() => seleccionarExperiencia(sugerencia)}
-                            style={{ cursor: 'pointer' }}
-                            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#f0f0f0')}
-                            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = 'white')}
-                          >
-                            {sugerencia}
-                          </div>
-                        ))}
+                    {loadingSugerencias && (
+                      <div className="position-absolute top-0 end-0 mt-2 me-4">
+                        <Spinner animation="border" size="sm" />
                       </div>
                     )}
-                    <input type="hidden" {...register('experiencia_laboral')} />
                   </div>
                   {errors.experiencia_laboral && (
-                    <div className="text-danger mt-1 small">
+                    <div className="invalid-feedback d-block">
                       {errors.experiencia_laboral.message}
+                    </div>
+                  )}
+                  {mostrarListaExperiencia && experienciaSugerencias.length > 0 && (
+                    <div className="sugerencias-dropdown">
+                      <ul className="list-group shadow-sm">
+                        {experienciaSugerencias.map((sugerencia, index) => (
+                          <li 
+                            key={index} 
+                            className="list-group-item list-group-item-action"
+                            onClick={() => seleccionarExperiencia(sugerencia)}
+                          >
+                            {sugerencia}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   )}
                 </Form.Group>
               </Col>
             </Row>
             
-            {/* CV Carga de archivo */}
+            {/* CV */}
             <Form.Group className="mb-4">
               <Form.Label>
-                {candidatoId ? 'CV (opcional para actualización)' : 'CV *'}
+                Curriculum Vitae {!candidatoId && <span className="text-danger">*</span>}
               </Form.Label>
               <Form.Control
                 type="file"
+                accept=".pdf,.doc,.docx"
                 isInvalid={!!errors.cv}
-                accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                disabled={isFetchingData || isSubmitting}
                 {...register('cv')}
               />
               <Form.Text className="text-muted">
-                Formatos aceptados: PDF, DOC, DOCX. Tamaño máximo: 5MB
+                Sube el CV del candidato en formato PDF o DOCX. {!candidatoId && 'Obligatorio para nuevos candidatos.'}
               </Form.Text>
               {errors.cv && (
                 <Form.Control.Feedback type="invalid">
@@ -483,26 +542,49 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
               )}
             </Form.Group>
             
-            {/* Botones de acción */}
-            <div className="d-flex justify-content-end gap-2">
-              <Button
-                variant="light"
-                type="button"
+            <div className="d-flex justify-content-end gap-2 mt-4">
+              <Button 
+                variant="outline-secondary" 
                 onClick={onCancel}
+                disabled={isSubmitting}
               >
                 Cancelar
               </Button>
-              <Button
+              <Button 
+                type="submit" 
                 variant="primary"
-                type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isFetchingData}
               >
-                {isSubmitting ? 'Enviando...' : candidatoId ? 'Actualizar' : 'Guardar'}
+                {isSubmitting ? (
+                  <>
+                    <Spinner animation="border" size="sm" className="me-2" />
+                    Procesando...
+                  </>
+                ) : (
+                  candidatoId ? 'Actualizar Candidato' : 'Guardar Candidato'
+                )}
               </Button>
             </div>
           </Form>
         </Card.Body>
       </Card>
+      
+      {/* Estilos adicionales para el autocompletado */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        .sugerencias-dropdown {
+          position: absolute;
+          width: 100%;
+          z-index: 1000;
+          max-height: 200px;
+          overflow-y: auto;
+        }
+        .list-group-item {
+          cursor: pointer;
+        }
+        .list-group-item:hover {
+          background-color: #f8f9fa;
+        }
+      `}} />
     </Container>
   );
 };

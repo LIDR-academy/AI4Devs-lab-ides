@@ -2,15 +2,20 @@ import React, { useState, useEffect } from 'react';
 import FormularioCandidato from './FormularioCandidato';
 import { Container, Button, Card, Table, Badge, Spinner, Form, InputGroup } from 'react-bootstrap';
 import { candidatoService } from '../../services/api';
+import { useNotification } from '../../context/NotificationContext';
 
 const PaginaCandidato: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | undefined>(undefined);
   const [candidatos, setCandidatos] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false); // Estado para operaciones CRUD
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCandidato, setSelectedCandidato] = useState<any>(null);
   const [showDetails, setShowDetails] = useState(false);
+  
+  // Hook para notificaciones
+  const { notifySuccess, notifyError, notifyInfo } = useNotification();
 
   // Cargar candidatos al montar el componente
   useEffect(() => {
@@ -28,6 +33,7 @@ const PaginaCandidato: React.FC = () => {
       }
     } catch (error) {
       console.error('Error al cargar candidatos:', error);
+      notifyError('No se pudieron cargar los candidatos. Intente nuevamente más tarde.');
     } finally {
       setIsLoading(false);
     }
@@ -40,6 +46,7 @@ const PaginaCandidato: React.FC = () => {
 
   const handleFormSuccess = () => {
     setShowForm(false);
+    notifySuccess('¡Operación completada exitosamente!');
     cargarCandidatos(); // Recargar la lista después de añadir o editar
   };
 
@@ -61,11 +68,16 @@ const PaginaCandidato: React.FC = () => {
 
   const handleDeleteCandidato = async (id: string) => {
     if (window.confirm('¿Está seguro que desea eliminar este candidato?')) {
+      setIsProcessing(true);
       try {
         await candidatoService.deleteCandidato(id);
+        notifySuccess('Candidato eliminado exitosamente');
         cargarCandidatos(); // Recargar la lista después de eliminar
       } catch (error) {
         console.error('Error al eliminar candidato:', error);
+        notifyError('Error al eliminar el candidato. Intente nuevamente.');
+      } finally {
+        setIsProcessing(false);
       }
     }
   };
@@ -83,7 +95,7 @@ const PaginaCandidato: React.FC = () => {
   });
 
   console.log('Candidatos filtrados para renderizar:', candidatosFiltrados);
-
+  
   // Componente de detalles del candidato
   const DetallesCandidato = () => {
     if (!selectedCandidato) return null;
@@ -123,6 +135,7 @@ const PaginaCandidato: React.FC = () => {
               size="sm"
               onClick={() => {
                 window.open(candidatoService.getCvUrl(selectedCandidato.id), '_blank');
+                notifyInfo('Descargando CV del candidato...');
               }}
             >
               Ver CV
@@ -144,7 +157,7 @@ const PaginaCandidato: React.FC = () => {
     <Container className="py-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h1 className="h3">Gestión de Candidatos</h1>
-        {!showForm && (
+        {!showForm && !isProcessing && (
           <Button 
             variant="primary" 
             onClick={handleAddClick}
@@ -163,6 +176,12 @@ const PaginaCandidato: React.FC = () => {
             </svg>
             Añadir Candidato
           </Button>
+        )}
+        {isProcessing && (
+          <div className="d-flex align-items-center">
+            <Spinner animation="border" size="sm" className="me-2" />
+            <span>Procesando...</span>
+          </div>
         )}
       </div>
 
@@ -268,6 +287,7 @@ const PaginaCandidato: React.FC = () => {
                                 className="p-1 text-primary" 
                                 onClick={() => handleViewDetails(candidato)}
                                 title="Ver detalles"
+                                disabled={isProcessing}
                               >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-eye" viewBox="0 0 16 16">
                                   <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
@@ -279,6 +299,7 @@ const PaginaCandidato: React.FC = () => {
                                 className="p-1 text-secondary" 
                                 onClick={() => handleEditClick(candidato.id)}
                                 title="Editar"
+                                disabled={isProcessing}
                               >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
                                   <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
@@ -290,6 +311,7 @@ const PaginaCandidato: React.FC = () => {
                                 className="p-1 text-danger" 
                                 onClick={() => handleDeleteCandidato(candidato.id)}
                                 title="Eliminar"
+                                disabled={isProcessing}
                               >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash" viewBox="0 0 16 16">
                                   <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
