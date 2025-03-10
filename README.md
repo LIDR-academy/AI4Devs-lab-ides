@@ -158,9 +158,9 @@ Este proyecto implementa varias medidas de seguridad:
 ## Contribución
 
 1. Hacer un fork del repositorio
-2. Crear una rama para tu feature (`git checkout -b feature/amazing-feature`)
+2. Crear una rama para tu feature (`git checkout -b solved-EDMA`)
 3. Hacer commit de tus cambios (`git commit -m 'Add some amazing feature'`)
-4. Push a la rama (`git push origin feature/amazing-feature`)
+4. Push a la rama (`git push origin solved-EDMA`)
 5. Abrir un Pull Request
 
 ## Licencia
