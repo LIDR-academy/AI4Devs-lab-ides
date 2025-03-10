@@ -1,29 +1,92 @@
 # Ignore in all directories
 **/.DS_Store
-#**/.env
-**/.env.example
+**/.env
+**/.env.local
+**/.env.development
+**/.env.test
+**/.env.production
 **/node_modules
-**/prompts_master.md
+**/.cache
+**/.temp
+**/.tmp
+**/tmp
+**/temp
 
-# other dependencies
-/.pnp
-.pnp.js
+# Logs
+**/logs
+**/*.log
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/pnpm-debug.log*
+**/lerna-debug.log*
 
-# testing
-/coverage
-
-# production
+# Build outputs
 **/build
 **/dist
+**/.next
+**/.nuxt
+**/.output
+**/.vite
 
-# logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Testing
+**/coverage
+**/.nyc_output
+**/.jest-cache
 
-# IDE
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# IDE - IntelliJ/WebStorm
 .idea
-.vscode
+*.iml
+*.ipr
+*.iws
+.idea_modules/
 
-# .env
+# IDE - Eclipse
+.classpath
+.project
+.settings/
 
+# Misc
+.DS_Store
+Thumbs.db
+*.pem
+.vercel
+.netlify
+.turbo
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Docker
+.docker-volumes/
+docker-compose.override.yml
+
+# Backend specific
+backend/prisma/migrations/*
+backend/logs/*
+.specstory/*
+backend/coverage/*
+backend/uploads/*
+
+# Frontend specific
+frontend/.eslintcache
+frontend/storybook-static
+
+# Dependency directories
+.pnp
+.pnp.js
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.pnpm-store/
