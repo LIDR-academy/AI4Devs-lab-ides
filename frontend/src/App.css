@@ -1,5 +1,23 @@
+:root {
+  --primary-color: #1a237e; /* Azul marino */
+  --primary-light: #534bae;
+  --cta-color: #2e7d32; /* Verde */
+  --cta-hover: #43a047;
+  --background: #ffffff;
+  --text-primary: #1a237e;
+  --text-secondary: #424242;
+  --surface: #ffffff;
+  --error: #d32f2f;
+}
+
 .App {
   text-align: center;
+  background-color: var(--background);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .App-logo {
@@ -14,18 +32,64 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  color: var(--text-primary);
+  width: 100%;
+  padding: 2rem;
+}
+
+.App-title {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.App-description {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  margin-bottom: 40px;
 }
 
 .App-link {
   color: #61dafb;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+.add-candidate-button {
+  background-color: var(--cta-color);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.add-candidate-button:hover {
+  background-color: var(--cta-hover);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+@media (max-width: 768px) {
+  .App-title {
+    font-size: 2rem;
+  }
+
+  .App-description {
+    font-size: 1rem;
+  }
+
+  .add-candidate-button {
+    padding: 12px 24px;
+    font-size: 1rem;
+  }
 }
 
 @keyframes App-logo-spin {
