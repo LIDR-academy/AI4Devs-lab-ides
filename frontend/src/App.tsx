@@ -5,14 +5,17 @@ import { Container, Navbar } from 'react-bootstrap';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { NotificationProvider } from './context/NotificationContext';
+import './styles/FormularioStyles.css';
 
 function App() {
   return (
     <NotificationProvider>
       <div className="App">
-        <Navbar bg="primary" variant="dark" expand="lg">
+        <Navbar bg="dark" variant="dark" expand="lg" className="shadow-sm">
           <Container>
-            <Navbar.Brand href="#home">Sistema de Seguimiento de Talento (ATS)</Navbar.Brand>
+            <Navbar.Brand href="#home" className="fw-bold">
+              Sistema de Seguimiento de Talento <span className="text-info">(ATS)</span>
+            </Navbar.Brand>
           </Container>
         </Navbar>
         

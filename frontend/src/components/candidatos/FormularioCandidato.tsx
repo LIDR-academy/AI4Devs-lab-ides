@@ -16,6 +16,7 @@ import {
   Spinner
 } from 'react-bootstrap';
 import { useNotification } from '../../context/NotificationContext';
+import '../../styles/FormularioStyles.css';
 
 interface FormularioCandidatoProps {
   candidatoId?: string;
@@ -43,13 +44,12 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
   const [loadingSugerencias, setLoadingSugerencias] = useState(false);
 
   // Hook para notificaciones
-  const { notifySuccess, notifyError, notifyInfo } = useNotification();
+  const { notifySuccess, notifyError } = useNotification();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    control,
     setValue,
     watch,
     reset,
@@ -279,11 +279,11 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
   };
 
   return (
-    <Container className="my-4">
-      <Card className="shadow">
-        <Card.Body>
-          <Card.Title className="mb-4 d-flex justify-content-between align-items-center">
-            <span>{candidatoId ? 'Editar Candidato' : 'Añadir Nuevo Candidato'}</span>
+    <Container className="py-4">
+      <Card className="form-card shadow">
+        <Card.Body className="form-container">
+          <Card.Title className="form-title d-flex justify-content-between align-items-center">
+            <h2 className="h4 mb-0">{candidatoId ? 'Editar Candidato' : 'Añadir Nuevo Candidato'}</h2>
             {isFetchingData && (
               <div className="d-flex align-items-center">
                 <Spinner animation="border" size="sm" className="me-2" />
@@ -293,298 +293,349 @@ const FormularioCandidato: React.FC<FormularioCandidatoProps> = ({
           </Card.Title>
           
           {errorMessage && (
-            <Alert variant="danger">{errorMessage}</Alert>
+            <Alert variant="danger" role="alert" aria-live="assertive">
+              {errorMessage}
+            </Alert>
           )}
           
           {successMessage && (
-            <Alert variant="success">{successMessage}</Alert>
+            <Alert variant="success" role="alert" aria-live="polite">
+              {successMessage}
+            </Alert>
           )}
           
-          <Form onSubmit={handleSubmit(onSubmit)} noValidate>
-            <Row className="mb-3">
-              {/* Nombre */}
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>
-                    Nombre <span className="text-danger">*</span>
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Nombre del candidato"
-                    isInvalid={!!errors.nombre}
-                    disabled={isFetchingData || isSubmitting}
-                    {...register('nombre')}
-                  />
-                  {errors.nombre && (
-                    <Form.Control.Feedback type="invalid">
-                      {errors.nombre.message}
-                    </Form.Control.Feedback>
-                  )}
-                </Form.Group>
-              </Col>
-              
-              {/* Apellido */}
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>
-                    Apellido <span className="text-danger">*</span>
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Apellido del candidato"
-                    isInvalid={!!errors.apellido}
-                    disabled={isFetchingData || isSubmitting}
-                    {...register('apellido')}
-                  />
-                  {errors.apellido && (
-                    <Form.Control.Feedback type="invalid">
-                      {errors.apellido.message}
-                    </Form.Control.Feedback>
-                  )}
-                </Form.Group>
-              </Col>
-            </Row>
-            
-            <Row className="mb-3">
-              {/* Email */}
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>
-                    Correo Electrónico <span className="text-danger">*</span>
-                  </Form.Label>
-                  <Form.Control
-                    type="email"
-                    placeholder="ejemplo@correo.com"
-                    isInvalid={!!errors.email}
-                    disabled={isFetchingData || isSubmitting}
-                    {...register('email')}
-                  />
-                  {errors.email && (
-                    <Form.Control.Feedback type="invalid">
-                      {errors.email.message}
-                    </Form.Control.Feedback>
-                  )}
-                </Form.Group>
-              </Col>
-              
-              {/* Teléfono */}
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>
-                    Teléfono <span className="text-danger">*</span>
-                  </Form.Label>
-                  <Form.Control
-                    type="tel"
-                    placeholder="+1 234 567 8900"
-                    isInvalid={!!errors.telefono}
-                    disabled={isFetchingData || isSubmitting}
-                    {...register('telefono')}
-                  />
-                  {errors.telefono && (
-                    <Form.Control.Feedback type="invalid">
-                      {errors.telefono.message}
-                    </Form.Control.Feedback>
-                  )}
-                </Form.Group>
-              </Col>
-            </Row>
-            
-            {/* Dirección */}
-            <Form.Group className="mb-3">
-              <Form.Label>Dirección</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Dirección del candidato (opcional)"
-                isInvalid={!!errors.direccion}
-                disabled={isFetchingData || isSubmitting}
-                {...register('direccion')}
-              />
-              {errors.direccion && (
-                <Form.Control.Feedback type="invalid">
-                  {errors.direccion.message}
-                </Form.Control.Feedback>
-              )}
-            </Form.Group>
-            
-            <Row className="mb-3">
-              {/* Educación */}
-              <Col md={6}>
-                <Form.Group className="mb-3 position-relative">
-                  <Form.Label>Educación</Form.Label>
-                  <div className="input-group">
+          <Form 
+            onSubmit={handleSubmit(onSubmit)} 
+            noValidate 
+            className="needs-validation"
+            aria-label={candidatoId ? 'Formulario de edición de candidato' : 'Formulario de nuevo candidato'}
+          >
+            <div className="d-flex flex-column gap-3">
+              {/* Primera fila: Nombre y apellido */}
+              <div className="d-flex flex-column flex-md-row gap-3">
+                {/* Nombre */}
+                <div className="flex-grow-1">
+                  <Form.Group controlId="formNombre">
+                    <Form.Label className="form-label">
+                      Nombre <span className="text-danger" aria-hidden="true">*</span>
+                      <span className="sr-only">obligatorio</span>
+                    </Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Nivel educativo (opcional)"
-                      isInvalid={!!errors.educacion}
-                      disabled={isFetchingData || isSubmitting || loadingSugerencias}
-                      value={inputEducacion}
-                      onChange={(e) => {
-                        setInputEducacion(e.target.value);
-                        setValue('educacion', e.target.value);
-                        trigger('educacion');
-                      }}
-                      onFocus={() => setMostrarListaEducacion(true)}
+                      placeholder="Nombre del candidato"
+                      className={errors.nombre ? 'is-invalid' : ''}
+                      aria-invalid={errors.nombre ? 'true' : 'false'}
+                      aria-describedby={errors.nombre ? 'nombre-error' : undefined}
+                      disabled={isFetchingData || isSubmitting}
+                      {...register('nombre')}
                     />
-                    {inputEducacion && (
-                      <Button 
-                        variant="outline-secondary"
-                        onClick={limpiarEducacion}
-                        disabled={isFetchingData || isSubmitting}
-                      >
-                        ×
-                      </Button>
+                    {errors.nombre && (
+                      <Form.Control.Feedback type="invalid" id="nombre-error">
+                        {errors.nombre.message}
+                      </Form.Control.Feedback>
                     )}
-                    {loadingSugerencias && (
-                      <div className="position-absolute top-0 end-0 mt-2 me-4">
-                        <Spinner animation="border" size="sm" />
-                      </div>
-                    )}
-                  </div>
-                  {errors.educacion && (
-                    <div className="invalid-feedback d-block">
-                      {errors.educacion.message}
-                    </div>
-                  )}
-                  {mostrarListaEducacion && educacionSugerencias.length > 0 && (
-                    <div className="sugerencias-dropdown">
-                      <ul className="list-group shadow-sm">
-                        {educacionSugerencias.map((sugerencia, index) => (
-                          <li 
-                            key={index} 
-                            className="list-group-item list-group-item-action"
-                            onClick={() => seleccionarEducacion(sugerencia)}
-                          >
-                            {sugerencia}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </Form.Group>
-              </Col>
-              
-              {/* Experiencia Laboral */}
-              <Col md={6}>
-                <Form.Group className="mb-3 position-relative">
-                  <Form.Label>Experiencia Laboral</Form.Label>
-                  <div className="input-group">
+                  </Form.Group>
+                </div>
+                
+                {/* Apellido */}
+                <div className="flex-grow-1">
+                  <Form.Group controlId="formApellido">
+                    <Form.Label className="form-label">
+                      Apellido <span className="text-danger" aria-hidden="true">*</span>
+                      <span className="sr-only">obligatorio</span>
+                    </Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Experiencia laboral (opcional)"
-                      isInvalid={!!errors.experiencia_laboral}
-                      disabled={isFetchingData || isSubmitting || loadingSugerencias}
-                      value={inputExperiencia}
-                      onChange={(e) => {
-                        setInputExperiencia(e.target.value);
-                        setValue('experiencia_laboral', e.target.value);
-                        trigger('experiencia_laboral');
-                      }}
-                      onFocus={() => setMostrarListaExperiencia(true)}
+                      placeholder="Apellido del candidato"
+                      className={errors.apellido ? 'is-invalid' : ''}
+                      aria-invalid={errors.apellido ? 'true' : 'false'}
+                      aria-describedby={errors.apellido ? 'apellido-error' : undefined}
+                      disabled={isFetchingData || isSubmitting}
+                      {...register('apellido')}
                     />
-                    {inputExperiencia && (
-                      <Button 
-                        variant="outline-secondary"
-                        onClick={limpiarExperiencia}
-                        disabled={isFetchingData || isSubmitting}
-                      >
-                        ×
-                      </Button>
+                    {errors.apellido && (
+                      <Form.Control.Feedback type="invalid" id="apellido-error">
+                        {errors.apellido.message}
+                      </Form.Control.Feedback>
                     )}
-                    {loadingSugerencias && (
-                      <div className="position-absolute top-0 end-0 mt-2 me-4">
-                        <Spinner animation="border" size="sm" />
-                      </div>
+                  </Form.Group>
+                </div>
+              </div>
+              
+              {/* Segunda fila: Email y teléfono */}
+              <div className="d-flex flex-column flex-md-row gap-3">
+                {/* Email */}
+                <div className="flex-grow-1">
+                  <Form.Group controlId="formEmail">
+                    <Form.Label className="form-label">
+                      Correo Electrónico <span className="text-danger" aria-hidden="true">*</span>
+                      <span className="sr-only">obligatorio</span>
+                    </Form.Label>
+                    <Form.Control
+                      type="email"
+                      placeholder="ejemplo@correo.com"
+                      className={errors.email ? 'is-invalid' : ''}
+                      aria-invalid={errors.email ? 'true' : 'false'}
+                      aria-describedby={errors.email ? 'email-error' : undefined}
+                      disabled={isFetchingData || isSubmitting}
+                      {...register('email')}
+                    />
+                    {errors.email && (
+                      <Form.Control.Feedback type="invalid" id="email-error">
+                        {errors.email.message}
+                      </Form.Control.Feedback>
                     )}
-                  </div>
-                  {errors.experiencia_laboral && (
-                    <div className="invalid-feedback d-block">
-                      {errors.experiencia_laboral.message}
-                    </div>
-                  )}
-                  {mostrarListaExperiencia && experienciaSugerencias.length > 0 && (
-                    <div className="sugerencias-dropdown">
-                      <ul className="list-group shadow-sm">
-                        {experienciaSugerencias.map((sugerencia, index) => (
-                          <li 
-                            key={index} 
-                            className="list-group-item list-group-item-action"
-                            onClick={() => seleccionarExperiencia(sugerencia)}
-                          >
-                            {sugerencia}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </Form.Group>
-              </Col>
-            </Row>
-            
-            {/* CV */}
-            <Form.Group className="mb-4">
-              <Form.Label>
-                Curriculum Vitae {!candidatoId && <span className="text-danger">*</span>}
-              </Form.Label>
-              <Form.Control
-                type="file"
-                accept=".pdf,.doc,.docx"
-                isInvalid={!!errors.cv}
-                disabled={isFetchingData || isSubmitting}
-                {...register('cv')}
-              />
-              <Form.Text className="text-muted">
-                Sube el CV del candidato en formato PDF o DOCX. {!candidatoId && 'Obligatorio para nuevos candidatos.'}
-              </Form.Text>
-              {errors.cv && (
-                <Form.Control.Feedback type="invalid">
-                  {errors.cv.message}
-                </Form.Control.Feedback>
-              )}
-            </Form.Group>
-            
-            <div className="d-flex justify-content-end gap-2 mt-4">
-              <Button 
-                variant="outline-secondary" 
-                onClick={onCancel}
-                disabled={isSubmitting}
-              >
-                Cancelar
-              </Button>
-              <Button 
-                type="submit" 
-                variant="primary"
-                disabled={isSubmitting || isFetchingData}
-              >
-                {isSubmitting ? (
-                  <>
-                    <Spinner animation="border" size="sm" className="me-2" />
-                    Procesando...
-                  </>
-                ) : (
-                  candidatoId ? 'Actualizar Candidato' : 'Guardar Candidato'
+                  </Form.Group>
+                </div>
+                
+                {/* Teléfono */}
+                <div className="flex-grow-1">
+                  <Form.Group controlId="formTelefono">
+                    <Form.Label className="form-label">
+                      Teléfono <span className="text-danger" aria-hidden="true">*</span>
+                      <span className="sr-only">obligatorio</span>
+                    </Form.Label>
+                    <Form.Control
+                      type="tel"
+                      placeholder="+1 234 567 8900"
+                      className={errors.telefono ? 'is-invalid' : ''}
+                      aria-invalid={errors.telefono ? 'true' : 'false'}
+                      aria-describedby={errors.telefono ? 'telefono-error' : undefined}
+                      disabled={isFetchingData || isSubmitting}
+                      {...register('telefono')}
+                    />
+                    {errors.telefono && (
+                      <Form.Control.Feedback type="invalid" id="telefono-error">
+                        {errors.telefono.message}
+                      </Form.Control.Feedback>
+                    )}
+                  </Form.Group>
+                </div>
+              </div>
+              
+              {/* Dirección */}
+              <Form.Group controlId="formDireccion">
+                <Form.Label className="form-label">Dirección</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Dirección del candidato (opcional)"
+                  className={errors.direccion ? 'is-invalid' : ''}
+                  aria-invalid={errors.direccion ? 'true' : 'false'}
+                  aria-describedby={errors.direccion ? 'direccion-error' : undefined}
+                  disabled={isFetchingData || isSubmitting}
+                  {...register('direccion')}
+                />
+                {errors.direccion && (
+                  <Form.Control.Feedback type="invalid" id="direccion-error">
+                    {errors.direccion.message}
+                  </Form.Control.Feedback>
                 )}
-              </Button>
+              </Form.Group>
+              
+              {/* Tercera fila: Educación y Experiencia */}
+              <div className="d-flex flex-column flex-md-row gap-3">
+                {/* Educación */}
+                <div className="flex-grow-1">
+                  <Form.Group controlId="formEducacion" className="position-relative">
+                    <Form.Label className="form-label">Educación</Form.Label>
+                    <div className="autocomplete-container">
+                      <div className="d-flex">
+                        <Form.Control
+                          type="text"
+                          placeholder="Nivel educativo (opcional)"
+                          className={errors.educacion ? 'is-invalid' : ''}
+                          aria-invalid={errors.educacion ? 'true' : 'false'}
+                          aria-describedby={errors.educacion ? 'educacion-error' : undefined}
+                          aria-autocomplete="list"
+                          aria-controls="educacion-listbox"
+                          aria-expanded={mostrarListaEducacion ? 'true' : 'false'}
+                          disabled={isFetchingData || isSubmitting || loadingSugerencias}
+                          value={inputEducacion}
+                          onChange={(e) => {
+                            setInputEducacion(e.target.value);
+                            setValue('educacion', e.target.value);
+                            trigger('educacion');
+                            setMostrarListaEducacion(true);
+                          }}
+                          onFocus={() => setMostrarListaEducacion(true)}
+                          onBlur={() => setTimeout(() => setMostrarListaEducacion(false), 200)}
+                        />
+                        {inputEducacion && (
+                          <Button 
+                            variant="outline-secondary"
+                            onClick={limpiarEducacion}
+                            disabled={isFetchingData || isSubmitting}
+                            aria-label="Limpiar campo de educación"
+                          >
+                            <span aria-hidden="true">×</span>
+                          </Button>
+                        )}
+                      </div>
+                      {loadingSugerencias && (
+                        <div className="position-absolute end-0 top-50 translate-middle-y pe-3">
+                          <Spinner animation="border" size="sm" aria-hidden="true" />
+                          <span className="sr-only">Cargando sugerencias</span>
+                        </div>
+                      )}
+                      {errors.educacion && (
+                        <div className="invalid-feedback d-block" id="educacion-error">
+                          {errors.educacion.message}
+                        </div>
+                      )}
+                      {mostrarListaEducacion && educacionSugerencias.length > 0 && (
+                        <ul 
+                          className="suggestion-list list-group shadow-sm p-0 m-0"
+                          id="educacion-listbox"
+                          role="listbox"
+                          aria-label="Sugerencias de educación"
+                        >
+                          {educacionSugerencias.map((sugerencia, index) => (
+                            <li 
+                              key={index} 
+                              className="suggestion-item list-group-item list-group-item-action"
+                              role="option"
+                              aria-selected={inputEducacion === sugerencia}
+                              onClick={() => seleccionarEducacion(sugerencia)}
+                            >
+                              {sugerencia}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </Form.Group>
+                </div>
+                
+                {/* Experiencia Laboral */}
+                <div className="flex-grow-1">
+                  <Form.Group controlId="formExperiencia" className="position-relative">
+                    <Form.Label className="form-label">Experiencia Laboral</Form.Label>
+                    <div className="autocomplete-container">
+                      <div className="d-flex">
+                        <Form.Control
+                          type="text"
+                          placeholder="Experiencia laboral (opcional)"
+                          className={errors.experiencia_laboral ? 'is-invalid' : ''}
+                          aria-invalid={errors.experiencia_laboral ? 'true' : 'false'}
+                          aria-describedby={errors.experiencia_laboral ? 'experiencia-error' : undefined}
+                          aria-autocomplete="list"
+                          aria-controls="experiencia-listbox"
+                          aria-expanded={mostrarListaExperiencia ? 'true' : 'false'}
+                          disabled={isFetchingData || isSubmitting || loadingSugerencias}
+                          value={inputExperiencia}
+                          onChange={(e) => {
+                            setInputExperiencia(e.target.value);
+                            setValue('experiencia_laboral', e.target.value);
+                            trigger('experiencia_laboral');
+                            setMostrarListaExperiencia(true);
+                          }}
+                          onFocus={() => setMostrarListaExperiencia(true)}
+                          onBlur={() => setTimeout(() => setMostrarListaExperiencia(false), 200)}
+                        />
+                        {inputExperiencia && (
+                          <Button 
+                            variant="outline-secondary"
+                            onClick={limpiarExperiencia}
+                            disabled={isFetchingData || isSubmitting}
+                            aria-label="Limpiar campo de experiencia"
+                          >
+                            <span aria-hidden="true">×</span>
+                          </Button>
+                        )}
+                      </div>
+                      {loadingSugerencias && (
+                        <div className="position-absolute end-0 top-50 translate-middle-y pe-3">
+                          <Spinner animation="border" size="sm" aria-hidden="true" />
+                          <span className="sr-only">Cargando sugerencias</span>
+                        </div>
+                      )}
+                      {errors.experiencia_laboral && (
+                        <div className="invalid-feedback d-block" id="experiencia-error">
+                          {errors.experiencia_laboral.message}
+                        </div>
+                      )}
+                      {mostrarListaExperiencia && experienciaSugerencias.length > 0 && (
+                        <ul 
+                          className="suggestion-list list-group shadow-sm p-0 m-0"
+                          id="experiencia-listbox"
+                          role="listbox"
+                          aria-label="Sugerencias de experiencia laboral"
+                        >
+                          {experienciaSugerencias.map((sugerencia, index) => (
+                            <li 
+                              key={index} 
+                              className="suggestion-item list-group-item list-group-item-action"
+                              role="option"
+                              aria-selected={inputExperiencia === sugerencia}
+                              onClick={() => seleccionarExperiencia(sugerencia)}
+                            >
+                              {sugerencia}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </Form.Group>
+                </div>
+              </div>
+              
+              {/* CV */}
+              <Form.Group controlId="formCV" className="my-2">
+                <Form.Label className="form-label">
+                  Curriculum Vitae {!candidatoId && <span className="text-danger" aria-hidden="true">*</span>}
+                  {!candidatoId && <span className="sr-only">obligatorio</span>}
+                </Form.Label>
+                <Form.Control
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  className={errors.cv ? 'is-invalid' : ''}
+                  aria-invalid={errors.cv ? 'true' : 'false'}
+                  aria-describedby="cv-help cv-error"
+                  disabled={isFetchingData || isSubmitting}
+                  {...register('cv')}
+                />
+                <Form.Text id="cv-help" className="text-muted">
+                  Sube el CV del candidato en formato PDF o DOCX. {!candidatoId && 'Obligatorio para nuevos candidatos.'}
+                </Form.Text>
+                {errors.cv && (
+                  <Form.Control.Feedback type="invalid" id="cv-error">
+                    {errors.cv.message}
+                  </Form.Control.Feedback>
+                )}
+              </Form.Group>
+              
+              {/* Botones de acción */}
+              <div className="d-flex flex-column flex-md-row justify-content-end gap-2 mt-4 button-container">
+                <Button 
+                  variant="outline-secondary" 
+                  onClick={onCancel}
+                  disabled={isSubmitting}
+                  aria-label="Cancelar y volver"
+                  className="order-md-1"
+                >
+                  Cancelar
+                </Button>
+                <Button 
+                  type="submit" 
+                  variant="primary"
+                  disabled={isSubmitting || isFetchingData}
+                  aria-label={isSubmitting ? 'Procesando solicitud' : candidatoId ? 'Actualizar candidato' : 'Guardar candidato'}
+                  className="order-md-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Spinner animation="border" size="sm" className="me-2" aria-hidden="true" />
+                      <span>Procesando...</span>
+                    </>
+                  ) : (
+                    candidatoId ? 'Actualizar Candidato' : 'Guardar Candidato'
+                  )}
+                </Button>
+              </div>
             </div>
           </Form>
         </Card.Body>
       </Card>
-      
-      {/* Estilos adicionales para el autocompletado */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        .sugerencias-dropdown {
-          position: absolute;
-          width: 100%;
-          z-index: 1000;
-          max-height: 200px;
-          overflow-y: auto;
-        }
-        .list-group-item {
-          cursor: pointer;
-        }
-        .list-group-item:hover {
-          background-color: #f8f9fa;
-        }
-      `}} />
     </Container>
   );
 };
