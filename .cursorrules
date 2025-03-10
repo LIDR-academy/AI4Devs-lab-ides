@@ -16,10 +16,11 @@ Debo desarrollar la funcionalidad de **Añadir Candidato al Sistema**. Esto incl
 - **Asegura que el código sea modular y escalable** según buenas prácticas modernas.
 
 # IMPORTANTE    
-- Si necesitas informacion para algunas tareas especificas pidela.
-- Cualquier comando de prisma debe ejecutarse en la posicion AI4Devs-lab-ides\backend
-- Cualquier comando de frontend debe ejecutarse en la posicion AI4Devs-lab-ides\frontend
-- Cualquier comando de backend debe ejecutarse en la posicion AI4Devs-lab-ides\backend
+- Si necesitas información para algunas tareas especificas pidela.
+- Cualquier comando de prisma debe ejecutarse en la posición AI4Devs-lab-ides\backend
+- Cualquier comando de frontend debe ejecutarse en la posición AI4Devs-lab-ides\frontend
+- Cualquier comando de backend debe ejecutarse en la posición AI4Devs-lab-ides\backend
+- Luego de cada ejecución, realiza un resumen para realizar el commit en github
 
 Esta es la historia de usuario que hay que trabajar:
 
