@@ -5,8 +5,13 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_PASSWORD: D1ymf8wyQEGthFR1E9xhCq
-      POSTGRES_USER: LTIdbUser
-      POSTGRES_DB: LTIdb
+      POSTGRES_PASSWORD: npg_G7YucaBWe6IL
+      POSTGRES_USER: LTI_db_owner
+      POSTGRES_DB: LTI_db
     ports:
       - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
