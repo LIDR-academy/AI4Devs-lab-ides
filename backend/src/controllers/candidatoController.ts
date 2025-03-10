@@ -82,10 +82,14 @@ export const obtenerCandidatos = async (req: Request, res: Response) => {
         apellido: true,
         email: true,
         telefono: true,
+        educacion: true,
+        experiencia_laboral: true,
         createdAt: true,
         updatedAt: true
       }
     });
+
+    console.log('Candidatos enviados:', candidatos);
 
     return res.status(200).json({
       mensaje: 'Candidatos recuperados exitosamente',
