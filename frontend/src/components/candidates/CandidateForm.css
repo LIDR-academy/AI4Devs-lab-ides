@@ -1,0 +1,288 @@
+/* Estilos para el formulario de candidatos */
+.candidate-form-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+  color: #333;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  font-size: 1.8rem;
+}
+
+.candidate-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.form-section {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  border: 1px solid #eee;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.section-title {
+  color: #444;
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.form-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.form-group.full-width {
+  flex-basis: 100%;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #555;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.checkbox-container {
+  margin-top: 8px;
+}
+
+.checkbox-container label {
+  display: flex;
+  align-items: center;
+  font-weight: normal;
+}
+
+.checkbox-container input[type="checkbox"] {
+  width: auto;
+  margin-right: 8px;
+}
+
+.button-add {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.button-add:hover {
+  background-color: #45a049;
+}
+
+.button-remove {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.3s;
+}
+
+.button-remove:hover {
+  background-color: #d32f2f;
+}
+
+.item-container {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.item-header h4 {
+  margin: 0;
+  color: #555;
+}
+
+.skill-item {
+  padding: 10px 15px;
+}
+
+.button-group {
+  display: flex;
+  align-items: flex-end;
+  max-width: 100px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.button {
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+}
+
+.button.primary {
+  background-color: #2196f3;
+  color: white;
+}
+
+.button.primary:hover {
+  background-color: #0b7dda;
+}
+
+.button.secondary {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.button.secondary:hover {
+  background-color: #e0e0e0;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.success-message {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  padding: 20px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.success-actions {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: #c62828;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.empty-section-message {
+  color: #757575;
+  font-style: italic;
+  text-align: center;
+  margin: 15px 0;
+}
+
+.file-input {
+  padding: 8px 0;
+}
+
+.file-help-text {
+  margin-top: 5px;
+  font-size: 0.85rem;
+  color: #757575;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .candidate-form-container {
+    padding: 15px;
+  }
+  
+  .form-group {
+    min-width: 100%;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .button-add {
+    width: 100%;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .button {
+    width: 100%;
+  }
+} 
