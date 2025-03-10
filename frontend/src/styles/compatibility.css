@@ -1,0 +1,125 @@
+/* Cross-browser compatibility fixes */
+
+/* Fix for Firefox focus styles */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Fix for Safari input styling */
+input,
+textarea,
+select {
+  -webkit-appearance: none;
+  border-radius: 0.25rem;
+}
+
+/* Fix for IE11 flexbox issues */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  .flex {
+    display: -ms-flexbox;
+    -ms-flex-wrap: wrap;
+  }
+
+  .flex-col {
+    -ms-flex-direction: column;
+  }
+
+  .items-center {
+    -ms-flex-align: center;
+  }
+
+  .justify-between {
+    -ms-flex-pack: justify;
+  }
+}
+
+/* Fix for mobile Safari button styling */
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
+  -webkit-appearance: none;
+}
+
+/* Fix for mobile tap highlight */
+a,
+button,
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Fix for iOS input zoom */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  textarea {
+    font-size: 16px;
+  }
+}
+
+/* Fix for Edge and IE scrollbar */
+@supports (-ms-ime-align: auto) {
+  html {
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+  }
+}
+
+/* Fix for Firefox file input button */
+input[type="file"]::-webkit-file-upload-button {
+  border: none;
+  background: #e5e7eb;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+input[type="file"]::file-selector-button {
+  border: none;
+  background: #e5e7eb;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+/* Improve accessibility for screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only.focus-visible,
+.sr-only:focus-visible {
+  width: auto;
+  height: auto;
+  position: static;
+  clip: auto;
+  padding: 1rem;
+  margin: 0;
+  overflow: visible;
+  white-space: normal;
+}
+
+/* Reduce motion for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
