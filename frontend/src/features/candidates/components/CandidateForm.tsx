@@ -114,7 +114,13 @@ const CandidateForm: React.FC = () => {
       phone: data.phone,
       status: data.status,
       skills: data.skillsInput && typeof data.skillsInput === 'string' 
-        ? data.skillsInput.split(',').map(skill => skill.trim()).filter(Boolean) 
+        ? data.skillsInput.split(',')
+            .map(skill => skill.trim())
+            .filter(Boolean)
+            .map(skillName => ({
+              name: skillName,
+              level: 'intermediate' // Valor por defecto
+            }))
         : [],
       notes: data.notes,
       education: data.education,

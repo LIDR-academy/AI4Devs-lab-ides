@@ -255,11 +255,11 @@ const CandidateDetail: React.FC = () => {
                 </h4>
                 <div className="space-y-2">
                   <div className="flex items-start">
-                    <span className="text-gray-500 w-20">Creado:</span>
+                    <span className="text-gray-500 w-28">Creado:</span>
                     <span className="text-gray-800 font-medium">{formatDate(candidate.createdAt)}</span>
                   </div>
                   <div className="flex items-start">
-                    <span className="text-gray-500 w-20">Actualizado:</span>
+                    <span className="text-gray-500 w-28">Actualizado:</span>
                     <span className="text-gray-800 font-medium">{formatDate(candidate.updatedAt)}</span>
                   </div>
                 </div>
