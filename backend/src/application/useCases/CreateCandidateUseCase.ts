@@ -1,30 +1,21 @@
+import { Candidate } from '../../domain/entities/Candidate';
 import { CandidateService } from '../../domain/services/CandidateService';
 import { CreateCandidateDTO, CandidateResponseDTO } from '../dtos/CandidateDTO';
 
 export class CreateCandidateUseCase {
   constructor(private readonly candidateService: CandidateService) {}
 
-  async execute(dto: CreateCandidateDTO): Promise<CandidateResponseDTO> {
-    const cvUrl = await this.uploadCV(dto.cv);
-    
-    const candidate = await this.candidateService.createCandidate({
-      ...dto,
-      cvUrl
-    });
-
-    return {
-      id: candidate.id,
-      nombre: candidate.nombre,
-      apellido: candidate.apellido,
-      correo: candidate.correo,
-      telefono: candidate.telefono,
-      direccion: candidate.direccion,
-      educacion: candidate.educacion,
-      experiencia: candidate.experiencia,
-      cvUrl: candidate.cvUrl,
-      createdAt: candidate.createdAt,
-      updatedAt: candidate.updatedAt
-    };
+  async execute(candidateData: {
+    nombre: string;
+    apellido: string;
+    correo: string;
+    telefono: string;
+    direccion: string;
+    educacion: string;
+    experiencia: string;
+    cvUrl: string;
+  }): Promise<Candidate> {
+    return this.candidateService.createCandidate(candidateData);
   }
 
   private async uploadCV(file: Express.Multer.File): Promise<string> {

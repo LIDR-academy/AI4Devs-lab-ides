@@ -1,7 +1,9 @@
-import prisma from '../database/prismaClient';
+import { PrismaClient } from '@prisma/client';
 import { Candidate } from '../../domain/entities/Candidate';
 import { ICandidateRepository } from '../../domain/repositories/ICandidateRepository';
 import { IEncryptionService } from '../../domain/services/IEncryptionService';
+
+const prisma = new PrismaClient();
 
 export class PrismaCandidateRepository implements ICandidateRepository {
   constructor(private encryptionService: IEncryptionService) {}
@@ -17,7 +19,7 @@ export class PrismaCandidateRepository implements ICandidateRepository {
         direccion: candidate.direccion,
         educacion: candidate.educacion,
         experiencia: candidate.experiencia,
-        cvUrl: candidate.cvUrl
+        cvUrl: candidate.cvUrl || ''
       }
     });
 
@@ -69,14 +71,34 @@ export class PrismaCandidateRepository implements ICandidateRepository {
       result.id,
       result.nombre,
       result.apellido,
-      result.correo,
-      result.telefono,
-      result.direccion,
+      await this.encryptionService.decrypt(result.correo),
+      await this.encryptionService.decrypt(result.telefono),
+      await this.encryptionService.decrypt(result.direccion),
       result.educacion,
       result.experiencia,
       result.cvUrl,
       result.createdAt,
       result.updatedAt
     );
+  }
+
+  async findAll(): Promise<Candidate[]> {
+    const results = await prisma.candidate.findMany();
+    
+    return Promise.all(results.map(async result => 
+      new Candidate(
+        result.id,
+        result.nombre,
+        result.apellido,
+        result.correo, // await this.encryptionService.decrypt(result.correo),
+        result.telefono, // await this.encryptionService.decrypt(result.telefono),
+        result.direccion, // await this.encryptionService.decrypt(result.direccion),
+        result.educacion,
+        result.experiencia,
+        result.cvUrl,
+        result.createdAt,
+        result.updatedAt
+      )
+    ));
   }
 }

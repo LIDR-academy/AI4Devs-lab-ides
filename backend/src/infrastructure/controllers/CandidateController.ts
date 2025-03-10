@@ -14,6 +14,8 @@ export class CandidateController {
         throw new AppError(400, 'El archivo CV es requerido');
       }
 
+      const cvUrl = `uploads/${req.file.filename}`; // Crear la URL del CV
+
       const candidateData = {
         nombre: req.body.nombre,
         apellido: req.body.apellido,
@@ -22,7 +24,7 @@ export class CandidateController {
         direccion: req.body.direccion,
         educacion: req.body.educacion,
         experiencia: req.body.experiencia,
-        cv: req.file
+        cvUrl: cvUrl // Agregar la URL del CV
       };
 
       const result = await this.createCandidateUseCase.execute(candidateData);
