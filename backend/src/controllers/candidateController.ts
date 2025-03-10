@@ -87,6 +87,15 @@ export const createCandidate = async (req: Request, res: Response) => {
     res.status(201).json(newCandidate);
   } catch (error: any) {
     console.error('Error creating candidate:', error);
+    console.error('Error stack:', error.stack);
+    
+    // Log more details about the error
+    if (error.code) {
+      console.error('Error code:', error.code);
+    }
+    if (error.meta) {
+      console.error('Error metadata:', error.meta);
+    }
     
     // Handle unique constraint violation (duplicate email)
     if (error.code === 'P2002' && error.meta?.target?.includes('email')) {
@@ -95,7 +104,12 @@ export const createCandidate = async (req: Request, res: Response) => {
       });
     }
     
-    res.status(500).json({ error: 'Failed to create candidate' });
+    // Return more detailed error information
+    res.status(500).json({ 
+      error: 'Failed to create candidate', 
+      details: error.message || String(error),
+      code: error.code || 'UNKNOWN'
+    });
   }
 };
 

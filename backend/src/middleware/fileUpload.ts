@@ -23,12 +23,15 @@ const storage = multer.diskStorage({
 
 // File filter to only allow PDF and DOCX
 const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+  console.log('Processing file upload:', file.originalname, file.mimetype);
   const allowedMimeTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
   
   if (allowedMimeTypes.includes(file.mimetype)) {
+    console.log('File type accepted');
     cb(null, true);
   } else {
-    cb(new Error('Only PDF and DOCX files are allowed'));
+    console.log('File type rejected');
+    cb(new Error(`Only PDF and DOCX files are allowed. Got ${file.mimetype}`));
   }
 };
 

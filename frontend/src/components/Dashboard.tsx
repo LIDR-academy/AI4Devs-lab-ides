@@ -123,43 +123,34 @@ const Dashboard: React.FC = () => {
     e.preventDefault();
     
     try {
+      console.log('Submitting form data:', formData);
       const formDataToSend = new FormData();
       
       // Append form fields to FormData
       Object.entries(formData).forEach(([key, value]) => {
-        formDataToSend.append(key, value);
+        formDataToSend.append(key, value || ''); // Ensure null/undefined values are sent as empty strings
+        console.log(`Appending ${key}:`, value);
       });
       
       // Append file if selected
       if (cvFile) {
         formDataToSend.append('cvFile', cvFile);
+        console.log('Appending file:', cvFile.name);
       }
       
-      if (editingCandidate) {
-        // Update existing candidate
-        await axios.put(
-          `http://localhost:3010/api/candidates/${editingCandidate.id}`,
-          formDataToSend,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
+      console.log('Sending request to create candidate...');
+      const response = await axios.post(
+        'http://localhost:3010/api/candidates',
+        formDataToSend,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
           }
-        );
-        setSuccessMessage('Candidate updated successfully!');
-      } else {
-        // Create new candidate
-        await axios.post(
-          'http://localhost:3010/api/candidates',
-          formDataToSend,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          }
-        );
-        setSuccessMessage('Candidate created successfully!');
-      }
+        }
+      );
+      
+      console.log('Create response:', response.data);
+      setSuccessMessage('Candidate created successfully!');
       
       // Reset form and refresh candidates
       resetForm();
@@ -172,12 +163,16 @@ const Dashboard: React.FC = () => {
       }, 3000);
     } catch (err: any) {
       console.error('Error submitting form:', err);
-      setError(err.response?.data?.error || 'An error occurred. Please try again.');
+      console.error('Error response:', err.response?.data);
       
-      // Clear error message after 3 seconds
+      // Display more detailed error message
+      const errorMessage = err.response?.data?.details || err.response?.data?.error || 'An error occurred. Please try again.';
+      setError(errorMessage);
+      
+      // Clear error message after 5 seconds
       setTimeout(() => {
         setError(null);
-      }, 3000);
+      }, 5000);
     }
   };
 
