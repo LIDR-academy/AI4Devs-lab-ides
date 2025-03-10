@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="32" height="32">
+    <!-- Background shape -->
+    <rect x="5" y="5" width="50" height="50" rx="10" fill="#3B82F6" />
+
+    <!-- Text DB -->
+    <text x="30" y="40" font-family="Arial" font-size="24" font-weight="bold" text-anchor="middle" fill="white">DB</text>
+</svg> 
