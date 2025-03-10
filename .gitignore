@@ -5,6 +5,22 @@
 **/node_modules
 **/prompts_master.md
 
+
+#all env files
+/backend/.env
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+
+# all yml files
+*.yml
+*.yaml
+
+
+
 # other dependencies
 /.pnp
 .pnp.js
@@ -27,3 +43,7 @@ yarn-error.log*
 
 # .env
 
+
+backend/.env
+backend/.env
+docker-compose.yml
