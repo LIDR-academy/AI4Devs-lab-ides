@@ -48,7 +48,7 @@ npm install
 ```
 cd backend
 npm run build
-````
+```
 4. Inicia el servidor backend:
 ```
 cd backend
@@ -93,3 +93,103 @@ Para detener el contenedor Docker, ejecuta el siguiente comando:
 ```
 docker-compose down
 ```
+
+## Testing
+
+El proyecto incluye una suite completa de tests unitarios e integración tanto para el frontend como para el backend.
+
+### Estructura de Tests
+
+El proyecto sigue una estructura organizada para los tests:
+
+#### Backend
+
+```
+backend/
+└── src/
+    └── tests/
+        ├── unit/
+        │   ├── controllers/
+        │   ├── services/
+        │   └── utils/
+        ├── integration/
+        │   ├── candidates/
+        │   ├── documents/
+        │   └── auth/
+        └── fixtures/
+```
+
+#### Frontend
+
+```
+frontend/
+└── src/
+    └── tests/
+        ├── unit/
+        │   ├── components/
+        │   ├── hooks/
+        │   └── utils/
+        ├── integration/
+        │   ├── features/
+        │   │   ├── candidates/
+        │   │   └── auth/
+        │   └── pages/
+        └── fixtures/
+```
+
+### Ejecutar Tests
+
+#### Backend
+
+```bash
+# Ejecutar todos los tests
+cd backend
+npm test
+
+# Ejecutar tests con modo watch (útil durante el desarrollo)
+npm run test:watch
+
+# Ejecutar tests con cobertura
+npm run test:coverage
+
+# Ejecutar solo tests unitarios
+npm run test:unit
+
+# Ejecutar solo tests de integración
+npm run test:integration
+```
+
+#### Frontend
+
+```bash
+# Ejecutar todos los tests
+cd frontend
+npm test
+
+# Ejecutar tests con modo watch (útil durante el desarrollo)
+npm run test:watch
+
+# Ejecutar tests con cobertura
+npm run test:coverage
+
+# Ejecutar solo tests unitarios
+npm run test:unit
+
+# Ejecutar solo tests de integración
+npm run test:integration
+```
+
+### Herramientas de Testing
+
+#### Backend
+- **Jest**: Framework principal de testing
+- **Supertest**: Para tests de API
+- **Jest-Mock-Extended**: Para crear mocks avanzados
+
+#### Frontend
+- **Jest**: Framework principal de testing
+- **React Testing Library**: Para tests de componentes React
+- **MSW (Mock Service Worker)**: Para simular llamadas a API
+- **Jest-DOM**: Para aserciones específicas del DOM
+
+Para más detalles sobre las prácticas de testing y convenciones, consulta el archivo [TESTING.md](TESTING.md).

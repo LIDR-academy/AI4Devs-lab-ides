@@ -83,7 +83,7 @@ const DocumentListReadOnly: React.FC<DocumentListReadOnlyProps> = ({ candidateId
   if (loading) {
     return (
       <div className="flex justify-center items-center py-4">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-steel-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-steel-blue-600" data-testid="loading-spinner"></div>
       </div>
     );
   }

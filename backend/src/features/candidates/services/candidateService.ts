@@ -266,11 +266,14 @@ export class CandidateService {
           console.log('Creando registros de habilidades:', JSON.stringify(skillsData, null, 2));
           
           for (const skill of skillsData) {
-            if (typeof skill === 'string' && skill.trim() !== '') {
+            // Manejar tanto strings como objetos con propiedad name
+            const skillName = typeof skill === 'string' ? skill.trim() : skill.name?.trim();
+            
+            if (skillName && skillName !== '') {
               try {
                 const createdSkill = await tx.candidateSkill.create({
                   data: {
-                    name: skill.trim(),
+                    name: skillName,
                     candidateId: newCandidate.id
                   }
                 });

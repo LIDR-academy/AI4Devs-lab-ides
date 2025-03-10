@@ -257,7 +257,7 @@ export const createCandidateSchema = z.object({
     .array(workExperienceSchema)
     .optional(),
   skills: z
-    .array(z.string())
+    .array(skillSchema)
     .optional(),
 });
 
@@ -275,7 +275,7 @@ export const searchCandidateSchema = z.object({
     .enum(['new', 'active', 'contacted', 'interview', 'offer', 'hired', 'rejected'])
     .optional(),
   skills: z
-    .array(z.string())
+    .array(skillSchema)
     .max(10, 'No puede buscar por más de 10 habilidades')
     .optional(),
   location: z.string().optional(),
