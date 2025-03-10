@@ -6,6 +6,9 @@ import { PrismaClient } from '@prisma/client';
 import path from 'path';
 import userRoutes from './routes/userRoutes';
 import candidateRoutes from './routes/candidateRoutes';
+import educationRoutes from './routes/educationRoutes';
+import workExperienceRoutes from './routes/workExperienceRoutes';
+import autocompleteRoutes from './routes/autocompleteRoutes';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 
 // Cargar variables de entorno
@@ -34,7 +37,10 @@ app.get('/', (req: Request, res: Response) => {
 
 // Rutas de la API
 app.use('/api/users', userRoutes);
-app.use('/api/candidates', candidateRoutes);
+app.use('/api', candidateRoutes);
+app.use('/api', educationRoutes);
+app.use('/api', workExperienceRoutes);
+app.use('/api', autocompleteRoutes);
 
 // Middleware para rutas no encontradas
 app.use(notFoundHandler);

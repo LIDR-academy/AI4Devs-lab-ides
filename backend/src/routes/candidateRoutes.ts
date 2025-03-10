@@ -10,34 +10,34 @@ const candidateController = new CandidateController();
  * @desc    Crear un nuevo candidato
  * @access  Public
  */
-router.post('/', uploadCV, handleMulterError, candidateController.createCandidate);
+router.post('/candidates', uploadCV, handleMulterError, candidateController.createCandidate.bind(candidateController));
 
 /**
  * @route   GET /api/candidates
  * @desc    Obtener todos los candidatos
  * @access  Public
  */
-router.get('/', candidateController.getAllCandidates);
+router.get('/candidates', candidateController.getAllCandidates.bind(candidateController));
 
 /**
  * @route   GET /api/candidates/:id
  * @desc    Obtener un candidato por ID
  * @access  Public
  */
-router.get('/:id', candidateController.getCandidateById);
+router.get('/candidates/:id', candidateController.getCandidateById.bind(candidateController));
 
 /**
  * @route   PUT /api/candidates/:id
  * @desc    Actualizar un candidato
  * @access  Public
  */
-router.put('/:id', uploadCV, handleMulterError, candidateController.updateCandidate);
+router.put('/candidates/:id', uploadCV, handleMulterError, candidateController.updateCandidate.bind(candidateController));
 
 /**
  * @route   DELETE /api/candidates/:id
  * @desc    Eliminar un candidato
  * @access  Public
  */
-router.delete('/:id', candidateController.deleteCandidate);
+router.delete('/candidates/:id', candidateController.deleteCandidate.bind(candidateController));
 
 export default router; 

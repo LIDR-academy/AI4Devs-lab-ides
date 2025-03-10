@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import userEvent from '@testing-library/user-event';
 import CandidateForm from '../components/candidates/CandidateForm';
 import * as candidateService from '../services/candidateService';
 
@@ -12,57 +13,62 @@ describe('CandidateForm', () => {
     jest.clearAllMocks();
   });
 
-  test('renderiza el formulario correctamente', () => {
+  test('renderiza el formulario con todos los campos requeridos y opcionales', () => {
     render(<CandidateForm />);
     
-    // Verificar que los campos obligatorios están presentes
+    // Campos obligatorios
     expect(screen.getByLabelText(/nombre/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/apellido/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-    
-    // Verificar que los campos opcionales están presentes
     expect(screen.getByLabelText(/teléfono/i)).toBeInTheDocument();
+    
+    // Campos opcionales
     expect(screen.getByLabelText(/dirección/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/educación/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/experiencia laboral/i)).toBeInTheDocument();
     
-    // Verificar que el componente de carga de archivos está presente
-    expect(screen.getByText(/cv \(pdf o docx, máx. 5mb\)/i)).toBeInTheDocument();
+    // Secciones de educación y experiencia laboral
+    expect(screen.getByText(/educación/i)).toBeInTheDocument();
+    expect(screen.getByText(/experiencia laboral/i)).toBeInTheDocument();
     
-    // Verificar que los botones están presentes
-    expect(screen.getByRole('button', { name: /cancelar/i })).toBeInTheDocument();
+    // Botón para subir CV
+    expect(screen.getByText(/cv/i)).toBeInTheDocument();
+    
+    // Botón de envío
     expect(screen.getByRole('button', { name: /añadir candidato/i })).toBeInTheDocument();
   });
 
-  test('muestra errores de validación para campos obligatorios', async () => {
+  test('muestra errores cuando se envía el formulario con campos requeridos vacíos', async () => {
     render(<CandidateForm />);
     
-    // Hacer clic en el botón de enviar sin completar campos obligatorios
+    // Enviar formulario sin completar campos
     fireEvent.click(screen.getByRole('button', { name: /añadir candidato/i }));
     
-    // Verificar que se muestran mensajes de error para campos obligatorios
+    // Verificar mensajes de error
     await waitFor(() => {
       expect(screen.getByText(/el nombre es obligatorio/i)).toBeInTheDocument();
       expect(screen.getByText(/el apellido es obligatorio/i)).toBeInTheDocument();
       expect(screen.getByText(/el email es obligatorio/i)).toBeInTheDocument();
+      expect(screen.getByText(/el teléfono es obligatorio/i)).toBeInTheDocument();
+      expect(screen.getByText(/debe añadir al menos un registro de educación/i)).toBeInTheDocument();
+      expect(screen.getByText(/debe añadir al menos un registro de experiencia laboral/i)).toBeInTheDocument();
+      expect(screen.getByText(/debe subir un cv/i)).toBeInTheDocument();
     });
     
     // Verificar que no se llamó al servicio
     expect(candidateService.createCandidate).not.toHaveBeenCalled();
   });
 
-  test('valida el formato del email', async () => {
+  test('valida el formato de email', async () => {
     render(<CandidateForm />);
     
-    // Completar campos obligatorios con email inválido
-    fireEvent.change(screen.getByLabelText(/nombre/i), { target: { value: 'Juan' } });
-    fireEvent.change(screen.getByLabelText(/apellido/i), { target: { value: 'Pérez' } });
-    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'juanperez@com' } });
+    // Completar campos
+    userEvent.type(screen.getByLabelText(/nombre/i), 'Juan');
+    userEvent.type(screen.getByLabelText(/apellido/i), 'Pérez');
+    userEvent.type(screen.getByLabelText(/email/i), 'correo-invalido');
     
-    // Hacer clic en el botón de enviar
+    // Enviar formulario
     fireEvent.click(screen.getByRole('button', { name: /añadir candidato/i }));
     
-    // Verificar que se muestra mensaje de error para email inválido
+    // Verificar mensaje de error
     await waitFor(() => {
       expect(screen.getByText(/el formato del email no es válido/i)).toBeInTheDocument();
     });
@@ -73,134 +79,203 @@ describe('CandidateForm', () => {
 
   test('envía el formulario correctamente con datos válidos', async () => {
     // Mock de la respuesta del servicio
-    const mockResponse = {
+    (candidateService.createCandidate as jest.Mock).mockResolvedValue({
       id: 1,
       firstName: 'Juan',
       lastName: 'Pérez',
       email: 'juan.perez@example.com',
-      phone: '+34612345678',
-      address: 'Calle Principal 123',
-      education: 'Ingeniería Informática',
-      workExperience: '5 años como desarrollador',
-      cvUrl: null,
-      cvFileName: null,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    
-    (candidateService.createCandidate as jest.Mock).mockResolvedValue(mockResponse);
+      phone: '+34600000000'
+    });
     
     render(<CandidateForm />);
     
     // Completar campos obligatorios
-    fireEvent.change(screen.getByLabelText(/nombre/i), { target: { value: 'Juan' } });
-    fireEvent.change(screen.getByLabelText(/apellido/i), { target: { value: 'Pérez' } });
-    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'juan.perez@example.com' } });
+    userEvent.type(screen.getByLabelText(/nombre/i), 'Juan');
+    userEvent.type(screen.getByLabelText(/apellido/i), 'Pérez');
+    userEvent.type(screen.getByLabelText(/email/i), 'juan.perez@example.com');
+    userEvent.type(screen.getByLabelText(/teléfono/i), '+34600000000');
     
-    // Completar campos opcionales
-    fireEvent.change(screen.getByLabelText(/teléfono/i), { target: { value: '+34612345678' } });
-    fireEvent.change(screen.getByLabelText(/dirección/i), { target: { value: 'Calle Principal 123' } });
-    fireEvent.change(screen.getByLabelText(/educación/i), { target: { value: 'Ingeniería Informática' } });
-    fireEvent.change(screen.getByLabelText(/experiencia laboral/i), { target: { value: '5 años como desarrollador' } });
+    // Añadir educación
+    fireEvent.click(screen.getByText(/añadir educación/i));
+    userEvent.type(screen.getByLabelText(/institución/i), 'Universidad Complutense');
+    userEvent.type(screen.getByLabelText(/título/i), 'Ingeniería Informática');
+    userEvent.type(screen.getByLabelText(/campo de estudio/i), 'Informática');
     
-    // Hacer clic en el botón de enviar
+    // Añadir experiencia laboral
+    fireEvent.click(screen.getByText(/añadir experiencia/i));
+    userEvent.type(screen.getByLabelText(/empresa/i), 'Tech Solutions');
+    userEvent.type(screen.getByLabelText(/puesto/i), 'Desarrollador Full Stack');
+    
+    // Simular carga de CV
+    const file = new File(['dummy content'], 'cv.pdf', { type: 'application/pdf' });
+    const fileInput = screen.getByLabelText(/cv/i);
+    userEvent.upload(fileInput, file);
+    
+    // Enviar formulario
     fireEvent.click(screen.getByRole('button', { name: /añadir candidato/i }));
     
     // Verificar que se llamó al servicio con los datos correctos
     await waitFor(() => {
-      expect(candidateService.createCandidate).toHaveBeenCalled();
-      
-      // Verificar que se muestra mensaje de éxito
+      expect(candidateService.createCandidate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          firstName: 'Juan',
+          lastName: 'Pérez',
+          email: 'juan.perez@example.com',
+          phone: '+34600000000',
+          education: expect.arrayContaining([
+            expect.objectContaining({
+              institution: 'Universidad Complutense',
+              degree: 'Ingeniería Informática',
+              fieldOfStudy: 'Informática'
+            })
+          ]),
+          workExperience: expect.arrayContaining([
+            expect.objectContaining({
+              company: 'Tech Solutions',
+              position: 'Desarrollador Full Stack'
+            })
+          ])
+        }),
+        file
+      );
+    });
+    
+    // Verificar mensaje de éxito
+    await waitFor(() => {
       expect(screen.getByText(/candidato añadido correctamente/i)).toBeInTheDocument();
     });
   });
 
-  test('muestra mensaje de error cuando falla la creación', async () => {
-    // Mock del servicio para lanzar error
-    const errorMessage = 'Ya existe un candidato con este email';
-    (candidateService.createCandidate as jest.Mock).mockRejectedValue(new Error(errorMessage));
+  test('muestra mensaje de error cuando falla la creación del candidato', async () => {
+    // Mock de error en el servicio
+    (candidateService.createCandidate as jest.Mock).mockRejectedValue(new Error('Error al crear candidato'));
     
     render(<CandidateForm />);
     
     // Completar campos obligatorios
-    fireEvent.change(screen.getByLabelText(/nombre/i), { target: { value: 'Juan' } });
-    fireEvent.change(screen.getByLabelText(/apellido/i), { target: { value: 'Pérez' } });
-    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'juan.perez@example.com' } });
+    userEvent.type(screen.getByLabelText(/nombre/i), 'Juan');
+    userEvent.type(screen.getByLabelText(/apellido/i), 'Pérez');
+    userEvent.type(screen.getByLabelText(/email/i), 'juan.perez@example.com');
+    userEvent.type(screen.getByLabelText(/teléfono/i), '+34600000000');
     
-    // Hacer clic en el botón de enviar
+    // Añadir educación
+    fireEvent.click(screen.getByText(/añadir educación/i));
+    userEvent.type(screen.getByLabelText(/institución/i), 'Universidad Complutense');
+    userEvent.type(screen.getByLabelText(/título/i), 'Ingeniería Informática');
+    userEvent.type(screen.getByLabelText(/campo de estudio/i), 'Informática');
+    
+    // Añadir experiencia laboral
+    fireEvent.click(screen.getByText(/añadir experiencia/i));
+    userEvent.type(screen.getByLabelText(/empresa/i), 'Tech Solutions');
+    userEvent.type(screen.getByLabelText(/puesto/i), 'Desarrollador Full Stack');
+    
+    // Simular carga de CV
+    const file = new File(['dummy content'], 'cv.pdf', { type: 'application/pdf' });
+    const fileInput = screen.getByLabelText(/cv/i);
+    userEvent.upload(fileInput, file);
+    
+    // Enviar formulario
     fireEvent.click(screen.getByRole('button', { name: /añadir candidato/i }));
     
-    // Verificar que se muestra mensaje de error
+    // Verificar mensaje de error
     await waitFor(() => {
-      expect(screen.getByText(errorMessage)).toBeInTheDocument();
+      expect(screen.getByText(/error al crear candidato/i)).toBeInTheDocument();
     });
   });
 
-  test('limpia el formulario después de enviar correctamente', async () => {
+  test('limpia el formulario después de un envío exitoso', async () => {
     // Mock de la respuesta del servicio
-    const mockResponse = {
+    (candidateService.createCandidate as jest.Mock).mockResolvedValue({
       id: 1,
       firstName: 'Juan',
       lastName: 'Pérez',
       email: 'juan.perez@example.com',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    
-    (candidateService.createCandidate as jest.Mock).mockResolvedValue(mockResponse);
+      phone: '+34600000000'
+    });
     
     render(<CandidateForm />);
     
-    // Completar campos obligatorios
-    fireEvent.change(screen.getByLabelText(/nombre/i), { target: { value: 'Juan' } });
-    fireEvent.change(screen.getByLabelText(/apellido/i), { target: { value: 'Pérez' } });
-    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'juan.perez@example.com' } });
+    // Completar campos
+    userEvent.type(screen.getByLabelText(/nombre/i), 'Juan');
+    userEvent.type(screen.getByLabelText(/apellido/i), 'Pérez');
+    userEvent.type(screen.getByLabelText(/email/i), 'juan.perez@example.com');
+    userEvent.type(screen.getByLabelText(/teléfono/i), '+34600000000');
     
-    // Hacer clic en el botón de enviar
+    // Añadir educación y experiencia
+    fireEvent.click(screen.getByText(/añadir educación/i));
+    fireEvent.click(screen.getByText(/añadir experiencia/i));
+    
+    // Simular carga de CV
+    const file = new File(['dummy content'], 'cv.pdf', { type: 'application/pdf' });
+    const fileInput = screen.getByLabelText(/cv/i);
+    userEvent.upload(fileInput, file);
+    
+    // Enviar formulario
     fireEvent.click(screen.getByRole('button', { name: /añadir candidato/i }));
     
-    // Verificar que los campos se limpian después de enviar
+    // Verificar que el formulario se limpió
     await waitFor(() => {
       expect(screen.getByLabelText(/nombre/i)).toHaveValue('');
       expect(screen.getByLabelText(/apellido/i)).toHaveValue('');
       expect(screen.getByLabelText(/email/i)).toHaveValue('');
+      expect(screen.getByLabelText(/teléfono/i)).toHaveValue('');
     });
   });
 
-  // Pruebas adicionales para el modo de edición
   test('carga datos del candidato en modo edición', async () => {
-    // Mock de la respuesta del servicio
-    const mockCandidate = {
+    // Mock de datos del candidato
+    const candidateData = {
       id: 1,
       firstName: 'Juan',
       lastName: 'Pérez',
       email: 'juan.perez@example.com',
-      phone: '+34612345678',
+      phone: '+34600000000',
       address: 'Calle Principal 123',
-      education: 'Ingeniería Informática',
-      workExperience: '5 años como desarrollador',
-      cvUrl: null,
-      cvFileName: null,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      education: [
+        {
+          id: 1,
+          institution: 'Universidad Complutense',
+          degree: 'Ingeniería Informática',
+          fieldOfStudy: 'Informática',
+          startDate: '2015-09-01',
+          endDate: '2019-06-30',
+          description: 'Especialización en IA'
+        }
+      ],
+      workExperience: [
+        {
+          id: 1,
+          company: 'Tech Solutions',
+          position: 'Desarrollador Full Stack',
+          startDate: '2019-07-01',
+          endDate: null,
+          description: 'Desarrollo de aplicaciones web'
+        }
+      ]
     };
     
-    (candidateService.getCandidateById as jest.Mock).mockResolvedValue(mockCandidate);
+    // Mock del servicio para obtener candidato
+    (candidateService.getCandidateById as jest.Mock).mockResolvedValue(candidateData);
     
+    // Renderizar en modo edición
     render(<CandidateForm candidateId={1} />);
     
-    // Verificar que se cargan los datos del candidato
+    // Verificar que se cargan los datos
     await waitFor(() => {
       expect(screen.getByLabelText(/nombre/i)).toHaveValue('Juan');
       expect(screen.getByLabelText(/apellido/i)).toHaveValue('Pérez');
       expect(screen.getByLabelText(/email/i)).toHaveValue('juan.perez@example.com');
-      expect(screen.getByLabelText(/teléfono/i)).toHaveValue('+34612345678');
+      expect(screen.getByLabelText(/teléfono/i)).toHaveValue('+34600000000');
       expect(screen.getByLabelText(/dirección/i)).toHaveValue('Calle Principal 123');
-      expect(screen.getByLabelText(/educación/i)).toHaveValue('Ingeniería Informática');
-      expect(screen.getByLabelText(/experiencia laboral/i)).toHaveValue('5 años como desarrollador');
+      
+      // Verificar educación
+      expect(screen.getByDisplayValue('Universidad Complutense')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('Ingeniería Informática')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('Informática')).toBeInTheDocument();
+      
+      // Verificar experiencia laboral
+      expect(screen.getByDisplayValue('Tech Solutions')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('Desarrollador Full Stack')).toBeInTheDocument();
     });
-    
-    // Verificar que el botón dice "Actualizar Candidato" en lugar de "Añadir Candidato"
-    expect(screen.getByRole('button', { name: /actualizar candidato/i })).toBeInTheDocument();
   });
 }); 

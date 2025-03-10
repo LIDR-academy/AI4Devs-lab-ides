@@ -6,14 +6,15 @@ Este documento describe los componentes de interfaz de usuario para la funcional
 
 ### 1. Formulario de Candidato
 
-El formulario de candidato es el componente principal para añadir y editar candidatos en el sistema.
+El formulario de candidato es el componente principal para añadir y editar candidatos en el sistema. Se ha implementado siguiendo la guía de estilos definida en `doc/ui/style-guide.md`.
 
 #### Características
 
-- **Diseño Responsivo**: Se adapta a diferentes tamaños de pantalla.
+- **Diseño Responsivo**: Se adapta a diferentes tamaños de pantalla con un diseño fluido.
 - **Validación en Tiempo Real**: Muestra errores de validación mientras el usuario completa el formulario.
-- **Accesibilidad**: Cumple con los estándares WCAG para accesibilidad.
+- **Accesibilidad**: Cumple con los estándares WCAG para accesibilidad, incluyendo etiquetas adecuadas, contraste y navegación por teclado.
 - **Mensajes de Feedback**: Muestra mensajes de éxito o error después de enviar el formulario.
+- **Experiencia Mejorada**: Campos avanzados para educación, experiencia laboral y carga de CV.
 
 #### Campos del Formulario
 
@@ -23,140 +24,106 @@ El formulario de candidato es el componente principal para añadir y editar cand
 | Apellido | Texto | Sí | Apellido del candidato |
 | Email | Email | Sí | Correo electrónico (único) |
 | Teléfono | Texto | No | Número de teléfono |
-| Dirección | Texto | No | Dirección postal |
-| Educación | Área de texto | No | Información educativa |
-| Experiencia Laboral | Área de texto | No | Experiencia laboral |
-| CV | Archivo | No | Documento PDF o DOCX (máx. 5MB) |
+| CV | Archivo | Sí | Documento PDF o DOCX (máx. 5MB) con carga interactiva |
+| Educación | Componente | Sí | Múltiples registros educativos con arrastrar y soltar |
+| Experiencia Laboral | Componente | No | Múltiples experiencias laborales con cálculo de duración |
+| Habilidades | Texto | No | Lista de habilidades separadas por comas |
+| Notas | Área de texto | No | Información adicional sobre el candidato |
 
-#### Mockup
+#### Implementación
 
-```
-+------------------------------------------+
-|           Añadir Nuevo Candidato         |
-+------------------------------------------+
-| +---------------+ +-------------------+  |
-| | Nombre*       | | Apellido*         |  |
-| | [          ]  | | [              ]  |  |
-| +---------------+ +-------------------+  |
-|                                          |
-| +----------------------------------+     |
-| | Email*                           |     |
-| | [                             ]  |     |
-| +----------------------------------+     |
-|                                          |
-| +---------------+ +-------------------+  |
-| | Teléfono      | | Dirección         |  |
-| | [          ]  | | [              ]  |  |
-| +---------------+ +-------------------+  |
-|                                          |
-| +----------------------------------+     |
-| | Educación                        |     |
-| | [                             ]  |     |
-| | [                             ]  |     |
-| +----------------------------------+     |
-|                                          |
-| +----------------------------------+     |
-| | Experiencia Laboral              |     |
-| | [                             ]  |     |
-| | [                             ]  |     |
-| +----------------------------------+     |
-|                                          |
-| +----------------------------------+     |
-| | CV (PDF o DOCX, máx. 5MB)        |     |
-| | [Seleccionar archivo] o arrastrar|     |
-| +----------------------------------+     |
-|                                          |
-| +----------+  +---------------------+    |
-| | Cancelar |  | Añadir Candidato    |    |
-| +----------+  +---------------------+    |
-+------------------------------------------+
+El formulario se ha implementado como un componente React (`CandidateForm.tsx`) que integra varios componentes especializados:
+
+```jsx
+<CandidateForm
+  initialData={candidateData}
+  onSubmit={handleSubmit}
+  isLoading={isSubmitting}
+/>
 ```
 
-### 2. Componente de Carga de Archivos
+### 2. Componente de Educación
 
-Componente especializado para la carga de archivos CV.
+Componente especializado para gestionar múltiples registros educativos.
 
 #### Características
 
-- **Drag & Drop**: Permite arrastrar y soltar archivos.
+- **Gestión de Múltiples Registros**: Permite añadir, editar y eliminar registros educativos.
+- **Arrastrar y Soltar**: Permite reordenar los registros mediante arrastrar y soltar.
+- **Validación Integrada**: Valida campos obligatorios y formatos de fecha.
+- **Opción "Actualmente Estudiando"**: Deshabilita la fecha de fin cuando está seleccionada.
+- **Interfaz Intuitiva**: Muestra los registros en tarjetas con acciones claras.
+
+#### Implementación
+
+```jsx
+<EducationField
+  value={education}
+  onChange={handleEducationChange}
+  required={true}
+/>
+```
+
+### 3. Componente de Experiencia Laboral
+
+Componente especializado para gestionar múltiples experiencias laborales.
+
+#### Características
+
+- **Gestión de Múltiples Registros**: Permite añadir, editar y eliminar experiencias laborales.
+- **Arrastrar y Soltar**: Permite reordenar los registros mediante arrastrar y soltar.
+- **Cálculo Automático de Duración**: Muestra la duración de cada experiencia (ej. "2 años y 3 meses").
+- **Opción "Trabajo Actual"**: Deshabilita la fecha de fin cuando está seleccionada.
+- **Validación Integrada**: Valida campos obligatorios y coherencia de fechas.
+
+#### Implementación
+
+```jsx
+<WorkExperienceField
+  value={workExperience}
+  onChange={handleWorkExperienceChange}
+  required={false}
+/>
+```
+
+### 4. Componente de Carga de CV
+
+Componente especializado para la carga de archivos CV con una experiencia mejorada.
+
+#### Características
+
+- **Drag & Drop**: Permite arrastrar y soltar archivos directamente.
 - **Validación de Tipo**: Acepta solo archivos PDF y DOCX.
 - **Validación de Tamaño**: Limita el tamaño a 5MB.
-- **Previsualización**: Muestra el nombre del archivo seleccionado.
-- **Eliminación**: Permite eliminar el archivo seleccionado.
+- **Previsualización**: Muestra el nombre, tamaño y tipo del archivo seleccionado.
+- **Barra de Progreso**: Muestra el progreso durante la carga.
+- **Acciones**: Permite ver y eliminar el archivo seleccionado.
 
-#### Mockup
+#### Implementación
 
-```
-+------------------------------------------+
-|                                          |
-|     Arrastra y suelta un archivo aquí    |
-|                  o                       |
-|         [Seleccionar archivo]            |
-|                                          |
-+------------------------------------------+
-| Formatos permitidos: PDF, DOCX           |
-| Tamaño máximo: 5MB                       |
-+------------------------------------------+
-```
-
-### 3. Componente de Alerta
-
-Componente para mostrar mensajes de éxito, error, advertencia o información.
-
-#### Características
-
-- **Tipos de Alerta**: Éxito, Error, Advertencia, Información.
-- **Auto-cierre**: Opción para cerrar automáticamente después de un tiempo.
-- **Cierre Manual**: Botón para cerrar manualmente.
-- **Iconos**: Iconos visuales según el tipo de alerta.
-
-#### Mockup
-
-```
-+------------------------------------------+
-| ✓ | Candidato añadido correctamente      X |
-+------------------------------------------+
-
-+------------------------------------------+
-| ✗ | Error: El email ya existe            X |
-+------------------------------------------+
+```jsx
+<FileUploadField
+  value={cv}
+  onChange={handleCvChange}
+  required={true}
+  acceptedFileTypes=".pdf,.doc,.docx"
+  maxSizeMB={5}
+  label="Curriculum Vitae (CV)"
+/>
 ```
 
-## Flujo de Usuario
+## Estilos y Diseño Visual
 
-1. **Acceso al Formulario**:
-   - El usuario navega a la página "Añadir Candidato" desde el menú principal.
+### Paleta de Colores
 
-2. **Completar Formulario**:
-   - El usuario completa los campos requeridos y opcionales.
-   - Se muestran errores de validación en tiempo real.
+Se utiliza la paleta definida en la guía de estilos:
 
-3. **Subir CV**:
-   - El usuario puede arrastrar y soltar un archivo o usar el botón para seleccionarlo.
-   - Se valida el tipo y tamaño del archivo.
+- **Primario**: #3B82F6 (Azul) - Botones principales, acentos
+- **Secundario**: #10B981 (Verde) - Acciones positivas, éxito
+- **Error**: #EF4444 (Rojo) - Errores, validaciones
+- **Neutros**: Escala de grises para texto y fondos
 
-4. **Enviar Formulario**:
-   - El usuario hace clic en "Añadir Candidato".
-   - Se muestra un indicador de carga durante el proceso.
-
-5. **Recibir Feedback**:
-   - Se muestra un mensaje de éxito o error según el resultado.
-   - En caso de éxito, se limpia el formulario o se redirige a otra página.
-   - En caso de error, se mantienen los datos ingresados y se muestra el mensaje de error.
-
-## Paleta de Colores
-
-- **Primario**: #3B82F6 (Azul)
-- **Éxito**: #10B981 (Verde)
-- **Error**: #EF4444 (Rojo)
-- **Advertencia**: #F59E0B (Amarillo)
-- **Información**: #3B82F6 (Azul)
-- **Texto Principal**: #1F2937 (Gris oscuro)
-- **Texto Secundario**: #6B7280 (Gris medio)
-- **Fondo**: #F3F4F6 (Gris claro)
-- **Borde**: #E5E7EB (Gris más claro)
-
-## Tipografía
+### Tipografía
 
 - **Familia**: Inter, system-ui, sans-serif
 - **Tamaños**:
@@ -164,7 +131,58 @@ Componente para mostrar mensajes de éxito, error, advertencia o información.
   - Subtítulos: 18px (1.125rem)
   - Texto normal: 16px (1rem)
   - Texto pequeño: 14px (0.875rem)
-  - Texto muy pequeño: 12px (0.75rem)
+
+### Componentes Visuales
+
+- **Tarjetas**: Fondos blancos con sombras suaves y bordes redondeados
+- **Botones**: Primarios (azul sólido), secundarios (contorno azul)
+- **Campos de Formulario**: Bordes ligeros con estados de foco y error claramente diferenciados
+- **Iconos**: Uso consistente de iconos para acciones comunes (editar, eliminar, añadir)
+
+## Flujo de Usuario
+
+1. **Acceso al Formulario**:
+   - El usuario navega a la página "Añadir Candidato" desde el menú principal.
+
+2. **Completar Información Personal**:
+   - El usuario completa los campos básicos (nombre, apellido, email, teléfono).
+   - Se muestran errores de validación en tiempo real.
+
+3. **Subir CV**:
+   - El usuario arrastra y suelta un archivo o usa el botón para seleccionarlo.
+   - Se muestra una barra de progreso durante la carga.
+   - Se valida el tipo y tamaño del archivo.
+
+4. **Gestionar Educación**:
+   - El usuario añade uno o más registros educativos.
+   - Puede reordenarlos mediante arrastrar y soltar.
+   - Cada registro muestra la institución, grado, fechas y descripción.
+
+5. **Gestionar Experiencia Laboral**:
+   - El usuario añade experiencias laborales (opcional).
+   - Puede marcar su trabajo actual.
+   - Se calcula automáticamente la duración de cada experiencia.
+
+6. **Añadir Información Adicional**:
+   - El usuario añade habilidades y notas opcionales.
+
+7. **Enviar Formulario**:
+   - El usuario hace clic en "Guardar Candidato".
+   - Se muestra un indicador de carga durante el proceso.
+   - Se muestra un mensaje de éxito o error según el resultado.
+
+## Responsive Design
+
+- **Móvil** (<768px):
+  - Formulario en una sola columna.
+  - Campos ocupan el ancho completo.
+  - Botones apilados verticalmente.
+  - Acciones de formulario en orden inverso (principal arriba).
+
+- **Tablet y Desktop** (≥768px):
+  - Formulario en dos columnas para algunos campos.
+  - Botones en línea con alineación a la derecha.
+  - Máximo ancho de 800px para mejor legibilidad.
 
 ## Consideraciones de Accesibilidad
 
@@ -174,32 +192,36 @@ Componente para mostrar mensajes de éxito, error, advertencia o información.
 - **Mensajes de Error**: Los errores se comunican de manera clara y están asociados a sus campos correspondientes.
 - **ARIA**: Se utilizan atributos ARIA cuando es necesario para mejorar la accesibilidad.
 
-## Responsive Design
+## Implementación Técnica
 
-- **Móvil** (<768px):
-  - Formulario en una sola columna.
-  - Campos ocupan el ancho completo.
-  - Botones apilados verticalmente.
+### Componentes React
 
-- **Tablet** (768px - 1024px):
-  - Formulario en dos columnas para algunos campos.
-  - Botones en línea.
+- **CandidateForm**: Componente principal que integra todos los demás.
+- **EducationField**: Gestión de registros educativos.
+- **WorkExperienceField**: Gestión de experiencias laborales.
+- **FileUploadField**: Carga de archivos con previsualización.
 
-- **Desktop** (>1024px):
-  - Formulario en dos columnas para la mayoría de los campos.
-  - Máximo ancho de 800px para mejor legibilidad.
+### Estilos CSS
 
-## Componentes Tailwind CSS
+Los estilos se implementan mediante archivos CSS modulares:
 
-El diseño se implementa utilizando Tailwind CSS con los siguientes componentes principales:
+- **variables.css**: Variables CSS globales (colores, espaciado, tipografía).
+- **CandidateForm.css**: Estilos para el formulario principal.
+- **EducationField.css**: Estilos para el componente de educación.
+- **WorkExperienceField.css**: Estilos para el componente de experiencia laboral.
+- **FileUploadField.css**: Estilos para el componente de carga de archivos.
 
-- **Contenedores**: `container`, `mx-auto`, `px-4`, `py-8`
-- **Formularios**: `form`, `input`, `textarea`, `label`, `select`
-- **Botones**: `button`, `bg-blue-600`, `text-white`, `px-4`, `py-2`, `rounded-md`
-- **Alertas**: `border-l-4`, `p-4`, `mb-4`, `rounded-md`
-- **Flexbox**: `flex`, `flex-col`, `items-center`, `justify-center`
-- **Grid**: `grid`, `grid-cols-1`, `md:grid-cols-2`, `gap-4`
-- **Espaciado**: `space-y-4`, `space-x-3`, `mt-6`, `mb-4`
-- **Bordes**: `border`, `border-gray-300`, `rounded-md`
-- **Sombras**: `shadow-sm`, `shadow-md`
-- **Estados**: `hover:bg-blue-700`, `focus:ring-2`, `focus:ring-blue-500` 
+### Validación
+
+- Validación en tiempo real para feedback inmediato.
+- Validación en el envío para garantizar datos completos.
+- Mensajes de error específicos por campo.
+- Indicadores visuales claros para campos con error.
+
+## Próximas Mejoras
+
+- **Guardado Automático**: Implementar guardado de borradores automático.
+- **Importación de Datos**: Permitir importar datos desde LinkedIn o archivos CV.
+- **Autocompletado Mejorado**: Implementar sugerencias basadas en datos históricos.
+- **Vista Previa de CV**: Mostrar una vista previa del contenido del CV.
+- **Modo Oscuro**: Implementar soporte completo para modo oscuro. 

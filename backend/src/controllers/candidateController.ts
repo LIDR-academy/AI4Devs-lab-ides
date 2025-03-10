@@ -1,16 +1,27 @@
 import { Request, Response, NextFunction } from 'express';
 import { CandidateService } from '../services/candidateService';
-import { CreateCandidateData, UpdateCandidateData } from '../repositories/candidateRepository';
+import { FileUploadService } from '../services/fileUploadService';
+import { ValidationError } from '../utils/errors';
+import { logger } from '../utils/logger';
+import { CreateCandidateData, UpdateCandidateData } from '../dtos/candidateDto';
 import { createError } from '../middleware/errorHandler';
+import multer from 'multer';
+
+// Extender la interfaz Request para incluir la propiedad file de Multer
+interface MulterRequest extends Request {
+  file?: multer.File;
+}
 
 /**
  * Controlador para la gestión de candidatos
  */
 export class CandidateController {
   private candidateService: CandidateService;
+  private fileUploadService: FileUploadService;
 
   constructor() {
     this.candidateService = new CandidateService();
+    this.fileUploadService = new FileUploadService();
   }
 
   /**
@@ -19,43 +30,29 @@ export class CandidateController {
    * @param res Objeto Response de Express
    * @param next Función NextFunction de Express
    */
-  createCandidate = async (req: Request, res: Response, next: NextFunction) => {
+  async createCandidate(req: MulterRequest, res: Response, next: NextFunction): Promise<void> {
     try {
-      // Validar datos de entrada
-      const { firstName, lastName, email, phone, address, education, workExperience } = req.body;
-
-      if (!firstName || !lastName || !email) {
-        return next(createError('Los campos nombre, apellido y email son obligatorios', 400, 'VALIDATION_ERROR'));
+      const candidateData: CreateCandidateData = req.body;
+      
+      // Manejar el archivo CV si existe
+      let file: any = undefined;
+      if (req.file) {
+        file = req.file;
       }
 
-      // Validar formato de email
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        return next(createError('El formato del email no es válido', 400, 'VALIDATION_ERROR'));
-      }
-
-      // Crear candidato
-      const candidateData: CreateCandidateData = {
-        firstName,
-        lastName,
-        email,
-        phone,
-        address,
-        education,
-        workExperience
-      };
-
-      const candidate = await this.candidateService.createCandidate(req, candidateData);
-
-      // Responder con el candidato creado
+      const newCandidate = await this.candidateService.createCandidate(candidateData, file);
       res.status(201).json({
         success: true,
-        data: candidate
+        message: 'Candidato creado exitosamente',
+        data: newCandidate
       });
-    } catch (error) {
-      next(error);
+    } catch (error: any) {
+      res.status(400).json({
+        success: false,
+        message: error.message || 'Error al crear candidato'
+      });
     }
-  };
+  }
 
   /**
    * Obtener todos los candidatos
@@ -63,18 +60,20 @@ export class CandidateController {
    * @param res Objeto Response de Express
    * @param next Función NextFunction de Express
    */
-  getAllCandidates = async (req: Request, res: Response, next: NextFunction) => {
+  async getAllCandidates(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const candidates = await this.candidateService.getAllCandidates();
-
       res.status(200).json({
         success: true,
         data: candidates
       });
-    } catch (error) {
-      next(error);
+    } catch (error: any) {
+      res.status(500).json({
+        success: false,
+        message: error.message || 'Error al obtener candidatos'
+      });
     }
-  };
+  }
 
   /**
    * Obtener un candidato por ID
@@ -82,24 +81,37 @@ export class CandidateController {
    * @param res Objeto Response de Express
    * @param next Función NextFunction de Express
    */
-  getCandidateById = async (req: Request, res: Response, next: NextFunction) => {
+  async getCandidateById(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const id = parseInt(req.params.id);
-      
       if (isNaN(id)) {
-        return next(createError('ID de candidato inválido', 400, 'VALIDATION_ERROR'));
+        res.status(400).json({
+          success: false,
+          message: 'ID de candidato inválido'
+        });
+        return;
       }
 
       const candidate = await this.candidateService.getCandidateById(id);
+      if (!candidate) {
+        res.status(404).json({
+          success: false,
+          message: 'Candidato no encontrado'
+        });
+        return;
+      }
 
       res.status(200).json({
         success: true,
         data: candidate
       });
-    } catch (error) {
-      next(error);
+    } catch (error: any) {
+      res.status(500).json({
+        success: false,
+        message: error.message || 'Error al obtener candidato'
+      });
     }
-  };
+  }
 
   /**
    * Actualizar un candidato
@@ -107,45 +119,46 @@ export class CandidateController {
    * @param res Objeto Response de Express
    * @param next Función NextFunction de Express
    */
-  updateCandidate = async (req: Request, res: Response, next: NextFunction) => {
+  async updateCandidate(req: MulterRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       const id = parseInt(req.params.id);
-      
       if (isNaN(id)) {
-        return next(createError('ID de candidato inválido', 400, 'VALIDATION_ERROR'));
+        res.status(400).json({
+          success: false,
+          message: 'ID de candidato inválido'
+        });
+        return;
       }
 
-      const { firstName, lastName, email, phone, address, education, workExperience } = req.body;
-
-      // Validar formato de email si se proporciona
-      if (email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-          return next(createError('El formato del email no es válido', 400, 'VALIDATION_ERROR'));
-        }
-      }
-
-      // Actualizar candidato
-      const candidateData: UpdateCandidateData = {};
+      const candidateData: UpdateCandidateData = req.body;
       
-      if (firstName !== undefined) candidateData.firstName = firstName;
-      if (lastName !== undefined) candidateData.lastName = lastName;
-      if (email !== undefined) candidateData.email = email;
-      if (phone !== undefined) candidateData.phone = phone;
-      if (address !== undefined) candidateData.address = address;
-      if (education !== undefined) candidateData.education = education;
-      if (workExperience !== undefined) candidateData.workExperience = workExperience;
+      // Manejar el archivo CV si existe
+      let file: any = undefined;
+      if (req.file) {
+        file = req.file;
+      }
 
-      const candidate = await this.candidateService.updateCandidate(req, id, candidateData);
+      const updatedCandidate = await this.candidateService.updateCandidate(id, candidateData, file);
+      if (!updatedCandidate) {
+        res.status(404).json({
+          success: false,
+          message: 'Candidato no encontrado'
+        });
+        return;
+      }
 
       res.status(200).json({
         success: true,
-        data: candidate
+        message: 'Candidato actualizado exitosamente',
+        data: updatedCandidate
       });
-    } catch (error) {
-      next(error);
+    } catch (error: any) {
+      res.status(400).json({
+        success: false,
+        message: error.message || 'Error al actualizar candidato'
+      });
     }
-  };
+  }
 
   /**
    * Eliminar un candidato
@@ -153,22 +166,27 @@ export class CandidateController {
    * @param res Objeto Response de Express
    * @param next Función NextFunction de Express
    */
-  deleteCandidate = async (req: Request, res: Response, next: NextFunction) => {
+  async deleteCandidate(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const id = parseInt(req.params.id);
-      
       if (isNaN(id)) {
-        return next(createError('ID de candidato inválido', 400, 'VALIDATION_ERROR'));
+        res.status(400).json({
+          success: false,
+          message: 'ID de candidato inválido'
+        });
+        return;
       }
 
       await this.candidateService.deleteCandidate(id);
-
       res.status(200).json({
         success: true,
-        message: 'Candidato eliminado correctamente'
+        message: 'Candidato eliminado exitosamente'
       });
-    } catch (error) {
-      next(error);
+    } catch (error: any) {
+      res.status(500).json({
+        success: false,
+        message: error.message || 'Error al eliminar candidato'
+      });
     }
-  };
+  }
 } 
