@@ -1,5 +1,5 @@
-import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '..';
 
 /**
@@ -7,6 +7,7 @@ import { useAuth } from '..';
  */
 const ProtectedRoute: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuth();
+  const location = useLocation();
 
   // Mostrar spinner mientras se verifica la autenticación
   if (isLoading) {
@@ -19,7 +20,13 @@ const ProtectedRoute: React.FC = () => {
 
   // Redirigir al login si no está autenticado
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    // Guardar la ruta actual para redirigir después del login
+    sessionStorage.setItem('auth_redirect_path', location.pathname);
+    
+    // Guardar mensaje para mostrar en el login
+    sessionStorage.setItem('auth_redirect_message', 'Debes iniciar sesión para acceder a esta página.');
+    
+    return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
   // Renderizar las rutas hijas si está autenticado

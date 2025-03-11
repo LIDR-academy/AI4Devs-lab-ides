@@ -35,7 +35,7 @@ const DocumentListReadOnly: React.FC<DocumentListReadOnlyProps> = ({ candidateId
         if (response.success) {
           setDocuments(response.data);
         } else {
-          setError(response.error || 'Error al cargar los documentos');
+          setError('Error al cargar los documentos');
         }
       } catch (err) {
         console.error('Error al obtener documentos:', err);

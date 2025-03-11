@@ -40,7 +40,7 @@ const DocumentList: React.FC<DocumentListProps> = ({ candidateId, refreshTrigger
         if (response.success) {
           setDocuments(response.data);
         } else {
-          setError(response.error || 'Error al cargar los documentos');
+          setError(typeof response.error === 'string' ? response.error : 'Error al cargar los documentos');
         }
       } catch (err) {
         console.error('Error al obtener documentos:', err);
@@ -74,7 +74,7 @@ const DocumentList: React.FC<DocumentListProps> = ({ candidateId, refreshTrigger
         setShowConfirmModal(false);
         setDocumentToDelete(null);
       } else {
-        setDeleteError(response.error || 'Error al eliminar el documento');
+        setDeleteError(typeof response.error === 'string' ? response.error : 'Error al eliminar el documento');
       }
     } catch (err) {
       console.error('Error al eliminar documento:', err);
@@ -220,7 +220,6 @@ const DocumentList: React.FC<DocumentListProps> = ({ candidateId, refreshTrigger
         </ul>
       </div>
 
-      {/* Modal de confirmación */}
       <ConfirmationModal
         isOpen={showConfirmModal}
         title="Eliminar documento"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -6,6 +6,7 @@ import { FiEye, FiEyeOff, FiLock, FiMail } from 'react-icons/fi';
 import { useAuth } from '..';
 import Alert from '../../../components/ui/Alert';
 import Spinner from '../../../components/ui/Spinner';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 // Esquema de validación con Zod
 const loginSchema = z.object({
@@ -25,6 +26,9 @@ const LoginForm: React.FC = () => {
   const { login, isLoading, error } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(error);
+  const [sessionExpiredMessage, setSessionExpiredMessage] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const {
     register,
@@ -38,10 +42,41 @@ const LoginForm: React.FC = () => {
     },
   });
 
+  // Verificar si hay un mensaje de redirección en sessionStorage
+  useEffect(() => {
+    const redirectMessage = sessionStorage.getItem('auth_redirect_message');
+    const fromLogout = sessionStorage.getItem('from_logout');
+    
+    // Solo mostrar el mensaje si no viene de un logout
+    if (redirectMessage && !fromLogout) {
+      setSessionExpiredMessage(redirectMessage);
+    }
+    
+    // Limpiar los mensajes después de procesarlos
+    sessionStorage.removeItem('auth_redirect_message');
+    sessionStorage.removeItem('from_logout');
+  }, []);
+
   const onSubmit = async (data: LoginFormValues) => {
     setLoginError(null);
+    setSessionExpiredMessage(null);
     const success = await login(data);
-    if (!success) {
+    if (success) {
+      // Verificar si hay una ruta guardada para redirigir
+      const redirectPath = sessionStorage.getItem('auth_redirect_path');
+      
+      // Verificar si hay una ruta en el estado de la ubicación
+      const fromLocation = location.state?.from?.pathname;
+      
+      // Determinar la ruta de redirección
+      const targetPath = redirectPath || fromLocation || '/dashboard';
+      
+      // Limpiar la ruta guardada
+      sessionStorage.removeItem('auth_redirect_path');
+      
+      // Redirigir al usuario
+      navigate(targetPath, { replace: true });
+    } else {
       setLoginError('Credenciales inválidas. Por favor, inténtelo de nuevo.');
     }
   };
@@ -58,6 +93,14 @@ const LoginForm: React.FC = () => {
             type="error"
             message={loginError}
             onClose={() => setLoginError(null)}
+          />
+        )}
+
+        {sessionExpiredMessage && (
+          <Alert
+            type="warning"
+            message={sessionExpiredMessage}
+            onClose={() => setSessionExpiredMessage(null)}
           />
         )}
 

@@ -5,13 +5,15 @@ import api from '../../auth/services/authService';
 // Configuración de axios
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3010';
 
-const apiCandidate = axios.create({
-  baseURL: API_URL,
-  withCredentials: true, // Importante para manejar cookies
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+// Nota: Ya no usamos apiCandidate, usamos la instancia api que tiene los interceptores de autenticación
+// Eliminamos esta instancia y usamos la importada de authService
+// const apiCandidate = axios.create({
+//   baseURL: API_URL,
+//   withCredentials: true, // Importante para manejar cookies
+//   headers: {
+//     'Content-Type': 'application/json',
+//   },
+// });
 
 export const candidateService = {
   /**
@@ -331,6 +333,7 @@ export const candidateService = {
     try {
       console.log('Obteniendo documentos del candidato:', candidateId);
       
+      // Asegurarnos de que estamos usando la instancia de axios con los interceptores de autenticación
       const response = await api.get(`/api/candidates/${candidateId}/documents`);
       
       console.log('Respuesta de la obtención de documentos:', response.data);
@@ -347,6 +350,14 @@ export const candidateService = {
           statusText: error.response.statusText,
           data: error.response.data,
         });
+        
+        // Manejar específicamente errores de autenticación
+        if (error.response.status === 401) {
+          return {
+            success: false,
+            error: 'Sesión expirada. Por favor, inicie sesión nuevamente.',
+          };
+        }
         
         return {
           success: false,
