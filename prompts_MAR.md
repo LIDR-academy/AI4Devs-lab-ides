@@ -108,4 +108,14 @@ Una vez completadas las 3 historias, se debe cumplir los especificado en @tarea1
 
 # Prompt 2
 
-Desarrolla lo definido en @historia1.md y @historia2.md teniendo en cuenta que tiene que cumplir con @tarea1.md
+Desarrolla lo definido en @historia1.md y @historia2.md e @historia3.md teniendo en cuenta que tiene que cumplir con @tarea1.md
+
+# Prompt 3
+
+Comprueba que la app cumple con lo solicitado en @tarea1.md.
+
+# Prompt 4
+
+Proponme la solución más sencilla con la infraestructura del proyecto para solucionar esto
+
+"Si bien implementamos una solución de base de datos en memoria, los datos se pierden al reiniciar el servidor. En un entorno real, se necesitaría una base de datos persistente."

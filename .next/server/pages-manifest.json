@@ -1,11 +1,5 @@
 {
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
-  "/_document": "pages/_document.js",
-  "/dashboard/candidates": "pages/dashboard/candidates.js",
-  "/api/candidates": "pages/api/candidates.js",
-  "/dashboard/candidates/[id]": "pages/dashboard/candidates/[id].js",
-  "/api/candidates/[id]": "pages/api/candidates/[id].js",
-  "/": "pages/index.js",
-  "/dashboard/candidates/add": "pages/dashboard/candidates/add.js"
+  "/_document": "pages/_document.js"
 }
