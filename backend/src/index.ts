@@ -1,26 +1,18 @@
-import { Request, Response, NextFunction } from 'express';
-import express from 'express';
-import { PrismaClient } from '@prisma/client';
+import app from './app';
 import dotenv from 'dotenv';
 
+// Cargar variables de entorno
 dotenv.config();
-const prisma = new PrismaClient();
 
-export const app = express();
-export default prisma;
+// Puerto en el que se ejecutará el servidor
+const PORT = process.env.PORT || 3010;
 
-const port = 3010;
+// Iniciar el servidor solo si no estamos en modo de prueba
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`Servidor iniciado en http://localhost:${PORT}`);
+    console.log(`Documentación de la API disponible en http://localhost:${PORT}/api-docs`);
+  });
+}
 
-app.get('/', (req, res) => {
-  res.send('Hola LTI!');
-});
-
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
-  res.type('text/plain'); 
-  res.status(500).send('Something broke!');
-});
-
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
-});
+export default app;
