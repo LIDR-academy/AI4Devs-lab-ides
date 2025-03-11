@@ -18,3 +18,17 @@ model User {
   email String  @unique
   name  String?
 }
+
+model Candidate {
+  id              Int      @id @default(autoincrement())
+  name           String
+  lastName       String
+  email          String   @unique
+  phone          String
+  address        String
+  education      Json     // Will store education history as structured data
+  workExperience Json     // Will store work experience as structured data
+  cvUrl          String?  // Store the URL/path to the uploaded CV
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
