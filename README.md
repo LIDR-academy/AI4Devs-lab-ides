@@ -1,95 +1,87 @@
-# LTI - Sistema de Seguimiento de Talento
+# Sistema ATS - Módulo de Candidatos
 
-Este proyecto es una aplicación full-stack con un frontend en React y un backend en Express usando Prisma como ORM. El frontend se inicia con Create React App y el backend está escrito en TypeScript.
+Este proyecto implementa un sistema de seguimiento de candidatos (ATS) para reclutadores, con funcionalidad para añadir, editar, listar y eliminar candidatos.
 
-## Explicación de Directorios y Archivos
+## Funcionalidades
 
-- `backend/`: Contiene el código del lado del servidor escrito en Node.js.
-  - `src/`: Contiene el código fuente para el backend.
-    - `index.ts`: El punto de entrada para el servidor backend.
-  - `prisma/`: Contiene el archivo de esquema de Prisma para ORM.
-  - `tsconfig.json`: Archivo de configuración de TypeScript.
-  - `.env`: Contiene las variables de entorno.
-- `frontend/`: Contiene el código del lado del cliente escrito en React.
-  - `src/`: Contiene el código fuente para el frontend.
-  - `public/`: Contiene archivos estáticos como el archivo HTML e imágenes.
-  - `build/`: Contiene la construcción lista para producción del frontend.
-- `docker-compose.yml`: Contiene la configuración de Docker Compose para gestionar los servicios de tu aplicación.
-- `README.md`: Este archivo contiene información sobre el proyecto e instrucciones sobre cómo ejecutarlo.
+- Formulario para añadir candidatos con información personal, académica y profesional
+- Carga de documentos (CV y foto)
+- Validaciones en cliente y servidor
+- API RESTful para gestión de candidatos
+- Interfaz responsive adaptada a dispositivos móviles y de escritorio
 
-## Estructura del Proyecto
+## Tecnologías utilizadas
 
-El proyecto está dividido en dos directorios principales: `frontend` y `backend`.
+- **Frontend**: React, Next.js
+- **CSS**: SASS con metodología BEM
+- **Backend**: API Routes de Next.js
+- **Almacenamiento de archivos**: Sistema de archivos local (en producción se recomendaría usar un servicio de almacenamiento en la nube)
 
-### Frontend
+## Requisitos previos
 
-El frontend es una aplicación React y sus archivos principales están ubicados en el directorio `src`. El directorio `public` contiene activos estáticos y el directorio `build` contiene la construcción de producción de la aplicación.
+- Node.js 14.x o superior
+- npm 7.x o superior
 
-### Backend
+## Instalación
 
-El backend es una aplicación Express escrita en TypeScript.
-- El directorio `src` contiene el código fuente
-- El directorio `prisma` contiene el esquema de Prisma.
+1. Clona el repositorio:
 
-## Primeros Pasos
+```bash
+git clone https://github.com/tu-usuario/ats-system.git
+cd ats-system
+```
 
-Para comenzar con este proyecto, sigue estos pasos:
+2. Instala las dependencias:
 
-1. Clona el repositorio.
-2. Instala las dependencias para el frontend y el backend:
-```sh
-cd frontend
-npm install
-
-cd ../backend
+```bash
 npm install
 ```
-3. Construye el servidor backend:
-```
-cd backend
-npm run build
-````
-4. Inicia el servidor backend:
-```
-cd backend
-npm run dev 
+
+## Ejecución
+
+### Desarrollo
+
+Para ejecutar la aplicación en modo desarrollo:
+
+```bash
+npm run dev
 ```
 
-5. En una nueva ventana de terminal, construye el servidor frontend:
-```
-cd frontend
+La aplicación estará disponible en [http://localhost:3000](http://localhost:3000).
+
+### Producción
+
+Para construir y ejecutar la aplicación en modo producción:
+
+```bash
 npm run build
-```
-6. Inicia el servidor frontend:
-```
-cd frontend
 npm start
 ```
 
-El servidor backend estará corriendo en http://localhost:3010 y el frontend estará disponible en http://localhost:3000.
+## Estructura del proyecto
 
-## Docker y PostgreSQL
-
-Este proyecto usa Docker para ejecutar una base de datos PostgreSQL. Así es cómo ponerlo en marcha:
-
-Instala Docker en tu máquina si aún no lo has hecho. Puedes descargarlo desde aquí.
-Navega al directorio raíz del proyecto en tu terminal.
-Ejecuta el siguiente comando para iniciar el contenedor Docker:
 ```
-docker-compose up -d
+├── public/
+│   └── uploads/           # Carpeta para almacenar archivos subidos
+│       ├── cv/            # CVs de candidatos
+│       └── photos/        # Fotos de candidatos
+├── src/
+│   ├── api/               # Funciones cliente para comunicación con API
+│   ├── components/        # Componentes React reutilizables
+│   │   ├── candidates/    # Componentes específicos para candidatos
+│   │   └── common/        # Componentes comunes (notificaciones, etc.)
+│   ├── hooks/             # Custom hooks de React
+│   ├── lib/               # Bibliotecas y utilidades
+│   ├── pages/             # Páginas de Next.js (rutas)
+│   │   ├── api/           # API Routes para el backend
+│   │   └── dashboard/     # Páginas del dashboard
+│   ├── styles/            # Estilos SASS
+│   └── utils/             # Funciones de utilidad
+└── package.json           # Dependencias y scripts
 ```
-Esto iniciará una base de datos PostgreSQL en un contenedor Docker. La bandera -d corre el contenedor en modo separado, lo que significa que se ejecuta en segundo plano.
 
-Para acceder a la base de datos PostgreSQL, puedes usar cualquier cliente PostgreSQL con los siguientes detalles de conexión:
- - Host: localhost
- - Port: 5432
- - User: postgres
- - Password: password
- - Database: mydatabase
+## Notas de desarrollo
 
-Por favor, reemplaza User, Password y Database con el usuario, la contraseña y el nombre de la base de datos reales especificados en tu archivo .env.
-
-Para detener el contenedor Docker, ejecuta el siguiente comando:
-```
-docker-compose down
-```
+- El sistema utiliza almacenamiento en memoria para los candidatos. En un entorno de producción, debe implementarse una base de datos persistente.
+- Para mejorar la seguridad, se recomienda utilizar servicios de almacenamiento como AWS S3 o similares para los archivos en lugar del sistema de archivos local.
+- Se ha implementado validación tanto en el cliente como en el servidor para garantizar la integridad de los datos.
