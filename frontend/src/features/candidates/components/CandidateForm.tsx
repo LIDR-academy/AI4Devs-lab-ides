@@ -7,6 +7,7 @@ import { useCreateCandidate } from '../hooks/useCandidates';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import EducationFormSection, { EducationItem } from './EducationFormSection';
 import WorkExperienceFormSection, { WorkExperienceItem } from './WorkExperienceFormSection';
+import SkillsInput from './SkillsInput';
 
 // Esquema para educación
 const educationSchema = z.object({
@@ -44,7 +45,7 @@ const candidateSchema = z.object({
     .min(1, 'El teléfono es obligatorio')
     .regex(/^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{3,6}$/, 'Formato de teléfono inválido. Ejemplo: +34 612 345 678'),
   status: z.enum(['new', 'contacted', 'interview', 'offer', 'hired', 'rejected']).default('new'),
-  skillsInput: z.string().optional(),
+  skills: z.array(z.string()).default([]),
   notes: z.string().optional(),
   education: z.array(educationSchema).optional().default([]),
   workExperience: z.array(workExperienceSchema).optional().default([]),
@@ -77,7 +78,7 @@ const CandidateForm: React.FC = () => {
     resolver: zodResolver(candidateSchema),
     defaultValues: {
       status: 'new',
-      skillsInput: '',
+      skills: [],
       education: [],
       workExperience: []
     },
@@ -113,15 +114,10 @@ const CandidateForm: React.FC = () => {
       email: data.email,
       phone: data.phone,
       status: data.status,
-      skills: data.skillsInput && typeof data.skillsInput === 'string' 
-        ? data.skillsInput.split(',')
-            .map(skill => skill.trim())
-            .filter(Boolean)
-            .map(skillName => ({
-              name: skillName,
-              level: 'intermediate' // Valor por defecto
-            }))
-        : [],
+      skills: data.skills.map(skillName => ({
+        name: skillName,
+        level: 'intermediate' // Valor por defecto
+      })),
       notes: data.notes,
       education: data.education,
       workExperience: data.workExperience
@@ -507,15 +503,11 @@ const CandidateForm: React.FC = () => {
             <div className="p-4 border rounded-md">
               {/* Habilidades */}
               <div className="mb-4">
-                <label htmlFor="skillsInput" className="block text-sm font-bold text-gray-700">
-                  Habilidades (separadas por comas)
-                </label>
-                <input
-                  type="text"
-                  id="skillsInput"
-                  {...register('skillsInput')}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-steel-blue-500 focus:ring-steel-blue-500 sm:text-sm px-3 py-2"
-                  placeholder="Ej: JavaScript, React, Node.js"
+                <SkillsInput
+                  control={control}
+                  name="skills"
+                  label="Habilidades"
+                  placeholder="Añadir habilidad y presionar Enter o el botón Añadir"
                 />
               </div>
               
