@@ -1,0 +1,322 @@
+openapi: 3.0.3
+info:
+  title: ATS Candidate API
+  description: API para la gestión de candidatos en el sistema ATS
+  version: 1.0.0
+
+servers:
+  - url: /api
+    description: API base URL
+
+components:
+  schemas:
+    Candidate:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - email
+        - phone
+        - address
+      properties:
+        firstName:
+          type: string
+          minLength: 1
+          maxLength: 50
+          example: "John"
+        lastName:
+          type: string
+          minLength: 1
+          maxLength: 50
+          example: "Doe"
+        email:
+          type: string
+          format: email
+          maxLength: 100
+          example: "john.doe@example.com"
+        phone:
+          type: string
+          pattern: "^[+]?[0-9]{8,20}$"
+          example: "+34666555444"
+        address:
+          type: string
+          maxLength: 500
+          example: "Calle Principal 123, Ciudad"
+
+    Education:
+      type: object
+      required:
+        - title
+        - institution
+        - startDate
+        - endDate
+      properties:
+        title:
+          type: string
+          maxLength: 100
+          example: "Computer Science Degree"
+        institution:
+          type: string
+          maxLength: 100
+          example: "Technical University"
+        startDate:
+          type: string
+          format: date
+          example: "2018-09-01"
+        endDate:
+          type: string
+          format: date
+          example: "2022-06-30"
+        description:
+          type: string
+          maxLength: 1000
+          example: "Specialized in Software Engineering"
+
+    WorkExperience:
+      type: object
+      required:
+        - company
+        - position
+        - startDate
+        - endDate
+      properties:
+        company:
+          type: string
+          maxLength: 100
+          example: "Tech Corp"
+        position:
+          type: string
+          maxLength: 100
+          example: "Senior Developer"
+        startDate:
+          type: string
+          format: date
+          example: "2022-07-01"
+        endDate:
+          type: string
+          format: date
+          example: "2023-12-31"
+        responsibilities:
+          type: string
+          maxLength: 1000
+          example: "Lead developer for the main product"
+
+    Error:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+          example: "Validation error"
+        message:
+          type: string
+          example: "Descripción genérica del error"
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - BearerAuth: []
+
+paths:
+  /candidates:
+    post:
+      summary: Crear nuevo candidato
+      operationId: createCandidate
+      tags:
+        - Candidates
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Candidate'
+      responses:
+        '201':
+          description: Candidato creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426614174000"
+                  message:
+                    type: string
+                    example: "Candidato creado exitosamente"
+        '400':
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Email duplicado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Demasiadas solicitudes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /candidates/{candidateId}/education:
+    post:
+      summary: Añadir educación a un candidato
+      operationId: addEducation
+      tags:
+        - Education
+      parameters:
+        - name: candidateId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Education'
+      responses:
+        '201':
+          description: Educación añadida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  message:
+                    type: string
+                    example: "Educación añadida exitosamente"
+        '400':
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Candidato no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /candidates/{candidateId}/work-experience:
+    post:
+      summary: Añadir experiencia laboral a un candidato
+      operationId: addWorkExperience
+      tags:
+        - WorkExperience
+      parameters:
+        - name: candidateId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkExperience'
+      responses:
+        '201':
+          description: Experiencia laboral añadida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  message:
+                    type: string
+                    example: "Experiencia laboral añadida exitosamente"
+        '400':
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Candidato no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /candidates/{candidateId}/document:
+    post:
+      summary: Subir documento CV de un candidato
+      operationId: uploadDocument
+      tags:
+        - Documents
+      parameters:
+        - name: candidateId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: PDF o DOCX file (max 5MB)
+      responses:
+        '201':
+          description: Documento subido exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  message:
+                    type: string
+                    example: "Documento subido exitosamente"
+        '400':
+          description: Formato de archivo inválido o tamaño excedido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Candidato no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Ya existe un documento para este candidato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error' 

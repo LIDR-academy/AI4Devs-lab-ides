@@ -1,95 +1,189 @@
 # LTI - Sistema de Seguimiento de Talento
 
-Este proyecto es una aplicación full-stack con un frontend en React y un backend en Express usando Prisma como ORM. El frontend se inicia con Create React App y el backend está escrito en TypeScript.
+Este proyecto es una aplicación full-stack diseñada para la gestión de candidatos en procesos de selección. Implementa un sistema ATS (Applicant Tracking System) con un frontend en React y un backend en Express usando Prisma como ORM.
 
-## Explicación de Directorios y Archivos
+## 🚀 Características Principales
 
-- `backend/`: Contiene el código del lado del servidor escrito en Node.js.
-  - `src/`: Contiene el código fuente para el backend.
-    - `index.ts`: El punto de entrada para el servidor backend.
-  - `prisma/`: Contiene el archivo de esquema de Prisma para ORM.
-  - `tsconfig.json`: Archivo de configuración de TypeScript.
-  - `.env`: Contiene las variables de entorno.
-- `frontend/`: Contiene el código del lado del cliente escrito en React.
-  - `src/`: Contiene el código fuente para el frontend.
-  - `public/`: Contiene archivos estáticos como el archivo HTML e imágenes.
-  - `build/`: Contiene la construcción lista para producción del frontend.
-- `docker-compose.yml`: Contiene la configuración de Docker Compose para gestionar los servicios de tu aplicación.
-- `README.md`: Este archivo contiene información sobre el proyecto e instrucciones sobre cómo ejecutarlo.
+- Gestión completa de candidatos
+- Almacenamiento y gestión de CV
+- Registro de educación y experiencia laboral
+- Validaciones de datos y documentos
+- Interfaz de usuario moderna y responsive
+- API RESTful documentada
+- Autenticación mediante JWT
 
-## Estructura del Proyecto
+## 📁 Estructura del Proyecto
 
-El proyecto está dividido en dos directorios principales: `frontend` y `backend`.
+```
+.
+├── frontend/           # Aplicación React
+│   ├── src/
+│   │   ├── components/  # Componentes React
+│   │   ├── context/     # Context API
+│   │   ├── hooks/       # Custom Hooks
+│   │   ├── services/    # Servicios API
+│   │   ├── types/       # TypeScript types
+│   │   └── utils/       # Utilidades
+│   ├── public/          # Archivos estáticos
+│   └── build/           # Build de producción
+│
+├── backend/            # Servidor Express
+│   ├── src/
+│   │   ├── controllers/ # Controladores
+│   │   ├── routes/      # Rutas API
+│   │   ├── services/    # Lógica de negocio
+│   │   ├── utils/       # Utilidades
+│   │   └── interfaces/  # TypeScript interfaces
+│   └── prisma/         # Schema Prisma
+│
+└── docs/              # Documentación
+    ├── mermaid/       # Diagramas del sistema
+    ├── api-contract.yaml    # Especificación OpenAPI
+    └── data-model-design.md # Diseño del modelo de datos
+```
+
+## 🛠️ Tecnologías Utilizadas
 
 ### Frontend
-
-El frontend es una aplicación React y sus archivos principales están ubicados en el directorio `src`. El directorio `public` contiene activos estáticos y el directorio `build` contiene la construcción de producción de la aplicación.
+- React
+- TypeScript
+- React Router
+- Context API
+- Axios
 
 ### Backend
+- Node.js
+- Express
+- TypeScript
+- Prisma ORM
+- JWT Authentication
 
-El backend es una aplicación Express escrita en TypeScript.
-- El directorio `src` contiene el código fuente
-- El directorio `prisma` contiene el esquema de Prisma.
+### Base de Datos
+- PostgreSQL
 
-## Primeros Pasos
+### Herramientas de Desarrollo
+- Docker
+- ESLint
+- Prettier
 
-Para comenzar con este proyecto, sigue estos pasos:
+## 📋 Requisitos Previos
 
-1. Clona el repositorio.
-2. Instala las dependencias para el frontend y el backend:
-```sh
+- Node.js (v14 o superior)
+- Docker y Docker Compose
+- PostgreSQL (si no se usa Docker)
+- npm o yarn
+
+## 🚀 Instalación y Configuración
+
+1. **Clonar el repositorio**
+```bash
+git clone [url-del-repositorio]
+cd [nombre-del-repositorio]
+```
+
+2. **Configurar variables de entorno**
+```bash
+# Backend (.env)
+DATABASE_URL="postgresql://postgres:password@localhost:5432/mydatabase"
+JWT_SECRET="tu-secret-key"
+PORT=3010
+
+# Frontend (.env)
+REACT_APP_API_URL="http://localhost:3010/api"
+```
+
+3. **Instalar dependencias**
+```bash
+# Frontend
 cd frontend
 npm install
 
+# Backend
 cd ../backend
 npm install
 ```
-3. Construye el servidor backend:
-```
-cd backend
-npm run build
-````
-4. Inicia el servidor backend:
-```
-cd backend
-npm run dev 
+
+4. **Iniciar la base de datos**
+```bash
+docker-compose up -d
 ```
 
-5. En una nueva ventana de terminal, construye el servidor frontend:
+5. **Ejecutar migraciones de Prisma**
+```bash
+cd backend
+npx prisma migrate dev
 ```
-cd frontend
-npm run build
-```
-6. Inicia el servidor frontend:
-```
+
+6. **Iniciar los servicios**
+```bash
+# Backend
+cd backend
+npm run dev
+
+# Frontend (en otra terminal)
 cd frontend
 npm start
 ```
 
-El servidor backend estará corriendo en http://localhost:3010 y el frontend estará disponible en http://localhost:3000.
+## 📚 Documentación
 
-## Docker y PostgreSQL
+### Diagramas del Sistema
+La carpeta `docs/mermaid` contiene los siguientes diagramas:
+- `database-er.md` - Diagrama entidad-relación de la base de datos
+- `backend-architecture.md` - Arquitectura del backend
+- `frontend-architecture.md` - Arquitectura del frontend
+- `create-candidate-sequence.md` - Flujo de creación de candidatos
+- `frontend-components.md` - Estructura de componentes del frontend
 
-Este proyecto usa Docker para ejecutar una base de datos PostgreSQL. Así es cómo ponerlo en marcha:
+Para visualizar los diagramas, puedes usar:
+- VS Code con la extensión "Markdown Preview Mermaid Support"
+- [Mermaid Live Editor](https://mermaid.live/)
+- GitHub (renderizado automático)
 
-Instala Docker en tu máquina si aún no lo has hecho. Puedes descargarlo desde aquí.
-Navega al directorio raíz del proyecto en tu terminal.
-Ejecuta el siguiente comando para iniciar el contenedor Docker:
+### API
+La documentación completa de la API se encuentra en:
+- `docs/api-contract.yaml` - Especificación OpenAPI 3.0
+- `docs/api-endpoints-design.md` - Descripción detallada de endpoints
+
+### Modelo de Datos
+El diseño completo del modelo de datos está documentado en:
+- `docs/data-model-design.md`
+
+## 🔒 Seguridad
+
+- Autenticación mediante JWT
+- Validación de tipos de archivo para CV (PDF/DOCX)
+- Límite de tamaño de archivo (5MB)
+- Sanitización de datos de entrada
+- Protección contra ataques comunes (XSS, CSRF)
+
+## 🧪 Testing
+
+```bash
+# Frontend
+cd frontend
+npm test
+
+# Backend
+cd backend
+npm test
 ```
-docker-compose up -d
-```
-Esto iniciará una base de datos PostgreSQL en un contenedor Docker. La bandera -d corre el contenedor en modo separado, lo que significa que se ejecuta en segundo plano.
 
-Para acceder a la base de datos PostgreSQL, puedes usar cualquier cliente PostgreSQL con los siguientes detalles de conexión:
- - Host: localhost
- - Port: 5432
- - User: postgres
- - Password: password
- - Database: mydatabase
+## 📝 Convenciones de Código
 
-Por favor, reemplaza User, Password y Database con el usuario, la contraseña y el nombre de la base de datos reales especificados en tu archivo .env.
+- TypeScript strict mode
+- ESLint para linting
+- Prettier para formateo
+- Conventional Commits para mensajes de commit
 
-Para detener el contenedor Docker, ejecuta el siguiente comando:
-```
-docker-compose down
-```
+## 🤝 Contribución
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE.md](LICENSE.md) para más detalles.

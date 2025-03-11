@@ -1,0 +1,8 @@
+node_modules/
+dist/
+coverage/
+.env
+
+# Ignorar archivos subidos pero mantener la estructura
+uploads/documents/*
+!uploads/documents/.gitkeep 

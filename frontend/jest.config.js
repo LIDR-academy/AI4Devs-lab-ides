@@ -1,8 +1,13 @@
 module.exports = {
-  roots: ['<rootDir>/src/tests/'],
-  transform: {
-    '^.+\\.tsx?$': 'ts-jest',
+  preset: 'ts-jest',
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
+  moduleNameMapper: {
+    '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
+      '<rootDir>/src/setupTests.ts',
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy'
   },
-  testRegex: '(/tests/.*|(\\.|/)(test|spec))\\.tsx?$',
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  transform: {
+    '^.+\\.(ts|tsx)$': 'ts-jest'
+  }
 };
