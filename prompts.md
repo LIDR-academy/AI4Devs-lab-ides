@@ -72,3 +72,29 @@ Como recomendaciones extra:
     
 
 Tomate el tiempo que creas necesario y hazme las preguntas que te ayuden a hacer tu tarea mejor.
+
+
+#Prompt autocompletado
+
+* Mi prompt
+Now let's do a new feature and for now we are going to develop only for create candidate functionality. Let's develop an autocomplete functionaliity for skills. In other words, when user starts to type a new skill to add, let's autocomplete with an existing skill in database. Please, ask me questions if you have some doubt about the feature. For example, if the user starts typing "Jav" should appear a list with Java or Javascript if they are already in database. Take your time for the best implementation, and use standard market libraries if it's possible. 
+
+* Respuesta principal
+
+I'll implement an autocomplete functionality for skills in the candidate creation form. This will help users select existing skills from the database when they start typing.
+Before I start, I have a few questions to clarify the requirements:
+Do we have an existing API endpoint to search for skills in the database, or do we need to create one?
+Should we show the autocomplete suggestions in a dropdown below the input field?
+Should we allow users to create new skills if they don't exist in the database?
+How many suggestions should we show at maximum in the dropdown?
+While waiting for your answers, I'll start by exploring the current implementation and looking for suitable libraries for autocomplete functionality. React has several popular libraries for autocomplete, such as:
+React Autocomplete
+Downshift
+React Select
+Material-UI Autocomplete
+
+* Mi respuesta
+
+I think you have to create one specific api call to get a list of skills in the platform that are similar to an specific string. If they don't exist yes, the user can create new skills as we do nowadays. In other words, we doesn't need an api call to add an skill, on create candidate or edit candidate, if new skills are introduced, they are going to appear in database. let's show maximum 5 items
+
+Nota: Con esto lo ha hecho todo a la primera, al final no tuve que hacer nada en el edit porque lo que hemos modificado es el componente comun

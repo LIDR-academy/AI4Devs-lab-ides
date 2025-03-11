@@ -1,12 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FiX, FiPlus } from 'react-icons/fi';
 import { Control, useController } from 'react-hook-form';
+import Select, { components, OptionProps, SingleValue, ActionMeta, MultiValue } from 'react-select';
+import { useSearchSkills } from '../hooks/useCandidates';
+import debounce from 'lodash/debounce';
 
 interface SkillsInputProps {
   control: Control<any>;
   name: string;
   label?: string;
   placeholder?: string;
+}
+
+interface SkillOption {
+  value: string;
+  label: string;
 }
 
 const SkillsInput: React.FC<SkillsInputProps> = ({
@@ -16,6 +24,9 @@ const SkillsInput: React.FC<SkillsInputProps> = ({
   placeholder = 'Añadir habilidad...'
 }) => {
   const [inputValue, setInputValue] = useState('');
+  const [options, setOptions] = useState<SkillOption[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const selectRef = useRef<any>(null);
   
   // Usar useController para manejar el estado del campo
   const {
@@ -26,15 +37,73 @@ const SkillsInput: React.FC<SkillsInputProps> = ({
     defaultValue: [],
   });
 
+  // Hook para buscar habilidades
+  const { searchSkills } = useSearchSkills();
+
   // Asegurarse de que value siempre sea un array
   const skills = Array.isArray(value) ? value : [];
 
+  // Función para buscar habilidades (con debounce)
+  const debouncedSearch = useRef(
+    debounce(async (query: string) => {
+      if (query.trim().length === 0) {
+        setOptions([]);
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        const results = await searchSkills(query);
+        // Filtrar las habilidades que ya están seleccionadas
+        const filteredResults = results.filter(skill => !skills.includes(skill));
+        setOptions(filteredResults.map(skill => ({ value: skill, label: skill })));
+      } catch (error) {
+        console.error('Error al buscar habilidades:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }, 300)
+  ).current;
+
+  // Limpiar el debounce al desmontar el componente
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
+
+  // Manejar cambios en el input
+  const handleInputChange = (newValue: string) => {
+    setInputValue(newValue);
+    debouncedSearch(newValue);
+  };
+
   // Añadir una nueva habilidad
-  const addSkill = () => {
-    const trimmedValue = inputValue.trim();
+  const addSkill = (skillName: string) => {
+    const trimmedValue = skillName.trim();
     if (trimmedValue && !skills.includes(trimmedValue)) {
       onChange([...skills, trimmedValue]);
       setInputValue('');
+      setOptions([]);
+      // Limpiar el input de react-select
+      if (selectRef.current) {
+        selectRef.current.clearValue();
+      }
+    }
+  };
+
+  // Manejar la selección de una opción
+  const handleSelectChange = (selectedOption: any) => {
+    if (selectedOption && selectedOption.value) {
+      addSkill(selectedOption.value);
+    }
+  };
+
+  // Manejar la tecla Enter para añadir una habilidad personalizada
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && inputValue.trim()) {
+      e.preventDefault();
+      addSkill(inputValue);
     }
   };
 
@@ -43,12 +112,15 @@ const SkillsInput: React.FC<SkillsInputProps> = ({
     onChange(skills.filter(skill => skill !== skillToRemove));
   };
 
-  // Manejar la tecla Enter para añadir una habilidad
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      addSkill();
-    }
+  // Componente personalizado para la opción
+  const Option = (props: OptionProps<SkillOption>) => {
+    return (
+      <components.Option {...props}>
+        <div className="flex items-center">
+          <span>{props.data.label}</span>
+        </div>
+      </components.Option>
+    );
   };
 
   return (
@@ -80,20 +152,45 @@ const SkillsInput: React.FC<SkillsInputProps> = ({
         )}
       </div>
       
-      {/* Campo de entrada para nuevas habilidades */}
+      {/* Campo de entrada con autocompletado */}
       <div className="flex">
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={handleKeyDown}
-          className="flex-grow rounded-l-md border-gray-300 shadow-sm focus:border-steel-blue-500 focus:ring-steel-blue-500 sm:text-sm px-3 py-2"
-          placeholder={placeholder}
-        />
+        <div className="flex-grow">
+          <Select
+            ref={selectRef}
+            options={options}
+            onInputChange={handleInputChange}
+            onChange={handleSelectChange}
+            isLoading={isLoading}
+            placeholder={placeholder}
+            noOptionsMessage={() => 
+              inputValue.trim() 
+                ? "No se encontraron habilidades. Presiona Enter para añadir una nueva." 
+                : "Escribe para buscar habilidades"
+            }
+            components={{ Option }}
+            onKeyDown={handleKeyDown}
+            isClearable
+            isSearchable
+            className="rounded-l-md"
+            classNamePrefix="react-select"
+            styles={{
+              control: (base) => ({
+                ...base,
+                borderTopRightRadius: 0,
+                borderBottomRightRadius: 0,
+                borderColor: '#D1D5DB',
+                '&:hover': {
+                  borderColor: '#9CA3AF',
+                },
+              }),
+            }}
+          />
+        </div>
         <button
           type="button"
-          onClick={addSkill}
+          onClick={() => inputValue.trim() && addSkill(inputValue)}
           className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-r-md text-white bg-steel-blue-600 hover:bg-steel-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-steel-blue-500"
+          disabled={!inputValue.trim()}
         >
           <FiPlus className="mr-1" />
           Añadir

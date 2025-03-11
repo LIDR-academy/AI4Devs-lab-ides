@@ -50,9 +50,9 @@ router.get('/', (req, res) => {
 });
 
 // Registrar rutas
-router.use('/api/auth', authRoutes);
-router.use('/api/users', userRoutes);
-router.use('/api/candidates', candidateRoutes);
-router.use('/api', documentRoutes);
+router.use('/auth', authRoutes);
+router.use('/users', userRoutes);
+router.use('/candidates', candidateRoutes);
+router.use('/', documentRoutes);
 
 export default router; 

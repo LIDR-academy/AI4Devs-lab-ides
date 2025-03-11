@@ -103,11 +103,11 @@ describe('DocumentListReadOnly Component', () => {
     });
   });
   
-  test('muestra error cuando falla la carga de documentos', async () => {
-    // Mock de getCandidateDocuments para devolver error
-    (candidateService.getCandidateDocuments as jest.Mock).mockResolvedValueOnce({
+  test('muestra un mensaje de error cuando falla la carga de documentos', async () => {
+    // Mock de getCandidateDocuments para devolver un error
+    (candidateService.getCandidateDocuments as jest.Mock).mockRejectedValueOnce({
       success: false,
-      error: 'Error al obtener documentos',
+      error: 'Error al cargar los documentos',
     });
     
     render(
@@ -121,7 +121,7 @@ describe('DocumentListReadOnly Component', () => {
       expect(screen.getByText('Error')).toBeInTheDocument();
     });
     
-    expect(screen.getByText('Error al obtener documentos')).toBeInTheDocument();
+    expect(screen.getByText('Error al cargar los documentos')).toBeInTheDocument();
   });
 
   test('verifica que el componente tiene botones de descarga', async () => {

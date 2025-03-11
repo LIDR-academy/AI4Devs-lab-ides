@@ -410,4 +410,28 @@ export const candidateService = {
       };
     }
   },
+
+  /**
+   * Busca habilidades que coincidan con un término de búsqueda
+   * @param query Término de búsqueda
+   * @returns Respuesta con la lista de habilidades
+   */
+  async searchSkills(query: string): Promise<{ success: boolean; data?: string[]; error?: string }> {
+    try {
+      if (!query || query.trim().length === 0) {
+        return { success: true, data: [] };
+      }
+
+      const response = await api.get(`/api/candidates/skills/search?query=${encodeURIComponent(query)}`);
+      console.log('Respuesta de búsqueda de habilidades:', response.data);
+      
+      return response.data;
+    } catch (error: any) {
+      console.error('Error al buscar habilidades:', error);
+      return {
+        success: false,
+        error: error.response?.data?.error || 'Error al buscar habilidades'
+      };
+    }
+  },
 }; 

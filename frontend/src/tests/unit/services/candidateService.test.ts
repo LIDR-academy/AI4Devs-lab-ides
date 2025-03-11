@@ -440,4 +440,79 @@ describe('candidateService', () => {
       expect(result.error).toBe('Error de conexión. Por favor, inténtelo de nuevo más tarde.');
     });
   });
+
+  describe('searchSkills', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should return empty array for empty query', async () => {
+      // Act
+      const result = await candidateService.searchSkills('');
+
+      // Assert
+      expect(result).toEqual({ success: true, data: [] });
+      expect(api.get).not.toHaveBeenCalled();
+    });
+
+    it('should return skills matching the query', async () => {
+      // Arrange
+      const mockSkills = ['JavaScript', 'Java', 'Java Spring'];
+      const mockResponse = {
+        data: {
+          success: true,
+          data: mockSkills
+        }
+      };
+      (api.get as jest.Mock).mockResolvedValue(mockResponse);
+
+      // Act
+      const result = await candidateService.searchSkills('jav');
+
+      // Assert
+      expect(api.get).toHaveBeenCalledWith('/api/candidates/skills/search?query=jav');
+      expect(result).toEqual({
+        success: true,
+        data: mockSkills
+      });
+    });
+
+    it('should handle API errors', async () => {
+      // Arrange
+      const mockError = {
+        response: {
+          data: {
+            error: 'Error al buscar habilidades'
+          }
+        }
+      };
+      (api.get as jest.Mock).mockRejectedValue(mockError);
+
+      // Act
+      const result = await candidateService.searchSkills('jav');
+
+      // Assert
+      expect(api.get).toHaveBeenCalledWith('/api/candidates/skills/search?query=jav');
+      expect(result).toEqual({
+        success: false,
+        error: 'Error al buscar habilidades'
+      });
+    });
+
+    it('should handle network errors', async () => {
+      // Arrange
+      const mockError = new Error('Network Error');
+      (api.get as jest.Mock).mockRejectedValue(mockError);
+
+      // Act
+      const result = await candidateService.searchSkills('jav');
+
+      // Assert
+      expect(api.get).toHaveBeenCalledWith('/api/candidates/skills/search?query=jav');
+      expect(result).toEqual({
+        success: false,
+        error: 'Error al buscar habilidades'
+      });
+    });
+  });
 }); 

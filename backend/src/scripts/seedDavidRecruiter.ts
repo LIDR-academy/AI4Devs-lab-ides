@@ -29,9 +29,10 @@ async function seedDavidRecruiter() {
     const user = await prisma.user.create({
       data: {
         email: 'david@example.com',
-        name: 'David Reclutador',
+        firstName: 'David',
+        lastName: 'Reclutador',
         role: 'recruiter',
-        passwordHash,
+        password: passwordHash,
         isActive: true,
       },
     });

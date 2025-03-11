@@ -555,4 +555,52 @@ export class CandidateService {
       };
     }
   }
+
+  /**
+   * Busca habilidades que coincidan con un término de búsqueda
+   * @param query Término de búsqueda
+   * @returns Lista de nombres de habilidades que coinciden con el término de búsqueda
+   */
+  async searchSkills(query: string): Promise<ServiceResponse<string[]>> {
+    try {
+      if (!query || query.trim().length === 0) {
+        return {
+          success: true,
+          data: [],
+          statusCode: 200
+        };
+      }
+
+      // Buscar habilidades únicas que coincidan con el término de búsqueda
+      const skills = await this.prisma.candidateSkill.findMany({
+        where: {
+          name: {
+            contains: query,
+            mode: 'insensitive' // Búsqueda insensible a mayúsculas/minúsculas
+          }
+        },
+        select: {
+          name: true
+        },
+        distinct: ['name'],
+        take: 5 // Limitar a 5 resultados
+      });
+
+      // Extraer solo los nombres de las habilidades
+      const skillNames = skills.map(skill => skill.name);
+
+      return {
+        success: true,
+        data: skillNames,
+        statusCode: 200
+      };
+    } catch (error) {
+      console.error('Error al buscar habilidades:', error);
+      return {
+        success: false,
+        error: 'Error al buscar habilidades',
+        statusCode: 500
+      };
+    }
+  }
 } 

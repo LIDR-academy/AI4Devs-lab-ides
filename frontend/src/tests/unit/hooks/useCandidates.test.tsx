@@ -1,6 +1,6 @@
-import { renderHook, act } from '@testing-library/react';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useDeleteCandidate, useCreateCandidate, useUpdateCandidate } from '../../../features/candidates/hooks/useCandidates';
+import { useDeleteCandidate, useCreateCandidate, useUpdateCandidate, useSearchSkills } from '../../../features/candidates/hooks/useCandidates';
 import { candidateService } from '../../../features/candidates/services/candidateService';
 
 // Mock del servicio de candidatos
@@ -8,7 +8,8 @@ jest.mock('../../../features/candidates/services/candidateService', () => ({
   candidateService: {
     deleteCandidate: jest.fn(),
     createCandidate: jest.fn(),
-    updateCandidate: jest.fn()
+    updateCandidate: jest.fn(),
+    searchSkills: jest.fn()
   }
 }));
 
@@ -346,6 +347,135 @@ describe('useCandidates hooks', () => {
       // Verificar que se invalidó la consulta de candidatos
       expect(invalidateQueriesSpy).toHaveBeenCalledWith({ queryKey: ['candidates'] });
       expect(invalidateQueriesSpy).toHaveBeenCalledWith({ queryKey: ['candidate', candidateId] });
+    });
+  });
+
+  describe('useSearchSkills', () => {
+    it('should return skills matching the query', async () => {
+      // Arrange
+      const mockSkills = ['JavaScript', 'Java', 'Java Spring'];
+      (candidateService.searchSkills as jest.Mock).mockResolvedValue({
+        success: true,
+        data: mockSkills
+      });
+
+      // Act
+      const { result } = renderHook(() => useSearchSkills());
+      let skills: string[] = [];
+      
+      await act(async () => {
+        skills = await result.current.searchSkills('jav');
+      });
+
+      // Assert
+      expect(candidateService.searchSkills).toHaveBeenCalledWith('jav');
+      expect(skills).toEqual(mockSkills);
+      expect(result.current.isLoading).toBe(false);
+      expect(result.current.error).toBeNull();
+    });
+
+    it('should return empty array for empty query', async () => {
+      // Arrange
+      (candidateService.searchSkills as jest.Mock).mockResolvedValue({
+        success: true,
+        data: []
+      });
+
+      // Act
+      const { result } = renderHook(() => useSearchSkills());
+      let skills: string[] = [];
+      
+      await act(async () => {
+        skills = await result.current.searchSkills('');
+      });
+
+      // Assert
+      expect(candidateService.searchSkills).toHaveBeenCalledWith('');
+      expect(skills).toEqual([]);
+      expect(result.current.isLoading).toBe(false);
+      expect(result.current.error).toBeNull();
+    });
+
+    it('should handle API errors', async () => {
+      // Arrange
+      const errorMessage = 'Error al buscar habilidades';
+      (candidateService.searchSkills as jest.Mock).mockResolvedValue({
+        success: false,
+        error: errorMessage
+      });
+
+      // Act
+      const { result } = renderHook(() => useSearchSkills());
+      let skills: string[] = [];
+      
+      await act(async () => {
+        skills = await result.current.searchSkills('jav');
+      });
+
+      // Assert
+      expect(candidateService.searchSkills).toHaveBeenCalledWith('jav');
+      expect(skills).toEqual([]);
+      expect(result.current.isLoading).toBe(false);
+      expect(result.current.error).toBe(errorMessage);
+    });
+
+    it('should handle exceptions', async () => {
+      // Arrange
+      const errorMessage = 'Network Error';
+      (candidateService.searchSkills as jest.Mock).mockRejectedValue(new Error(errorMessage));
+
+      // Act
+      const { result } = renderHook(() => useSearchSkills());
+      let skills: string[] = [];
+      
+      await act(async () => {
+        skills = await result.current.searchSkills('jav');
+      });
+
+      // Assert
+      expect(candidateService.searchSkills).toHaveBeenCalledWith('jav');
+      expect(skills).toEqual([]);
+      expect(result.current.isLoading).toBe(false);
+      expect(result.current.error).toBe(errorMessage);
+    });
+
+    it('should set isLoading to true while fetching', async () => {
+      // Mock the searchSkills function to return a promise that doesn't resolve immediately
+      const searchSkillsMock = jest.fn().mockImplementation(() => {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            resolve(['JavaScript', 'Java', 'Java Spring']);
+          }, 100);
+        });
+      });
+      
+      // Mock the candidateService
+      (candidateService.searchSkills as jest.Mock).mockImplementation(searchSkillsMock);
+      
+      let promise: Promise<any>;
+      
+      const { result } = renderHook(() => useSearchSkills());
+      
+      act(() => {
+        // Start the search
+        promise = result.current.searchSkills('jav');
+        
+        // We can't check isLoading synchronously because React 18's batching
+        // The state update might not be reflected immediately
+      });
+      
+      // Wait for the loading state to be set to true
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(true);
+      });
+      
+      // Wait for the promise to resolve
+      await act(async () => {
+        await promise;
+      });
+      
+      // After the promise resolves, isLoading should be false
+      expect(result.current.isLoading).toBe(false);
     });
   });
 }); 

@@ -28,7 +28,7 @@ export class AuthService {
       // Verificar contraseña
       const isPasswordValid = await comparePassword(
         loginData.password,
-        user.passwordHash
+        user.password
       );
 
       if (!isPasswordValid) {
@@ -65,7 +65,7 @@ export class AuthService {
       });
 
       // Eliminar la contraseña del objeto de usuario antes de devolverlo
-      const { passwordHash, ...userWithoutPassword } = user;
+      const { password, ...userWithoutPassword } = user;
 
       return {
         success: true,
@@ -218,7 +218,7 @@ export class AuthService {
       }
 
       // Eliminar la contraseña del objeto de usuario antes de devolverlo
-      const { passwordHash, ...userWithoutPassword } = user;
+      const { password, ...userWithoutPassword } = user;
 
       return {
         success: true,

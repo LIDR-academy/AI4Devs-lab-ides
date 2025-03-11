@@ -48,6 +48,15 @@ export class CandidateController {
   static validateSearchCandidates = validateQuery(searchCandidateSchema);
 
   /**
+   * Validador para la búsqueda de habilidades
+   */
+  static validateSearchSkills = validateQuery(
+    z.object({
+      query: z.string().min(1, { message: 'El término de búsqueda es obligatorio' }),
+    })
+  );
+
+  /**
    * Obtiene todos los candidatos con paginación y filtros
    */
   async getAllCandidates(req: Request, res: Response) {
@@ -269,4 +278,39 @@ export class CandidateController {
       });
     }
   }
+
+  /**
+   * Busca habilidades que coincidan con un término de búsqueda
+   * @param req Solicitud HTTP
+   * @param res Respuesta HTTP
+   */
+  searchSkills = async (req: Request, res: Response) => {
+    try {
+      const { query } = req.query as { query: string };
+      
+      const result = await this.candidateService.searchSkills(query);
+      
+      if (!result.success) {
+        throw new AppError(result.error || 'Error al buscar habilidades', result.statusCode || 500);
+      }
+      
+      return res.status(result.statusCode).json({
+        success: true,
+        data: result.data
+      });
+    } catch (error) {
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          error: error.message
+        });
+      }
+      
+      console.error('Error al buscar habilidades:', error);
+      return res.status(500).json({
+        success: false,
+        error: 'Error interno del servidor'
+      });
+    }
+  };
 } 

@@ -66,13 +66,14 @@ export class UserService {
         select: {
           id: true,
           email: true,
-          name: true,
+          firstName: true,
+          lastName: true,
           role: true,
           isActive: true,
           lastLogin: true,
           createdAt: true,
           updatedAt: true,
-          passwordHash: false,
+          password: false,
         },
       });
 
@@ -127,13 +128,14 @@ export class UserService {
         select: {
           id: true,
           email: true,
-          name: true,
+          firstName: true,
+          lastName: true,
           role: true,
           isActive: true,
           lastLogin: true,
           createdAt: true,
           updatedAt: true,
-          passwordHash: false,
+          password: false,
         },
       });
 
@@ -196,15 +198,17 @@ export class UserService {
         const newUser = await tx.user.create({
           data: {
             email: userData.email,
-            name: userData.name,
+            firstName: userData.firstName,
+            lastName: userData.lastName,
             role: userData.role || 'recruiter',
-            passwordHash,
+            password: passwordHash,
             isActive: userData.isActive !== undefined ? userData.isActive : true,
           },
           select: {
             id: true,
             email: true,
-            name: true,
+            firstName: true,
+            lastName: true,
             role: true,
             isActive: true,
             lastLogin: true,
@@ -287,7 +291,8 @@ export class UserService {
         // Preparar los datos para la actualización
         const updateData: any = {
           email: userData.email,
-          name: userData.name,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
           role: userData.role,
           isActive: userData.isActive,
         };
@@ -311,7 +316,8 @@ export class UserService {
           select: {
             id: true,
             email: true,
-            name: true,
+            firstName: true,
+            lastName: true,
             role: true,
             isActive: true,
             lastLogin: true,

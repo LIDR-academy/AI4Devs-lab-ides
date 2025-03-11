@@ -66,6 +66,7 @@ describe('Auth Middleware', () => {
       expect(res.json).toHaveBeenCalledWith({
         success: false,
         error: 'No se proporcionó token de autenticación',
+        code: 'UNAUTHORIZED'
       });
     });
 
@@ -159,6 +160,7 @@ describe('Auth Middleware', () => {
       expect(res.json).toHaveBeenCalledWith({
         success: false,
         error: 'No autenticado',
+        code: 'UNAUTHORIZED'
       });
     });
 
@@ -193,6 +195,7 @@ describe('Auth Middleware', () => {
       expect(res.json).toHaveBeenCalledWith({
         success: false,
         error: 'No autorizado para acceder a este recurso',
+        code: 'FORBIDDEN'
       });
     });
   });

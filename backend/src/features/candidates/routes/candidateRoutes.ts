@@ -356,4 +356,49 @@ router.delete(
   (req, res) => candidateController.deleteCandidate(req, res)
 );
 
+/**
+ * @swagger
+ * /api/candidates/skills/search:
+ *   get:
+ *     summary: Buscar habilidades
+ *     description: Busca habilidades que coincidan con un término de búsqueda
+ *     tags: [Candidates]
+ *     security:
+ *       - cookieAuth: []
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: query
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Término de búsqueda
+ *     responses:
+ *       200:
+ *         description: Lista de habilidades que coinciden con el término de búsqueda
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: ["JavaScript", "Java", "Java Spring"]
+ *       401:
+ *         description: No autorizado
+ *       500:
+ *         description: Error del servidor
+ */
+router.get(
+  '/skills/search',
+  authenticate,
+  CandidateController.validateSearchSkills,
+  candidateController.searchSkills
+);
+
 export default router; 

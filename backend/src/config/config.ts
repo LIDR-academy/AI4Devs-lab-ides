@@ -32,4 +32,15 @@ export const config = {
     maxSize: parseInt(process.env.MAX_UPLOAD_SIZE || '10485760'), // 10MB en bytes
     directory: process.env.UPLOAD_DIR || 'uploads',
   },
+  security: {
+    xssProtection: true,
+    noSniff: true,
+    hsts: true,
+  },
+  rateLimit: {
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 100, // límite de 100 solicitudes por ventana
+    standardHeaders: true,
+    legacyHeaders: false,
+  },
 }; 

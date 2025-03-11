@@ -1,7 +1,7 @@
 // Configuración global para los tests
 process.env.NODE_ENV = 'test';
 process.env.JWT_SECRET = 'test-jwt-secret';
-process.env.DATABASE_URL = 'postgresql://postgres:postgres@localhost:5432/ats_test';
+// No necesitamos una URL de base de datos real porque usamos mocks para Prisma
 
 // Aumentar el timeout para tests de integración
 jest.setTimeout(30000);

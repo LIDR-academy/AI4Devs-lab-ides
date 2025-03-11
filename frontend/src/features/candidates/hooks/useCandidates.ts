@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { candidateService } from '../services/candidateService';
 import { Candidate } from '../types';
+import { useState } from 'react';
 
 // Claves para las consultas
 const CANDIDATES_QUERY_KEY = 'candidates';
@@ -136,4 +137,36 @@ export const useDeleteCandidate = () => {
       queryClient.invalidateQueries({ queryKey: [CANDIDATES_QUERY_KEY] });
     },
   });
+};
+
+/**
+ * Hook para buscar habilidades
+ * @returns Función para buscar habilidades
+ */
+export const useSearchSkills = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
+  const searchSkills = async (query: string): Promise<string[]> => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const response = await candidateService.searchSkills(query);
+      
+      if (!response.success) {
+        throw new Error(response.error || 'Error al buscar habilidades');
+      }
+      
+      return response.data || [];
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Error al buscar habilidades';
+      setError(errorMessage);
+      return [];
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  return { searchSkills, isLoading, error };
 }; 
