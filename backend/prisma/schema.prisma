@@ -14,7 +14,93 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id             String       @id @default(uuid())
+  email          String       @unique
+  password       String
+  name           String
+  role           Role         @default(USER)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  candidates     Candidate[]  // Relación con los candidatos que ha creado
+  selectionProcesses SelectionProcess[] // Relación con los procesos que gestiona
+}
+
+enum Role {
+  USER
+  ADMIN
+  RECRUITER
+}
+
+model Candidate {
+  id               String       @id @default(uuid())
+  firstName        String
+  lastName         String
+  email            String       @unique
+  phone            String?
+  address          String?
+  education        String?
+  workExperience   String?
+  skills           String?
+  notes            String?
+  status           CandidateStatus @default(ACTIVE)
+  cvFilename       String?
+  cvFileUrl        String?
+  cvFileType       String?
+  cvUploadedAt     DateTime?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  createdBy        User         @relation(fields: [createdById], references: [id])
+  createdById      String
+  selectionProcesses SelectionProcess[]
+}
+
+enum CandidateStatus {
+  ACTIVE
+  INACTIVE
+  HIRED
+  REJECTED
+}
+
+model SelectionProcess {
+  id               String       @id @default(uuid())
+  title            String
+  description      String?
+  status           ProcessStatus @default(IN_PROGRESS)
+  startDate        DateTime     @default(now())
+  endDate          DateTime?
+  position         String
+  notes            String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  candidate        Candidate    @relation(fields: [candidateId], references: [id])
+  candidateId      String
+  recruiter        User         @relation(fields: [recruiterId], references: [id])
+  recruiterId      String
+  stages           ProcessStage[]
+}
+
+enum ProcessStatus {
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model ProcessStage {
+  id                 String       @id @default(uuid())
+  name               String
+  description        String?
+  status             StageStatus  @default(PENDING)
+  date               DateTime?
+  feedback           String?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  selectionProcess   SelectionProcess @relation(fields: [selectionProcessId], references: [id])
+  selectionProcessId String
+}
+
+enum StageStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  PASSED
 }
