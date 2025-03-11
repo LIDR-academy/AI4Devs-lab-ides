@@ -1,3 +1,110 @@
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to bottom, #A4C3B2, #CCE3DE); /* Fondo con degradado */
+  background-size: cover; /* Asegurar que el fondo ocupe toda la pantalla */
+  color: #333;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh; /* Asegurar que el fondo ocupe toda la pantalla */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+h1 {
+  color: #6B9080;
+}
+
+.container {
+  max-width: 1200px; /* Aumentar la anchura de la caja contenedora */
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #F6FFF8; /* Fondo de los contenedores */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Asegurar que el contenido no se salga del contenedor */
+}
+
+button {
+  background-color: #6B9080;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #A4C3B2;
+}
+
+input, select, textarea {
+  width: calc(100% - 40px); /* Ajustar el ancho para respetar los márgenes */
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: left; /* Alinear los textos a la izquierda */
+}
+
+label {
+  font-weight: bold;
+  text-align: left; /* Alinear los textos a la izquierda */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table, th, td {
+  border: 1px solid #ccc;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+}
+
+.add-user-button {
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.add-user-button button {
+  font-size: 24px;
+  padding: 10px 15px;
+}
+
+.user-form .form-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.user-form .form-row .full-width {
+  flex: 1;
+}
+
+.user-form .form-row label {
+  flex: 1;
+  margin: 20px;
+}
+
+.user-form .form-row label:last-child {
+  margin-right: 0;
+}
+
+.user-form .form-row label:not(:last-child) {
+  margin-right: 20px; 
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px; /* Espacio entre los botones */
+}
+
 .App {
   text-align: center;
 }
