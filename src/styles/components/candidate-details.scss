@@ -1,0 +1,231 @@
+@import "../variables.scss";
+
+/* Estilos para la página de detalles del candidato */
+
+.candidate-details {
+  &__section {
+    margin-bottom: var(--spacing-8);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__section-title {
+    font-size: var(--font-size-xl);
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-4);
+    padding-bottom: var(--spacing-2);
+    border-bottom: 1px solid var(--color-gray-300);
+  }
+
+  &__info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-4);
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__info-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__info-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+    margin-bottom: var(--spacing-1);
+  }
+
+  &__info-value {
+    font-size: var(--font-size-md);
+    color: var(--color-gray-900);
+
+    a {
+      color: var(--color-primary);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &__card {
+    background-color: var(--color-gray-100);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-4);
+    margin-bottom: var(--spacing-4);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__card-title {
+    font-size: var(--font-size-lg);
+    color: var(--color-gray-900);
+    margin-bottom: var(--spacing-1);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  &__card-subtitle {
+    font-size: var(--font-size-md);
+    color: var(--color-gray-700);
+    margin-bottom: var(--spacing-1);
+  }
+
+  &__card-date {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+    margin-bottom: var(--spacing-2);
+  }
+
+  &__card-description {
+    font-size: var(--font-size-md);
+    color: var(--color-gray-800);
+    line-height: 1.5;
+  }
+
+  &__documents {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-4);
+
+    @media (max-width: 576px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__document {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--spacing-4);
+    background-color: var(--color-gray-100);
+    border-radius: var(--border-radius-md);
+    transition: transform var(--transition-normal),
+      box-shadow var(--transition-normal);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+
+  &__document-icon {
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-2);
+  }
+
+  &__document-title {
+    font-size: var(--font-size-md);
+    color: var(--color-gray-900);
+    font-weight: var(--font-weight-medium);
+    margin-bottom: var(--spacing-2);
+  }
+
+  &__document-link {
+    font-size: var(--font-size-sm);
+    color: var(--color-primary);
+    text-decoration: none;
+    padding: var(--spacing-1) var(--spacing-3);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--border-radius-md);
+    transition: background-color var(--transition-normal),
+      color var(--transition-normal);
+
+    &:hover {
+      background-color: var(--color-primary);
+      color: var(--color-white);
+      text-decoration: none;
+    }
+  }
+}
+
+/* Estilos para el modal de confirmación de eliminación */
+.delete-confirm {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: var(--z-index-modal);
+
+  &__backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+  }
+
+  &__modal {
+    position: relative;
+    width: 90%;
+    max-width: 500px;
+    background-color: var(--color-white);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-6);
+    box-shadow: var(--shadow-lg);
+    z-index: 1;
+  }
+
+  &__title {
+    font-size: var(--font-size-xl);
+    color: var(--color-gray-900);
+    margin-bottom: var(--spacing-4);
+    text-align: center;
+  }
+
+  &__message {
+    color: var(--color-gray-700);
+    margin-bottom: var(--spacing-6);
+    text-align: center;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-4);
+
+    @media (max-width: 576px) {
+      flex-direction: column-reverse;
+    }
+  }
+
+  &__button {
+    padding: var(--spacing-2) var(--spacing-4);
+    border-radius: var(--border-radius-md);
+    font-weight: var(--font-weight-medium);
+    border: none;
+    cursor: pointer;
+    transition: background-color var(--transition-normal);
+
+    &--cancel {
+      background-color: var(--color-gray-200);
+      color: var(--color-gray-700);
+
+      &:hover {
+        background-color: var(--color-gray-300);
+      }
+    }
+
+    &--confirm {
+      background-color: var(--color-error);
+      color: var(--color-white);
+
+      &:hover {
+        background-color: darken(#e74c3c, 10%);
+      }
+    }
+  }
+}

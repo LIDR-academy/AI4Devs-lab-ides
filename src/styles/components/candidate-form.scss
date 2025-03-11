@@ -1,0 +1,118 @@
+@import "../variables.scss";
+
+/* Estilos para el formulario principal de candidatos */
+
+.candidate-form {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: var(--spacing-6);
+  background-color: var(--color-white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+
+  @media (max-width: 768px) {
+    padding: var(--spacing-4);
+  }
+
+  /* Título principal */
+  &__title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-gray-900);
+    margin-bottom: var(--spacing-6);
+    text-align: center;
+  }
+
+  /* Contenedor del formulario */
+  &__container {
+    width: 100%;
+  }
+
+  /* Barra de progreso */
+  &__progress {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-8);
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--color-gray-300);
+      z-index: 1;
+      transform: translateY(-50%);
+    }
+
+    @media (max-width: 576px) {
+      flex-direction: column;
+      gap: var(--spacing-2);
+
+      &::before {
+        display: none;
+      }
+    }
+  }
+
+  /* Paso individual en la barra de progreso */
+  &__step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    background-color: var(--color-white);
+    padding: 0 var(--spacing-2);
+    color: var(--color-gray-600);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    text-align: center;
+
+    &::before {
+      content: "";
+      width: 20px;
+      height: 20px;
+      background-color: var(--color-gray-300);
+      border-radius: 50%;
+      margin-bottom: var(--spacing-2);
+      transition: background-color var(--transition-normal);
+    }
+
+    /* Estilo para pasos activos o completados */
+    &--active {
+      color: var(--color-primary);
+      font-weight: var(--font-weight-semibold);
+
+      &::before {
+        background-color: var(--color-primary);
+      }
+    }
+
+    @media (max-width: 576px) {
+      flex-direction: row;
+      justify-content: flex-start;
+      width: 100%;
+      padding: var(--spacing-2);
+      background-color: var(--color-gray-100);
+      border-radius: var(--border-radius-md);
+
+      &::before {
+        margin-bottom: 0;
+        margin-right: var(--spacing-2);
+      }
+
+      &--active {
+        background-color: var(--color-primary-light);
+        color: var(--color-white);
+
+        &::before {
+          background-color: var(--color-white);
+        }
+      }
+    }
+  }
+}
