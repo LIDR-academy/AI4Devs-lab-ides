@@ -18,3 +18,42 @@ model User {
   email String  @unique
   name  String?
 }
+
+// Modelo para candidatos
+model Candidate {
+  id            Int           @id @default(autoincrement())
+  firstName     String
+  lastName      String
+  email         String        @unique
+  phone         String
+  address       String
+  cvFilePath    String?       // Ruta al archivo CV almacenado
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  education     Education[]   // Relación con educación
+  experience    Experience[]  // Relación con experiencia laboral
+}
+
+// Modelo para la educación de un candidato
+model Education {
+  id            Int         @id @default(autoincrement())
+  institution   String
+  degree        String
+  fieldOfStudy  String
+  startDate     DateTime?
+  endDate       DateTime?
+  candidate     Candidate   @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateId   Int
+}
+
+// Modelo para la experiencia laboral de un candidato
+model Experience {
+  id            Int         @id @default(autoincrement())
+  company       String
+  position      String
+  description   String?     @db.Text
+  startDate     DateTime?
+  endDate       DateTime?
+  candidate     Candidate   @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidateId   Int
+}

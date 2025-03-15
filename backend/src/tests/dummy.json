@@ -1,0 +1,341 @@
+{
+  "candidates": [
+    {
+      "firstName": "María",
+      "lastName": "González",
+      "email": "maria.gonzalez@ejemplo.com",
+      "phone": "612345678",
+      "address": "Calle Principal 123, Madrid, España",
+      "education": [
+        {
+          "institution": "Universidad Complutense de Madrid",
+          "degree": "Ingeniería Informática",
+          "fieldOfStudy": "Desarrollo de Software",
+          "startDate": "2015-09-01",
+          "endDate": "2019-06-30"
+        }
+      ],
+      "experience": [
+        {
+          "company": "Tecnologías Avanzadas S.L.",
+          "position": "Desarrolladora Full Stack",
+          "description": "Desarrollo de aplicaciones web utilizando React y Node.js",
+          "startDate": "2019-09-01",
+          "endDate": "2022-12-31"
+        }
+      ],
+      "cvFile": "uploads/cv/2023/03/cv-maria-gonzalez.pdf"
+    },
+    {
+      "firstName": "Carlos",
+      "lastName": "Rodríguez",
+      "email": "carlos.rodriguez@ejemplo.com",
+      "phone": "623456789",
+      "address": "Avenida Libertad 45, Barcelona, España",
+      "education": [
+        {
+          "institution": "Universidad Politécnica de Cataluña",
+          "degree": "Ingeniería de Telecomunicaciones",
+          "fieldOfStudy": "Redes y Sistemas",
+          "startDate": "2014-09-01",
+          "endDate": "2018-06-30"
+        }
+      ],
+      "experience": [
+        {
+          "company": "Telefónica",
+          "position": "Ingeniero de Redes",
+          "description": "Diseño e implementación de infraestructuras de red",
+          "startDate": "2018-07-15",
+          "endDate": "2021-08-31"
+        },
+        {
+          "company": "Vodafone",
+          "position": "Arquitecto de Soluciones",
+          "description": "Diseño de arquitecturas de red para clientes empresariales",
+          "startDate": "2021-09-15",
+          "endDate": null
+        }
+      ],
+      "cvFile": "uploads/cv/2023/02/cv-carlos-rodriguez.pdf"
+    },
+    {
+      "firstName": "Ana",
+      "lastName": "Martínez",
+      "email": "ana.martinez@ejemplo.com",
+      "phone": "634567890",
+      "address": "Plaza Mayor 7, Valencia, España",
+      "education": [
+        {
+          "institution": "Universidad de Valencia",
+          "degree": "Licenciatura en Administración de Empresas",
+          "fieldOfStudy": "Finanzas",
+          "startDate": "2016-09-01",
+          "endDate": "2020-06-30"
+        },
+        {
+          "institution": "ESADE Business School",
+          "degree": "MBA",
+          "fieldOfStudy": "Administración de Empresas",
+          "startDate": "2021-09-01",
+          "endDate": "2022-06-30"
+        }
+      ],
+      "experience": [
+        {
+          "company": "Deloitte",
+          "position": "Consultora Financiera",
+          "description": "Consultoría financiera para empresas del sector tecnológico",
+          "startDate": "2020-09-01",
+          "endDate": null
+        }
+      ],
+      "cvFile": "uploads/cv/2023/04/cv-ana-martinez.pdf"
+    },
+    {
+      "firstName": "Javier",
+      "lastName": "López",
+      "email": "javier.lopez@ejemplo.com",
+      "phone": "645678901",
+      "address": "Calle San Juan 23, Sevilla, España",
+      "education": [
+        {
+          "institution": "Universidad de Sevilla",
+          "degree": "Grado en Marketing",
+          "fieldOfStudy": "Marketing Digital",
+          "startDate": "2017-09-01",
+          "endDate": "2021-06-30"
+        }
+      ],
+      "experience": [
+        {
+          "company": "Agencia de Marketing Digital",
+          "position": "Especialista en SEO",
+          "description": "Optimización de sitios web para motores de búsqueda",
+          "startDate": "2021-07-01",
+          "endDate": "2023-01-31"
+        },
+        {
+          "company": "Google",
+          "position": "Analista de Marketing",
+          "description": "Análisis de campañas de marketing digital",
+          "startDate": "2023-02-15",
+          "endDate": null
+        }
+      ],
+      "cvFile": "uploads/cv/2023/01/cv-javier-lopez.docx"
+    },
+    {
+      "firstName": "Laura",
+      "lastName": "Sánchez",
+      "email": "laura.sanchez@ejemplo.com",
+      "phone": "656789012",
+      "address": "Avenida del Mar 56, Málaga, España",
+      "education": [
+        {
+          "institution": "Universidad de Málaga",
+          "degree": "Grado en Diseño Gráfico",
+          "fieldOfStudy": "Diseño de Interfaces",
+          "startDate": "2016-09-01",
+          "endDate": "2020-06-30"
+        }
+      ],
+      "experience": [
+        {
+          "company": "Estudio de Diseño Creativo",
+          "position": "Diseñadora UI/UX",
+          "description": "Diseño de interfaces de usuario para aplicaciones móviles",
+          "startDate": "2020-08-01",
+          "endDate": "2022-10-31"
+        },
+        {
+          "company": "Apple",
+          "position": "Diseñadora de Experiencia de Usuario",
+          "description": "Diseño de experiencias de usuario para productos Apple",
+          "startDate": "2022-11-15",
+          "endDate": null
+        }
+      ],
+      "cvFile": "uploads/cv/2023/05/cv-laura-sanchez.pdf"
+    },
+    {
+      "firstName": "Miguel",
+      "lastName": "Fernández",
+      "email": "miguel.fernandez@ejemplo.com",
+      "phone": "667890123",
+      "address": "Calle Gran Vía 89, Bilbao, España",
+      "education": [
+        {
+          "institution": "Universidad del País Vasco",
+          "degree": "Ingeniería Industrial",
+          "fieldOfStudy": "Automatización",
+          "startDate": "2013-09-01",
+          "endDate": "2018-06-30"
+        }
+      ],
+      "experience": [
+        {
+          "company": "Siemens",
+          "position": "Ingeniero de Automatización",
+          "description": "Diseño e implementación de sistemas de automatización industrial",
+          "startDate": "2018-09-01",
+          "endDate": "2021-12-31"
+        },
+        {
+          "company": "ABB",
+          "position": "Jefe de Proyectos",
+          "description": "Gestión de proyectos de automatización industrial",
+          "startDate": "2022-01-15",
+          "endDate": null
+        }
+      ],
+      "cvFile": "uploads/cv/2022/12/cv-miguel-fernandez.pdf"
+    },
+    {
+      "firstName": "Elena",
+      "lastName": "Díaz",
+      "email": "elena.diaz@ejemplo.com",
+      "phone": "678901234",
+      "address": "Plaza de España 12, Zaragoza, España",
+      "education": [
+        {
+          "institution": "Universidad de Zaragoza",
+          "degree": "Grado en Psicología",
+          "fieldOfStudy": "Psicología Organizacional",
+          "startDate": "2015-09-01",
+          "endDate": "2019-06-30"
+        },
+        {
+          "institution": "Universidad Autónoma de Madrid",
+          "degree": "Máster en Recursos Humanos",
+          "fieldOfStudy": "Gestión del Talento",
+          "startDate": "2019-09-01",
+          "endDate": "2020-06-30"
+        }
+      ],
+      "experience": [
+        {
+          "company": "Consultora de RRHH",
+          "position": "Técnica de Selección",
+          "description": "Selección y evaluación de candidatos para empresas tecnológicas",
+          "startDate": "2020-09-01",
+          "endDate": "2022-06-30"
+        },
+        {
+          "company": "Microsoft",
+          "position": "Especialista en Adquisición de Talento",
+          "description": "Búsqueda y selección de perfiles tecnológicos",
+          "startDate": "2022-07-15",
+          "endDate": null
+        }
+      ],
+      "cvFile": "uploads/cv/2023/02/cv-elena-diaz.pdf"
+    },
+    {
+      "firstName": "Pablo",
+      "lastName": "García",
+      "email": "pablo.garcia@ejemplo.com",
+      "phone": "689012345",
+      "address": "Calle Mayor 34, Alicante, España",
+      "education": [
+        {
+          "institution": "Universidad de Alicante",
+          "degree": "Grado en Ciencias de la Computación",
+          "fieldOfStudy": "Inteligencia Artificial",
+          "startDate": "2016-09-01",
+          "endDate": "2020-06-30"
+        }
+      ],
+      "experience": [
+        {
+          "company": "Startup de IA",
+          "position": "Ingeniero de Machine Learning",
+          "description": "Desarrollo de algoritmos de aprendizaje automático",
+          "startDate": "2020-07-01",
+          "endDate": "2023-03-31"
+        },
+        {
+          "company": "Amazon",
+          "position": "Científico de Datos Senior",
+          "description": "Análisis de datos y desarrollo de modelos predictivos",
+          "startDate": "2023-04-15",
+          "endDate": null
+        }
+      ],
+      "cvFile": "uploads/cv/2023/04/cv-pablo-garcia.pdf"
+    },
+    {
+      "firstName": "Lucía",
+      "lastName": "Pérez",
+      "email": "lucia.perez@ejemplo.com",
+      "phone": "690123456",
+      "address": "Avenida Principal 78, Murcia, España",
+      "education": [
+        {
+          "institution": "Universidad de Murcia",
+          "degree": "Grado en Derecho",
+          "fieldOfStudy": "Derecho Mercantil",
+          "startDate": "2014-09-01",
+          "endDate": "2018-06-30"
+        },
+        {
+          "institution": "IE Law School",
+          "degree": "Máster en Asesoría Jurídica",
+          "fieldOfStudy": "Derecho Tecnológico",
+          "startDate": "2018-09-01",
+          "endDate": "2019-06-30"
+        }
+      ],
+      "experience": [
+        {
+          "company": "Despacho de Abogados",
+          "position": "Abogada Junior",
+          "description": "Asesoramiento legal a empresas tecnológicas",
+          "startDate": "2019-09-01",
+          "endDate": "2021-12-31"
+        },
+        {
+          "company": "Indra",
+          "position": "Asesora Legal",
+          "description": "Asesoramiento legal en proyectos tecnológicos",
+          "startDate": "2022-01-15",
+          "endDate": null
+        }
+      ],
+      "cvFile": "uploads/cv/2022/11/cv-lucia-perez.docx"
+    },
+    {
+      "firstName": "Daniel",
+      "lastName": "Moreno",
+      "email": "daniel.moreno@ejemplo.com",
+      "phone": "601234567",
+      "address": "Calle del Sol 45, Las Palmas, España",
+      "education": [
+        {
+          "institution": "Universidad de Las Palmas de Gran Canaria",
+          "degree": "Grado en Ingeniería de Software",
+          "fieldOfStudy": "Desarrollo Web",
+          "startDate": "2017-09-01",
+          "endDate": "2021-06-30"
+        }
+      ],
+      "experience": [
+        {
+          "company": "Consultora Tecnológica",
+          "position": "Desarrollador Backend",
+          "description": "Desarrollo de APIs y servicios web con Node.js",
+          "startDate": "2021-07-01",
+          "endDate": "2023-02-28"
+        },
+        {
+          "company": "Netflix",
+          "position": "Ingeniero de Software",
+          "description": "Desarrollo de microservicios para la plataforma de streaming",
+          "startDate": "2023-03-15",
+          "endDate": null
+        }
+      ],
+      "cvFile": "uploads/cv/2023/03/cv-daniel-moreno.pdf"
+    }
+  ]
+}
