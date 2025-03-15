@@ -1,12 +1,16 @@
-version: "3.1"
+version: '3'
 
 services:
-  db:
-    image: postgres
-    restart: always
+  postgres:
+    image: postgres:latest
     environment:
-      POSTGRES_PASSWORD: D1ymf8wyQEGthFR1E9xhCq
       POSTGRES_USER: LTIdbUser
+      POSTGRES_PASSWORD: MiPostgre2025!DB
       POSTGRES_DB: LTIdb
     ports:
-      - 5432:5432
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
